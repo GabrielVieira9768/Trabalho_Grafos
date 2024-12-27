@@ -4,10 +4,12 @@
 #include "Grafo.h"
 #include <vector>
 
+using namespace std;
+
 class GrafoMatriz : public Grafo {
     private:
         int numero_vertices;
-        std::vector<std::vector<int>> matriz;
+        vector<vector<int>> matriz;
 };
 
 #endif // GRAFOMATRIZ_H
