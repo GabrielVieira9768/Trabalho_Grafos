@@ -6,7 +6,7 @@
 
 class GrafoMatriz : public Grafo {
     private:
-        int num_vertices;
+        int numero_vertices;
         std::vector<std::vector<int>> matriz;
 };
 
