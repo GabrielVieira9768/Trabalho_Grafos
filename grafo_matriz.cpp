@@ -97,7 +97,7 @@ void GrafoMatriz::imprimeGrafo() {
     }
 }
 
-bool GrafoMatriz::eh_completoMatriz() const {
+bool GrafoMatriz::eh_completo() {
     for (int i = 0; i < ordem; ++i) {
         for (int j = 0; j < ordem; ++j) {
             if (i != j && matrizAdj[i][j] == 0) {

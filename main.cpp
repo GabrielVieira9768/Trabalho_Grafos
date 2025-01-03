@@ -19,5 +19,9 @@ int main() {
     cout << "\nGrafo carregado com sucesso!" << endl;
     grafo.imprimeGrafo();
 
+        if(grafo.eh_completo()){
+        cout << "Eh Completo";
+    }
+
     return 0;
 }
