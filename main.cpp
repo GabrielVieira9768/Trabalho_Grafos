@@ -21,9 +21,15 @@ int main() {
     cout << "\nGrafo carregado com sucesso!" << endl;
     grafo.imprimeGrafo();
 
-    if(grafo.eh_completo()){
+    if(grafo.eh_completo())
         cout << "Eh Completo";
-    }
+    else
+        cout << "Nao eh Completo";
+
+    if(grafo.eh_bipartido())
+        cout << "Eh Bipartido";
+    else
+        cout << "Nao eh Bipartido";
 
     return 0;
 }

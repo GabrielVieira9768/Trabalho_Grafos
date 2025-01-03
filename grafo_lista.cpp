@@ -34,7 +34,6 @@ void GrafoLista::inicializaLista(int ordem) {
         pesosVertices = (int*)calloc(ordem, sizeof(int));
     }
 
-    // Inicializa o array de graus
     grauVertices = (int*)calloc(ordem, sizeof(int));
 }
 
@@ -114,8 +113,47 @@ void GrafoLista::imprimeGrafo() {
 
 bool GrafoLista::eh_completo(){
     for (int i = 0; i < this->ordem; i++) {
-        if(this->ordem -1 != this->grauVertices[i]){
+        if(this->ordem -1 != this->grauVertices[i])
             return false;
+    }
+
+    return true;
+}
+
+bool GrafoLista::eh_bipartido() {
+    int cor[this->ordem]; // Array para armazenar as cores dos vértices
+    int fila[this->ordem]; // Fila circular para BFS
+    int inicio, fim;
+
+    // Inicializa as cores como -1 (não visitado)
+    for (int i = 0; i < this->ordem; i++) {
+        cor[i] = -1;
+    }
+
+    // Verifica cada componente do grafo
+    for (int v = 0; v < this->ordem; ++v) {
+        if (cor[v] != -1) continue; // Já visitado
+
+        // Inicializa a BFS
+        inicio = fim = 0;
+        fila[fim++] = v;
+        cor[v] = 0;
+
+        while (inicio < fim) {
+            int atual = fila[inicio++];
+            No* no = listaAdj[atual].getCabeca();
+
+            // Processa todos os adjacentes
+            while (no != nullptr) {
+                int destino = no->destino - 1; // Ajusta índice para base 0
+                if (cor[destino] == -1) {
+                    cor[destino] = 1 - cor[atual]; // Atribui cor oposta
+                    fila[fim++] = destino;        // Adiciona à fila
+                } else if (cor[destino] == cor[atual]) {
+                    return false; // Encontrou vértices adjacentes com a mesma cor
+                }
+                no = no->prox;
+            }
         }
     }
 

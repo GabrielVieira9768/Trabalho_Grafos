@@ -20,6 +20,7 @@ class GrafoLista : public Grafo {
         void imprimeGrafo();
 
         bool eh_completo() override;
+        bool eh_bipartido() override;
 };
 
 #endif
