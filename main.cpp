@@ -1,4 +1,6 @@
 #include "grafo_lista.h"
+#include "grafo_matriz.h"
+
 #include <iostream>
 #include <string>
 
@@ -9,7 +11,7 @@ int main() {
     string arquivo = "grafo.txt";
 
     // Criando o grafo
-    GrafoLista grafo;
+    GrafoMatriz grafo;
 
     // Carregando o grafo do arquivo
     cout << "Carregando grafo do arquivo: " << arquivo << endl;

@@ -15,7 +15,7 @@ GrafoLista::~GrafoLista() {
         }
         free(listaAdj);
     }
-    free(pesosVertices);
+    // free(pesosVertices);
 }
 
 void GrafoLista::inicializaLista(int ordem) {
