@@ -2,14 +2,12 @@
 #define GRAFOMATRIZ_H
 
 #include "Grafo.h"
-#include <vector>
 
 using namespace std;
 
 class GrafoMatriz : public Grafo {
-    private:
-        int numero_vertices;
-        vector<vector<int>> matriz;
+    public:
+        bool eh_bipartido() override;
 };
 
 #endif // GRAFOMATRIZ_H
