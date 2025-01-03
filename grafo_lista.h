@@ -4,20 +4,11 @@
 #include "grafo.h"
 
 class GrafoLista : public Grafo {
-    private:
-        struct No {
-            int vertice;
-            No* prox;
-        };
-
-        int numero_vertices;
-        No** lista_adj;
+    private:     
 
     public:
         GrafoLista(int n);
         ~GrafoLista();
-
-        void adicionarAresta(int u, int v);
 
         bool eh_bipartido() override;
         int n_conexo() override;

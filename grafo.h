@@ -1,6 +1,10 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
+#include <string>
+
+using namespace std;
+
 class Grafo {
     private:
         int ordem;
@@ -23,6 +27,7 @@ class Grafo {
         virtual bool eh_arvore();
         virtual bool possui_articulacao();
         virtual bool possui_ponte();
+        virtual void carregaGrafo(const string& arquivo);
 };
 
 #endif
