@@ -3,10 +3,9 @@
 
 #include "Grafo.h"
 
-class GrafoMatriz : public Grafo {
-    private:
-        int numero_vertices;
+using namespace std;
 
+class GrafoMatriz : public Grafo {
     public:
         bool eh_bipartido() override;
 };
