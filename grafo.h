@@ -6,7 +6,7 @@
 using namespace std;
 
 class Grafo {
-    private:
+    protected:
         int ordem;
         int grau;
         bool direcionado;
