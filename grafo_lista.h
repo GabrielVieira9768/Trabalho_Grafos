@@ -1,17 +1,22 @@
-#ifndef GRAFOLISTA_H
-#define GRAFOLISTA_H
+#ifndef GRAFO_LISTA_H
+#define GRAFO_LISTA_H
 
 #include "grafo.h"
+#include "lista_encadeada.h"
 
 class GrafoLista : public Grafo {
-    private:     
+    private:
+        ListaEncadeada* listaAdj;
+        int* pesosVertices;
 
     public:
-        GrafoLista(int n);
+        GrafoLista();
         ~GrafoLista();
 
-        bool eh_bipartido() override;
-        int n_conexo() override;
+        void inicializaLista(int ordem);
+        void adicionaAresta(int origem, int destino, int peso);
+        void carregaGrafo(const std::string& arquivo) override;
+        void imprimeGrafo();
 };
 
 #endif
