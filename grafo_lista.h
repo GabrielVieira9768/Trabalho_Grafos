@@ -1,7 +1,7 @@
 #ifndef GRAFOLISTA_H
 #define GRAFOLISTA_H
 
-#include "Grafo.h"
+#include "grafo.h"
 
 class GrafoLista : public Grafo {
     private:
@@ -23,4 +23,4 @@ class GrafoLista : public Grafo {
         int n_conexo() override;
 };
 
-#endif // GRAFOLISTA_H
+#endif

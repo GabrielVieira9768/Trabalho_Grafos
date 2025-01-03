@@ -2,11 +2,27 @@
 #define GRAFO_H
 
 class Grafo {
+    private:
+        int ordem;
+        int grau;
+        bool direcionado;
+        bool verticePonderado;
+        bool arestaPonderada;
+
     public:
         virtual ~Grafo() {}
 
-        virtual bool eh_bipartido() = 0;
-        virtual int n_conexo() = 0;
+        int get_grau();
+        int get_ordem();
+        bool eh_direcionado();
+        bool vertice_ponderado();
+        bool aresta_ponderada();
+        virtual bool eh_bipartido();
+        virtual int n_conexo();
+        virtual bool eh_completo();
+        virtual bool eh_arvore();
+        virtual bool possui_articulacao();
+        virtual bool possui_ponte();
 };
 
 #endif
