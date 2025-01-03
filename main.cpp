@@ -11,7 +11,7 @@ int main() {
     string arquivo = "grafo.txt";
 
     // Criando o grafo
-    GrafoMatriz grafo;
+    GrafoLista grafo;
 
     // Carregando o grafo do arquivo
     cout << "Carregando grafo do arquivo: " << arquivo << endl;
@@ -20,6 +20,10 @@ int main() {
     // Imprimindo o grafo carregado
     cout << "\nGrafo carregado com sucesso!" << endl;
     grafo.imprimeGrafo();
+
+    if(grafo.eh_completo()){
+        cout << "Eh Completo";
+    }
 
     return 0;
 }

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-GrafoLista::GrafoLista() : listaAdj(nullptr), pesosVertices(nullptr) {}
+GrafoLista::GrafoLista() : listaAdj(nullptr), pesosVertices(nullptr), grauVertices(nullptr) {}
 
 GrafoLista::~GrafoLista() {
     if (listaAdj) {
@@ -15,7 +15,12 @@ GrafoLista::~GrafoLista() {
         }
         free(listaAdj);
     }
-    // free(pesosVertices);
+    if (pesosVertices) {
+        free(pesosVertices);
+    }
+    if (grauVertices) {
+        free(grauVertices);
+    }
 }
 
 void GrafoLista::inicializaLista(int ordem) {
@@ -28,12 +33,18 @@ void GrafoLista::inicializaLista(int ordem) {
     if (verticePonderado) {
         pesosVertices = (int*)calloc(ordem, sizeof(int));
     }
+
+    // Inicializa o array de graus
+    grauVertices = (int*)calloc(ordem, sizeof(int));
 }
 
 void GrafoLista::adicionaAresta(int origem, int destino, int peso) {
     listaAdj[origem - 1].insereNo(destino, peso);
+    grauVertices[origem - 1]++; // Incrementa o grau do vértice de origem
+
     if (!direcionado) {
         listaAdj[destino - 1].insereNo(origem, peso);
+        grauVertices[destino - 1]++; // Incrementa o grau do vértice de destino para grafos não direcionados
     }
 }
 
@@ -94,4 +105,19 @@ void GrafoLista::imprimeGrafo() {
         }
         cout << endl;
     }
+
+    cout << "Graus dos Vértices:" << endl;
+    for (int i = 0; i < ordem; i++) {
+        cout << "Vértice " << i + 1 << ": " << grauVertices[i] << endl;
+    }
+}
+
+bool GrafoLista::eh_completo(){
+    for (int i = 0; i < this->ordem; i++) {
+        if(this->ordem -1 != this->grauVertices[i]){
+            return false;
+        }
+    }
+
+    return true;
 }
