@@ -109,6 +109,14 @@ void GrafoLista::imprimeGrafo() {
     for (int i = 0; i < ordem; i++) {
         cout << "Vértice " << i + 1 << ": " << grauVertices[i] << endl;
     }
+
+    cout << "Completo:" << eh_completo() << endl;
+
+    cout << "Bipartido: "<< eh_bipartido() << endl;
+
+    cout << "Conexo:" << n_conexo() << endl;
+
+
 }
 
 bool GrafoLista::eh_completo(){
@@ -161,7 +169,8 @@ bool GrafoLista::eh_bipartido() {
 }
 
 int GrafoLista::n_conexo() {
-    bool visitado[ordem] = {false};
+    bool visitado[ordem];
+    std::fill(visitado, visitado + ordem, false);
     int n_componentes = 0;
 
     for (int i = 0; i < ordem; i++) {
