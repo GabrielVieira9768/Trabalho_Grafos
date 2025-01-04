@@ -8,6 +8,8 @@ class GrafoLista : public Grafo {
     private:
         ListaEncadeada* listaAdj;
         int* pesosVertices;
+        int* grauVertices;
+        void dfs(int vertice, bool visitado[]);
 
     public:
         GrafoLista();
@@ -17,6 +19,10 @@ class GrafoLista : public Grafo {
         void adicionaAresta(int origem, int destino, int peso);
         void carregaGrafo(const std::string& arquivo) override;
         void imprimeGrafo();
+
+        bool eh_completo() override;
+        bool eh_bipartido() override;
+        int n_conexo() override;
 };
 
 #endif

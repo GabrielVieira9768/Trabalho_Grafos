@@ -11,7 +11,7 @@ ListaEncadeada::~ListaEncadeada() {
     while (atual) {
         No* temp = atual;
         atual = atual->prox;
-        delete [] temp;
+        delete temp;
     }
 }
 
