@@ -148,9 +148,9 @@ bool GrafoLista::eh_bipartido() {
                 int destino = no->destino - 1; // Ajusta índice para base 0
                 if (cor[destino] == -1) {
                     cor[destino] = 1 - cor[atual]; // Atribui cor oposta
-                    fila[fim++] = destino;        // Adiciona à fila
+                    fila[fim++] = destino;
                 } else if (cor[destino] == cor[atual]) {
-                    return false; // Encontrou vértices adjacentes com a mesma cor
+                    return false;
                 }
                 no = no->prox;
             }
@@ -158,4 +158,31 @@ bool GrafoLista::eh_bipartido() {
     }
 
     return true;
+}
+
+int GrafoLista::n_conexo() {
+    bool visitado[ordem] = {false};
+    int n_componentes = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (!visitado[i]) {
+            n_componentes++;
+            dfs(i, visitado);
+        }
+    }
+
+    return n_componentes;
+}
+
+// Método para auxiliar na busca pelas componentes conexas
+void GrafoLista::dfs(int vertice, bool visitado[]) {
+    visitado[vertice] = true;
+    No* no = listaAdj[vertice].getCabeca();
+    while (no) {
+        int adj = no->destino - 1;
+        if (!visitado[adj]) {
+            dfs(adj, visitado);
+        }
+        no = no->prox;
+    }
 }

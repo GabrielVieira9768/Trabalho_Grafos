@@ -9,6 +9,7 @@ class GrafoLista : public Grafo {
         ListaEncadeada* listaAdj;
         int* pesosVertices;
         int* grauVertices;
+        void dfs(int vertice, bool visitado[]);
 
     public:
         GrafoLista();
@@ -21,6 +22,7 @@ class GrafoLista : public Grafo {
 
         bool eh_completo() override;
         bool eh_bipartido() override;
+        int n_conexo() override;
 };
 
 #endif
