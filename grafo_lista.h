@@ -19,10 +19,12 @@ class GrafoLista : public Grafo {
         void adicionaAresta(int origem, int destino, int peso);
         void carregaGrafo(const std::string& arquivo) override;
         void imprimeGrafo();
+        void dfsDetectaCiclo(int vertice, bool visitado[], int anterior, bool& cicloDetectado);
 
         bool eh_completo() override;
         bool eh_bipartido() override;
         int n_conexo() override;
+        bool eh_arvore() override;
 };
 
 #endif

@@ -111,12 +111,10 @@ void GrafoLista::imprimeGrafo() {
         cout << "Vértice " << i + 1 << ": " << grauVertices[i] << endl;
     }
 
-    cout << "Completo:" << eh_completo() << endl;
-
-    cout << "Bipartido: "<< eh_bipartido() << endl;
-
-    cout << "Conexo:" << n_conexo() << endl;
-
+    cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << std::endl;
+    cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << std::endl;
+    cout << "Conexo: " << n_conexo() << std::endl;
+    cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << std::endl;
 
 }
 
@@ -131,7 +129,7 @@ bool GrafoLista::eh_completo(){
 
 bool GrafoLista::eh_bipartido() {
     int n = this->ordem;
-    int total = 1 << n; // Número total de subconjuntos (2^n)
+    int total = 1 << n; 
 
     // Percorre todas as divisões possíveis dos vértices em dois conjuntos
     for (int mask = 0; mask < total; ++mask) {
@@ -174,6 +172,41 @@ int GrafoLista::n_conexo() {
     }
 
     return n_componentes;
+}
+
+bool GrafoLista::eh_arvore() {
+    bool* marcados = new bool[ordem];
+    std::fill(marcados, marcados + ordem, false);
+    
+    if (n_conexo() != 1) {
+        delete[] marcados;
+        return false;
+    }
+    
+    bool existeCiclo = false;
+    dfsDetectaCiclo(0, marcados, -1, existeCiclo);
+    
+    delete[] marcados;
+    return !existeCiclo;
+}
+
+// Método para auxiliar para dectectar clicos
+void GrafoLista::dfsDetectaCiclo(int noAtual, bool marcados[], int pai, bool& existeCiclo) {
+    if (existeCiclo) return;
+    
+    marcados[noAtual] = true;
+    
+    No* vizinho = listaAdj[noAtual].getCabeca();
+    while (vizinho != nullptr) {
+        int vizinhoDestino = vizinho->destino - 1;
+        if (!marcados[vizinhoDestino]) {
+            dfsDetectaCiclo(vizinhoDestino, marcados, noAtual, existeCiclo); 
+        } else if (vizinhoDestino != pai) {
+            existeCiclo = true;
+            return;
+        }
+        vizinho = vizinho->prox;
+    }
 }
 
 // Método para auxiliar na busca pelas componentes conexas
