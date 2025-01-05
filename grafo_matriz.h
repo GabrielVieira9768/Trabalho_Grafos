@@ -17,6 +17,8 @@ class GrafoMatriz : public Grafo {
         void carregaGrafo(const std::string& arquivo) override;
         //void imprimeGrafo();
         void dfs_matriz(int v, bool visitado[]);
+        void dfsPonte(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temPonte);
+        
         void dfsArticulacaoMatriz(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temArticulacao);
         bool eh_completo() override;
         bool eh_bipartido() override;
@@ -24,6 +26,8 @@ class GrafoMatriz : public Grafo {
         int n_conexo() override;
         bool possui_articulacao() override;
         int get_grau() override;
+        bool possui_ponte() override;
+
 };
 
 #endif
