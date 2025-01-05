@@ -97,7 +97,8 @@ void GrafoMatriz::imprimeGrafo() {
         }
         cout << endl;
     }
-    cout << "Completo: " << eh_completo();
+    cout << "Completo: " << eh_completo() << endl;
+    cout << "Bipartido: " << eh_bipartido() << endl;
 }
 
 bool GrafoMatriz::eh_completo() {
@@ -110,3 +111,55 @@ bool GrafoMatriz::eh_completo() {
     }
     return true;
 }
+
+bool GrafoMatriz::eh_bipartido() {
+    if (ordem == 0) return true; // Grafo vazio é bipartido
+
+    int totalSubsets = 1 << ordem; // 2^ordem
+    for (int subset = 0; subset < totalSubsets; ++subset) {
+        bool* conjuntoA = new bool[ordem]();
+        bool* conjuntoB = new bool[ordem]();
+
+        for (int i = 0; i < ordem; ++i) {
+            if (subset & (1 << i)) {
+                conjuntoA[i] = true;
+            } else {
+                conjuntoB[i] = true;
+            }
+        }
+
+        bool bipartido = true;
+
+        // Verifica arestas dentro do conjunto A
+        for (int i = 0; i < ordem && bipartido; ++i) {
+            if (conjuntoA[i]) {
+                for (int j = 0; j < ordem; ++j) {
+                    if (conjuntoA[j] && i != j && matrizAdj[i][j] != 0) {
+                        bipartido = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Verifica arestas dentro do conjunto B
+        for (int i = 0; i < ordem && bipartido; ++i) {
+            if (conjuntoB[i]) {
+                for (int j = 0; j < ordem; ++j) {
+                    if (conjuntoB[j] && i != j && matrizAdj[i][j] != 0) {
+                        bipartido = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        delete[] conjuntoA;
+        delete[] conjuntoB;
+
+        if (bipartido) return true;
+    }
+
+    return false;
+}
+

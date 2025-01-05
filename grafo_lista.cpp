@@ -131,44 +131,36 @@ bool GrafoLista::eh_completo(){
 }
 
 bool GrafoLista::eh_bipartido() {
-    int cor[this->ordem]; // Array para armazenar as cores dos vértices
-    int fila[this->ordem]; // Fila circular para BFS
-    int inicio, fim;
+    int n = this->ordem;
+    int total = 1 << n; // Número total de subconjuntos (2^n)
 
-    // Inicializa as cores como -1 (não visitado)
-    for (int i = 0; i < this->ordem; i++) {
-        cor[i] = -1;
-    }
+    // Percorre todas as divisões possíveis dos vértices em dois conjuntos
+    for (int mask = 0; mask < total; ++mask) {
+        bool valido = true;
 
-    // Verifica cada componente do grafo
-    for (int v = 0; v < this->ordem; ++v) {
-        if (cor[v] != -1) continue; // Já visitado
-
-        // Inicializa a BFS
-        inicio = fim = 0;
-        fila[fim++] = v;
-        cor[v] = 0;
-
-        while (inicio < fim) {
-            int atual = fila[inicio++];
-            No* no = listaAdj[atual].getCabeca();
-
-            // Processa todos os adjacentes
+        // Verifica todas as arestas
+        for (int v = 0; v < n && valido; ++v) {
+            No* no = listaAdj[v].getCabeca();
             while (no != nullptr) {
                 int destino = no->destino - 1; // Ajusta índice para base 0
-                if (cor[destino] == -1) {
-                    cor[destino] = 1 - cor[atual]; // Atribui cor oposta
-                    fila[fim++] = destino;
-                } else if (cor[destino] == cor[atual]) {
-                    return false;
+
+                // Checa se ambos os vértices da aresta estão no mesmo conjunto
+                if (((mask >> v) & 1) == ((mask >> destino) & 1)) {
+                    valido = false;
+                    break;
                 }
                 no = no->prox;
             }
         }
+
+        // Se encontramos uma divisão válida, o grafo é bipartido
+        if (valido) return true;
     }
 
-    return true;
+    // Se nenhuma divisão válida foi encontrada, o grafo não é bipartido
+    return false;
 }
+
 
 int GrafoLista::n_conexo() {
     bool visitado[ordem];

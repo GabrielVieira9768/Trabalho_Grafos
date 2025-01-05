@@ -17,6 +17,7 @@ class GrafoMatriz : public Grafo {
         void carregaGrafo(const std::string& arquivo) override;
         void imprimeGrafo();
         bool eh_completo() override;
+        bool eh_bipartido() override;
 };
 
 #endif
