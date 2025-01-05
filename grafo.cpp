@@ -1,5 +1,6 @@
 #include "grafo.h"
 
+
 int Grafo::get_grau() {
     return this->grau;
 }
@@ -17,7 +18,7 @@ bool Grafo::vertice_ponderado() {
 }
 
 void Grafo::carregaGrafo(const std::string& arquivo) {
-    throw std::runtime_error("Método carregaGrafo chamado na classe base");
+    std::cout << "Erro: Método carregaGrafo chamado na classe base\n";
 }
 
 bool Grafo::aresta_ponderada() {
