@@ -13,22 +13,22 @@ GrafoMatriz::GrafoMatriz() : matrizAdj(nullptr), pesosVertices(nullptr) {}
 GrafoMatriz::~GrafoMatriz() {
     if (matrizAdj) {
         for (int i = 0; i < ordem; i++) {
-            free(matrizAdj[i]);
+            delete[] matrizAdj[i];
         }
-        free(matrizAdj);
+        delete[] matrizAdj;
     }
-    free(pesosVertices);
+    delete[] pesosVertices;
 }
 
 void GrafoMatriz::inicializaMatriz(int ordem) {
     this->ordem = ordem;
-    matrizAdj = (int**)malloc(ordem * sizeof(int*));
+    matrizAdj = new int*[ordem];
     for (int i = 0; i < ordem; i++) {
-        matrizAdj[i] = (int*)calloc(ordem, sizeof(int));
+        matrizAdj[i] = new int[ordem]();
     }
 
     if (verticePonderado) {
-        pesosVertices = (int*)calloc(ordem, sizeof(int));
+        pesosVertices = new int[ordem]();
     }
 }
 

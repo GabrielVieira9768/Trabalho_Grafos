@@ -13,30 +13,32 @@ GrafoLista::GrafoLista() : listaAdj(nullptr), pesosVertices(nullptr), grauVertic
 GrafoLista::~GrafoLista() {
     if (listaAdj) {
         for (int i = 0; i < ordem; i++) {
-            listaAdj[i].~ListaEncadeada();
+            listaAdj[i].~ListaEncadeada(); // Destruir explicitamente cada objeto ListaEncadeada
         }
-        free(listaAdj);
+        delete[] listaAdj; // Liberar o array alocado com new[]
     }
+
     if (pesosVertices) {
-        free(pesosVertices);
+        delete[] pesosVertices; // Liberar o array alocado com new[]
     }
+
     if (grauVertices) {
-        free(grauVertices);
+        delete[] grauVertices; // Liberar o array alocado com new[]
     }
 }
 
 void GrafoLista::inicializaLista(int ordem) {
     this->ordem = ordem;
-    listaAdj = (ListaEncadeada*)malloc(ordem * sizeof(ListaEncadeada));
-    for (int i = 0; i < ordem; i++) {
-        new(&listaAdj[i]) ListaEncadeada();
-    }
 
+    // Alocar o array de ListaEncadeada com new[]
+    listaAdj = new ListaEncadeada[ordem];
+
+    // Alocar arrays para pesos e graus (se necessário)
     if (verticePonderado) {
-        pesosVertices = (int*)calloc(ordem, sizeof(int));
+        pesosVertices = new int[ordem](); // Inicializar com zero
     }
 
-    grauVertices = (int*)calloc(ordem, sizeof(int));
+    grauVertices = new int[ordem](); // Inicializar com zero
 }
 
 void GrafoLista::adicionaAresta(int origem, int destino, int peso) {
