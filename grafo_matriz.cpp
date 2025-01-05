@@ -40,6 +40,7 @@ void GrafoMatriz::adicionaAresta(int origem, int destino, int peso) {
 }
 
 void GrafoMatriz::carregaGrafo(const string& arquivo) {
+    nomeArquivo = arquivo;
     ifstream entrada(arquivo.c_str());
     if (!entrada.is_open()) {
         cerr << "Erro ao abrir o arquivo." << endl;
@@ -81,26 +82,28 @@ void GrafoMatriz::carregaGrafo(const string& arquivo) {
     entrada.close();
 }
 
-void GrafoMatriz::imprimeGrafo() {
-    cout << "Matriz de Adjacência:" << endl;
-    for (int i = 0; i < ordem; i++) {
-        for (int j = 0; j < ordem; j++) {
-            cout << setw(3) << matrizAdj[i][j];
-        }
-        cout << endl;
-    }
+// void GrafoMatriz::imprimeGrafo() {
+//     cout << "Matriz de Adjacência:" << endl;
+//     for (int i = 0; i < ordem; i++) {
+//         for (int j = 0; j < ordem; j++) {
+//             cout << setw(3) << matrizAdj[i][j];
+//         }
+//         cout << endl;
+//     }
 
-    if (verticePonderado) {
-        cout << "Pesos dos Vértices:" << endl;
-        for (int i = 0; i < ordem; i++) {
-            cout << pesosVertices[i] << " ";
-        }
-        cout << endl;
-    }
-    cout << "Completo: " << eh_completo() << endl;
-    cout << "Bipartido: " << eh_bipartido() << endl;
-    cout << "Arvore: " << eh_arvore() << endl;
-}
+//     if (verticePonderado) {
+//         cout << "Pesos dos Vértices:" << endl;
+//         for (int i = 0; i < ordem; i++) {
+//             cout << pesosVertices[i] << " ";
+//         }
+//         cout << endl;
+//     }
+
+//     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
+//     cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
+//     cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
+//     cout << "Conexo: " << n_conexo() << endl;
+// }
 
 bool GrafoMatriz::eh_completo() {
     for (int i = 0; i < ordem; ++i) {
@@ -211,4 +214,33 @@ bool GrafoMatriz::eh_arvore() {
     delete[] visitado;
     delete[] pilha;
     return visitados == ordem;
+}
+
+int GrafoMatriz::n_conexo() {
+    bool visitado[ordem];
+    std::fill(visitado, visitado + ordem, false);
+    int n_componentes = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (!visitado[i]) {
+            n_componentes++;
+            dfs_matriz(i, visitado);
+        }
+    }
+
+    return n_componentes;
+}
+
+
+//////////////////////------AUX------/////////////////////
+
+void GrafoMatriz::dfs_matriz(int v, bool visitado[]) {
+    visitado[v] = true;
+
+    for (int i = 0; i < ordem; i++) {
+        // Verifica se há uma aresta entre v e i, e se i não foi visitado
+        if (matrizAdj[v][i] != 0 && !visitado[i]) {
+            dfs_matriz(i, visitado);
+        }
+    }
 }

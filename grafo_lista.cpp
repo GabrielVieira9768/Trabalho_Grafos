@@ -49,6 +49,7 @@ void GrafoLista::adicionaAresta(int origem, int destino, int peso) {
 }
 
 void GrafoLista::carregaGrafo(const string& arquivo) {
+    nomeArquivo = arquivo;
     ifstream entrada(arquivo.c_str());
     if (!entrada.is_open()) {
         cerr << "Erro ao abrir o arquivo." << endl;
@@ -90,34 +91,34 @@ void GrafoLista::carregaGrafo(const string& arquivo) {
     entrada.close();
 }
 
-void GrafoLista::imprimeGrafo() {
-    cout << "Lista de Adjacência:" << endl;
-    for (int i = 0; i < ordem; i++) {
-        cout << i + 1 << ": ";
-        listaAdj[i].imprimeLista();
-        cout << endl;
-    }
+// void GrafoLista::imprimeGrafo() {
+//     cout << "Lista de Adjacência:" << endl;
+//     for (int i = 0; i < ordem; i++) {
+//         cout << i + 1 << ": ";
+//         listaAdj[i].imprimeLista();
+//         cout << endl;
+//     }
 
-    if (verticePonderado) {
-        cout << "Pesos dos Vértices:" << endl;
-        for (int i = 0; i < ordem; i++) {
-            cout << pesosVertices[i] << " ";
-        }
-        cout << endl;
-    }
+//     if (verticePonderado) {
+//         cout << "Pesos dos Vértices:" << endl;
+//         for (int i = 0; i < ordem; i++) {
+//             cout << pesosVertices[i] << " ";
+//         }
+//         cout << endl;
+//     }
 
-    cout << "Graus dos Vértices:" << endl;
-    for (int i = 0; i < ordem; i++) {
-        cout << "Vértice " << i + 1 << ": " << grauVertices[i] << endl;
-    }
+//     cout << "Graus dos Vértices:" << endl;
+//     for (int i = 0; i < ordem; i++) {
+//         cout << "Vértice " << i + 1 << ": " << grauVertices[i] << endl;
+//     }
 
-    cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << std::endl;
-    cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << std::endl;
-    cout << "Conexo: " << n_conexo() << std::endl;
-    cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << std::endl;
-    cout << "Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
+//     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << std::endl;
+//     cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << std::endl;
+//     cout << "Conexo: " << n_conexo() << std::endl;
+//     cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << std::endl;
+//     cout << "Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
 
-}
+// }
 
 bool GrafoLista::eh_completo(){
     for (int i = 0; i < this->ordem; i++) {

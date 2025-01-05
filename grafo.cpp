@@ -48,3 +48,19 @@ int Grafo::n_conexo() {
 bool Grafo::eh_arvore() {
     return false;
 }
+
+void Grafo::imprimeGrafo() {
+    cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
+
+    //cout << "Grau: " << grau << endl;
+    cout << "Ordem: " << ordem << endl;
+    cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
+    cout << "Componentes conexas: " << n_conexo() << endl;
+    cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
+    cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
+    cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
+    cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
+    cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
+    //cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
+    //cout << "Vertice de Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
+}

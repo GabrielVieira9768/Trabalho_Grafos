@@ -15,10 +15,12 @@ class GrafoMatriz : public Grafo {
         void inicializaMatriz(int ordem);
         void adicionaAresta(int origem, int destino, int peso);
         void carregaGrafo(const std::string& arquivo) override;
-        void imprimeGrafo();
+        //void imprimeGrafo();
+        void dfs_matriz(int v, bool visitado[]);
         bool eh_completo() override;
         bool eh_bipartido() override;
         bool eh_arvore() override;
+        int n_conexo() override;
 };
 
 #endif

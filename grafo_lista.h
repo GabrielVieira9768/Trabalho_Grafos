@@ -18,7 +18,7 @@ class GrafoLista : public Grafo {
         void inicializaLista(int ordem);
         void adicionaAresta(int origem, int destino, int peso);
         void carregaGrafo(const std::string& arquivo) override;
-        void imprimeGrafo();
+        //void imprimeGrafo();
         void dfsDetectaCiclo(int vertice, bool visitado[], int anterior, bool& cicloDetectado);
         void dfsArticulacao(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temArticulacao);
 
