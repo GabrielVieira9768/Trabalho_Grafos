@@ -99,6 +99,7 @@ void GrafoMatriz::imprimeGrafo() {
     }
     cout << "Completo: " << eh_completo() << endl;
     cout << "Bipartido: " << eh_bipartido() << endl;
+    cout << "Arvore: " << eh_arvore() << endl;
 }
 
 bool GrafoMatriz::eh_completo() {
@@ -163,3 +164,51 @@ bool GrafoMatriz::eh_bipartido() {
     return false;
 }
 
+bool GrafoMatriz::eh_arvore() {
+    // Verificar se o número de arestas é igual a ordem - 1
+    int numArestas = 0;
+    for (int i = 0; i < ordem; i++) {
+        for (int j = i + 1; j < ordem; j++) {
+            if (matrizAdj[i][j] != 0) {
+                numArestas++;
+            }
+        }
+    }
+
+    if (numArestas != ordem - 1) {
+        return false;
+    }
+
+    // Verificar se o grafo é conectado e não tem ciclos (usando DFS)
+    bool* visitado = new bool[ordem]();
+    int* pilha = new int[ordem];
+    int topo = -1;
+    int visitados = 0;
+
+    // Começamos a partir do vértice 0
+    pilha[++topo] = 0;
+    visitado[0] = true;
+    visitados++;
+
+    while (topo >= 0) {
+        int v = pilha[topo--];
+        
+        for (int i = 0; i < ordem; i++) {
+            if (matrizAdj[v][i] != 0 && !visitado[i]) {
+                pilha[++topo] = i;
+                visitado[i] = true;
+                visitados++;
+            }
+            else if (matrizAdj[v][i] != 0 && visitado[i]) {
+                delete[] visitado;
+                delete[] pilha;
+                return false;
+            }
+        }
+    }
+
+    // Se todos os vértices foram visitados, o grafo é conectado
+    delete[] visitado;
+    delete[] pilha;
+    return visitados == ordem;
+}

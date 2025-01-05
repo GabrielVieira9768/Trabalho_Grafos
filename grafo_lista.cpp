@@ -12,9 +12,6 @@ GrafoLista::GrafoLista() : listaAdj(nullptr), pesosVertices(nullptr), grauVertic
 
 GrafoLista::~GrafoLista() {
     if (listaAdj) {
-        for (int i = 0; i < ordem; i++) {
-            listaAdj[i].~ListaEncadeada(); // Destruir explicitamente cada objeto ListaEncadeada
-        }
         delete[] listaAdj; // Liberar o array alocado com new[]
     }
 
