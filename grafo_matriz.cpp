@@ -231,6 +231,29 @@ int GrafoMatriz::n_conexo() {
     return n_componentes;
 }
 
+bool GrafoMatriz::possui_articulacao() {
+    int* tempoDescoberta = new int[ordem]();
+    int* low = new int[ordem]();
+    int* pai = new int[ordem];
+    bool* visitado = new bool[ordem]();
+    bool temArticulacao = false;
+
+    std::fill(pai, pai + ordem, -1);
+    int tempo = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (!visitado[i]) {
+            dfsArticulacaoMatriz(i, visitado, tempoDescoberta, low, pai, tempo, temArticulacao);
+        }
+    }
+
+    delete[] tempoDescoberta;
+    delete[] low;
+    delete[] pai;
+    delete[] visitado;
+
+    return temArticulacao;
+}
 
 //////////////////////------AUX------/////////////////////
 
@@ -241,6 +264,37 @@ void GrafoMatriz::dfs_matriz(int v, bool visitado[]) {
         // Verifica se há uma aresta entre v e i, e se i não foi visitado
         if (matrizAdj[v][i] != 0 && !visitado[i]) {
             dfs_matriz(i, visitado);
+        }
+    }
+}
+
+void GrafoMatriz::dfsArticulacaoMatriz(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temArticulacao) {
+    visitado[v] = true;
+    tempoDescoberta[v] = low[v] = ++tempo;
+    int filhos = 0;
+
+    for (int u = 0; u < ordem; u++) {
+        if (matrizAdj[v][u] != 0) {  // Verifica se há aresta entre v e u
+            if (!visitado[u]) {
+                filhos++;
+                pai[u] = v;
+
+                dfsArticulacaoMatriz(u, visitado, tempoDescoberta, low, pai, tempo, temArticulacao);
+
+                // Atualiza o valor de low[v]
+                low[v] = std::min(low[v], low[u]);
+
+                // Verifica condição de articulação
+                if (pai[v] == -1 && filhos > 1) {
+                    temArticulacao = true;  // v é raiz e tem mais de um filho
+                }
+                if (pai[v] != -1 && low[u] >= tempoDescoberta[v]) {
+                    temArticulacao = true;  // v não é raiz, mas u não tem caminho alternativo
+                }
+            } else if (u != pai[v]) {
+                // Atualiza low[v] se u é um vértice visitado (e não pai)
+                low[v] = std::min(low[v], tempoDescoberta[u]);
+            }
         }
     }
 }
