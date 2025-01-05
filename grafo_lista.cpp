@@ -216,10 +216,59 @@ bool GrafoLista::possui_articulacao() {
     return temArticulacao;
 }
 
+bool GrafoLista::possui_ponte() {
+    int* tempoDescoberta = new int[ordem]();
+    int* low = new int[ordem]();
+    int* pai = new int[ordem];
+    bool* visitado = new bool[ordem]();
+    bool temPonte = false;
+
+    std::fill(pai, pai + ordem, -1);
+    int tempo = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (!visitado[i]) {
+            dfsPonte(i, visitado, tempoDescoberta, low, pai, tempo, temPonte);
+        }
+    }
+
+    delete[] tempoDescoberta;
+    delete[] low;
+    delete[] pai;
+    delete[] visitado;
+
+    return temPonte;
+}
+
+
 
 //////////////////////------AUX------/////////////////////
 
 
+void GrafoLista::dfsPonte(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temPonte) {
+    visitado[u] = true;
+    tempoDescoberta[u] = low[u] = ++tempo;
+
+    No* no = listaAdj[u].getCabeca();
+    while (no != nullptr) {
+        int v = no->destino - 1;
+
+        if (!visitado[v]) {
+            pai[v] = u;
+            dfsPonte(v, visitado, tempoDescoberta, low, pai, tempo, temPonte);
+
+            low[u] = std::min(low[u], low[v]);
+
+            if (low[v] > tempoDescoberta[u]) {
+                temPonte = true;
+            }
+        } else if (v != pai[u]) {
+            low[u] = std::min(low[u], tempoDescoberta[v]);
+        }
+
+        no = no->prox;
+    }
+}
 // Método para auxiliar para dectectar clicos
 void GrafoLista::dfsDetectaCiclo(int noAtual, bool marcados[], int pai, bool& existeCiclo) {
     if (existeCiclo) return;
