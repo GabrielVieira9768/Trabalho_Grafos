@@ -20,11 +20,13 @@ class GrafoLista : public Grafo {
         void carregaGrafo(const std::string& arquivo) override;
         void imprimeGrafo();
         void dfsDetectaCiclo(int vertice, bool visitado[], int anterior, bool& cicloDetectado);
+        void dfsArticulacao(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temArticulacao);
 
         bool eh_completo() override;
         bool eh_bipartido() override;
         int n_conexo() override;
         bool eh_arvore() override;
+        bool possui_articulacao() override;
 };
 
 #endif

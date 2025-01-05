@@ -115,6 +115,7 @@ void GrafoLista::imprimeGrafo() {
     cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << std::endl;
     cout << "Conexo: " << n_conexo() << std::endl;
     cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << std::endl;
+    cout << "Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
 
 }
 
@@ -190,6 +191,34 @@ bool GrafoLista::eh_arvore() {
     return !existeCiclo;
 }
 
+bool GrafoLista::possui_articulacao() {
+    int* tempoDescoberta = new int[ordem]();
+    int* low = new int[ordem]();
+    int* pai = new int[ordem];
+    bool* visitado = new bool[ordem]();
+    bool temArticulacao = false;
+
+    std::fill(pai, pai + ordem, -1);
+    int tempo = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (!visitado[i]) {
+            dfsArticulacao(i, visitado, tempoDescoberta, low, pai, tempo, temArticulacao);
+        }
+    }
+
+    delete[] tempoDescoberta;
+    delete[] low;
+    delete[] pai;
+    delete[] visitado;
+
+    return temArticulacao;
+}
+
+
+//////////////////////------AUX------/////////////////////
+
+
 // Método para auxiliar para dectectar clicos
 void GrafoLista::dfsDetectaCiclo(int noAtual, bool marcados[], int pai, bool& existeCiclo) {
     if (existeCiclo) return;
@@ -218,6 +247,33 @@ void GrafoLista::dfs(int vertice, bool visitado[]) {
         if (!visitado[adj]) {
             dfs(adj, visitado);
         }
+        no = no->prox;
+    }
+}
+
+void GrafoLista::dfsArticulacao(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temArticulacao) {
+    visitado[u] = true;
+    tempoDescoberta[u] = low[u] = ++tempo;
+    int filhos = 0;
+
+    No* no = listaAdj[u].getCabeca();
+    while (no != nullptr) {
+        int v = no->destino - 1;
+
+        if (!visitado[v]) {
+            filhos++;
+            pai[v] = u;
+            dfsArticulacao(v, visitado, tempoDescoberta, low, pai, tempo, temArticulacao);
+
+            low[u] = std::min(low[u], low[v]);
+
+            if ((pai[u] == -1 && filhos > 1) || (pai[u] != -1 && low[v] >= tempoDescoberta[u])) {
+                temArticulacao = true;
+            }
+        } else if (v != pai[u]) {
+            low[u] = std::min(low[u], tempoDescoberta[v]);
+        }
+
         no = no->prox;
     }
 }
