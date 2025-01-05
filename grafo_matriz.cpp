@@ -298,3 +298,50 @@ void GrafoMatriz::dfsArticulacaoMatriz(int v, bool* visitado, int* tempoDescober
         }
     }
 }
+
+bool GrafoMatriz::possui_ponte() {
+    int* tempoDescoberta = new int[ordem]();
+    int* low = new int[ordem]();
+    bool* visitado = new bool[ordem]();
+    int* pai = new int[ordem];
+    bool temPonte = false;
+
+    std::fill(pai, pai + ordem, -1);
+    int tempo = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (!visitado[i]) {
+            dfsPonte(i, visitado, tempoDescoberta, low, pai, tempo, temPonte);
+        }
+    }
+
+    delete[] tempoDescoberta;
+    delete[] low;
+    delete[] visitado;
+    delete[] pai;
+
+    return temPonte;
+}
+
+void GrafoMatriz::dfsPonte(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temPonte) {
+    visitado[v] = true;
+    tempoDescoberta[v] = low[v] = ++tempo;
+
+    for (int u = 0; u < ordem; u++) {
+        if (matrizAdj[v][u] != 0) {
+            if (!visitado[u]) {
+                pai[u] = v;
+
+                dfsPonte(u, visitado, tempoDescoberta, low, pai, tempo, temPonte);
+
+                low[v] = std::min(low[v], low[u]);
+
+                if (low[u] > tempoDescoberta[v]) {
+                    temPonte = true;
+                }
+            } else if (u != pai[v]) {
+                low[v] = std::min(low[v], tempoDescoberta[u]);
+            }
+        }
+    }
+}
