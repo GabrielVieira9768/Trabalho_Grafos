@@ -2,7 +2,7 @@
 #include <iostream>
 
 int Grafo::get_grau() {
-    return this->grau;
+    return 0;
 }
 
 int Grafo::get_ordem() {
@@ -52,7 +52,7 @@ bool Grafo::eh_arvore() {
 void Grafo::imprimeGrafo() {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
 
-    //cout << "Grau: " << grau << endl;
+    cout << "Grau: " << get_grau() << endl;
     cout << "Ordem: " << ordem << endl;
     cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
     cout << "Componentes conexas: " << n_conexo() << endl;

@@ -39,14 +39,16 @@ void GrafoLista::inicializaLista(int ordem) {
 }
 
 void GrafoLista::adicionaAresta(int origem, int destino, int peso) {
-    listaAdj[origem - 1].insereNo(destino, peso);
-    grauVertices[origem - 1]++; // Incrementa o grau do vértice de origem
-
-    if (!direcionado) {
+    if (direcionado) {
         listaAdj[destino - 1].insereNo(origem, peso);
-        grauVertices[destino - 1]++; // Incrementa o grau do vértice de destino para grafos não direcionados
+    } else {
+        listaAdj[origem - 1].insereNo(destino, peso);
     }
+
+    grauVertices[destino - 1]++;
+    grauVertices[origem - 1]++;
 }
+
 
 void GrafoLista::carregaGrafo(const string& arquivo) {
     nomeArquivo = arquivo;
@@ -240,7 +242,22 @@ bool GrafoLista::possui_ponte() {
     return temPonte;
 }
 
+int GrafoLista::get_grau() {
+    if (ordem == 0) {
+        cerr << "O grafo está vazio." << endl;
+        return -1; // Retorna -1 para indicar erro
+    }
 
+    int maiorGrau = grauVertices[0];
+
+    for (int i = 0; i < ordem; i++) {
+        if (grauVertices[i] > maiorGrau) {
+            maiorGrau = grauVertices[i];
+        }
+    }
+
+    return maiorGrau;
+}
 
 //////////////////////------AUX------/////////////////////
 

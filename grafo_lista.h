@@ -29,6 +29,7 @@ class GrafoLista : public Grafo {
         bool eh_arvore() override;
         bool possui_articulacao() override;
         bool possui_ponte() override;
+        int get_grau() override;
 };
 
 #endif

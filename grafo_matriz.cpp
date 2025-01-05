@@ -255,6 +255,8 @@ bool GrafoMatriz::possui_articulacao() {
     return temArticulacao;
 }
 
+
+
 //////////////////////------AUX------/////////////////////
 
 void GrafoMatriz::dfs_matriz(int v, bool visitado[]) {
