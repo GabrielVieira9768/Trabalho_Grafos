@@ -255,7 +255,35 @@ bool GrafoMatriz::possui_articulacao() {
     return temArticulacao;
 }
 
+int GrafoMatriz::get_grau() {
+    int maiorGrau = 0;
 
+    for (int v = 0; v < ordem; ++v) {
+        int grau = 0;
+
+        // Grau de saída
+        for (int i = 0; i < ordem; ++i) {
+            if (matrizAdj[v][i] != 0) {
+                grau++;
+            }
+        }
+
+        // Grau de entrada (apenas para grafos direcionados)
+        if (direcionado) {
+            for (int i = 0; i < ordem; ++i) {
+                if (matrizAdj[i][v] != 0) {
+                    grau++;
+                }
+            }
+        }
+
+        if (grau > maiorGrau) {
+            maiorGrau = grau;
+        }
+    }
+
+    return maiorGrau;
+}
 
 //////////////////////------AUX------/////////////////////
 

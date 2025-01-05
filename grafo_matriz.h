@@ -23,6 +23,7 @@ class GrafoMatriz : public Grafo {
         bool eh_arvore() override;
         int n_conexo() override;
         bool possui_articulacao() override;
+        int get_grau() override;
 };
 
 #endif
