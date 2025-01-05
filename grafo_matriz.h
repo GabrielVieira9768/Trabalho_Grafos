@@ -16,6 +16,7 @@ class GrafoMatriz : public Grafo {
         void adicionaAresta(int origem, int destino, int peso);
         void carregaGrafo(const std::string& arquivo) override;
         void imprimeGrafo();
+        bool eh_completo() override;
 };
 
 #endif

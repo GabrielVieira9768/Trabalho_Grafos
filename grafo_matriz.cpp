@@ -97,4 +97,16 @@ void GrafoMatriz::imprimeGrafo() {
         }
         cout << endl;
     }
+    cout << "Completo: " << eh_completo();
+}
+
+bool GrafoMatriz::eh_completo() {
+    for (int i = 0; i < ordem; ++i) {
+        for (int j = 0; j < ordem; ++j) {
+            if (i != j && matrizAdj[i][j] == 0) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

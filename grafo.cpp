@@ -1,5 +1,5 @@
 #include "grafo.h"
-
+#include <iostream>
 
 int Grafo::get_grau() {
     return this->grau;
