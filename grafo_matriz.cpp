@@ -33,9 +33,11 @@ void GrafoMatriz::inicializaMatriz(int ordem) {
 }
 
 void GrafoMatriz::adicionaAresta(int origem, int destino, int peso) {
-    matrizAdj[origem - 1][destino - 1] = peso;
-    if (!direcionado) {
-        matrizAdj[destino - 1][origem - 1] = peso;
+    if(origem != destino){
+        matrizAdj[origem - 1][destino - 1] = peso;
+        if (!direcionado) {
+            matrizAdj[destino - 1][origem - 1] = peso;
+        }
     }
 }
 

@@ -39,14 +39,15 @@ void GrafoLista::inicializaLista(int ordem) {
 }
 
 void GrafoLista::adicionaAresta(int origem, int destino, int peso) {
-    if (direcionado) {
-        listaAdj[destino - 1].insereNo(origem, peso);
-    } else {
+    if(origem != destino){
         listaAdj[origem - 1].insereNo(destino, peso);
-    }
+        grauVertices[origem - 1]++;
+        grauVertices[destino - 1]++;
 
-    grauVertices[destino - 1]++;
-    grauVertices[origem - 1]++;
+        if (!direcionado) {
+            listaAdj[destino - 1].insereNo(origem, peso);
+        }
+    }
 }
 
 
