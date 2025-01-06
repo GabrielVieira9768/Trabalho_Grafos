@@ -16,21 +16,16 @@ int main(int argc, char* argv[]) {
     string arquivoEntrada = argv[3];
     string arquivoSaida = argc == 5 ? argv[4] : "";
 
-    int ordem = 0;
-    bool direcionado = false;
-    bool verticePonderado = false;
-    bool arestaPonderada = false;
-
     if (comando == "-d") {
         if (tipoRepresentacao == "-m") {
             // Criar o grafo usando as variáveis definidas
             GrafoMatriz grafo;
-            grafo.carregaGrafo(arquivoEntrada);
+            grafo.carrega_grafo(arquivoEntrada);
             grafo.imprimeGrafo();
         } else if (tipoRepresentacao == "-l") {
             // Criar o grafo usando as variáveis definidas
             GrafoLista grafo;
-            grafo.carregaGrafo(arquivoEntrada);
+            grafo.carrega_grafo(arquivoEntrada);
             grafo.imprimeGrafo();
         } else {
             cerr << "Erro: Tipo de representação inválido. Use -m ou -l." << endl;

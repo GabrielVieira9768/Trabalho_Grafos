@@ -17,7 +17,7 @@ bool Grafo::vertice_ponderado() {
     return this->verticePonderado;
 }
 
-void Grafo::carregaGrafo(const std::string& arquivo) {
+void Grafo::carrega_grafo(const std::string& arquivo) {
     std::cout << "Erro: Método carregaGrafo chamado na classe base\n";
 }
 

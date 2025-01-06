@@ -41,7 +41,7 @@ void GrafoMatriz::adicionaAresta(int origem, int destino, int peso) {
     }
 }
 
-void GrafoMatriz::carregaGrafo(const string& arquivo) {
+void GrafoMatriz::carrega_grafo(const string& arquivo) {
     nomeArquivo = arquivo;
     ifstream entrada(arquivo.c_str());
     if (!entrada.is_open()) {
@@ -100,11 +100,6 @@ void GrafoMatriz::carregaGrafo(const string& arquivo) {
 //         }
 //         cout << endl;
 //     }
-
-//     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
-//     cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
-//     cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
-//     cout << "Conexo: " << n_conexo() << endl;
 // }
 
 bool GrafoMatriz::eh_completo() {

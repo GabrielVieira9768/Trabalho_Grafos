@@ -51,7 +51,7 @@ void GrafoLista::adicionaAresta(int origem, int destino, int peso) {
 }
 
 
-void GrafoLista::carregaGrafo(const string& arquivo) {
+void GrafoLista::carrega_grafo(const string& arquivo) {
     nomeArquivo = arquivo;
     ifstream entrada(arquivo.c_str());
     if (!entrada.is_open()) {
@@ -114,13 +114,6 @@ void GrafoLista::carregaGrafo(const string& arquivo) {
 //     for (int i = 0; i < ordem; i++) {
 //         cout << "Vértice " << i + 1 << ": " << grauVertices[i] << endl;
 //     }
-
-//     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << std::endl;
-//     cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << std::endl;
-//     cout << "Conexo: " << n_conexo() << std::endl;
-//     cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << std::endl;
-//     cout << "Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
-
 // }
 
 bool GrafoLista::eh_completo(){
@@ -261,7 +254,6 @@ int GrafoLista::get_grau() {
 }
 
 //////////////////////------AUX------/////////////////////
-
 
 void GrafoLista::dfsPonte(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temPonte) {
     visitado[u] = true;

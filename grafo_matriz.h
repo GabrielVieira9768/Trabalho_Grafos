@@ -8,18 +8,17 @@ class GrafoMatriz : public Grafo {
         int** matrizAdj;
         int* pesosVertices;
 
+        void inicializaMatriz(int ordem);
+        void adicionaAresta(int origem, int destino, int peso);
+        void dfs_matriz(int v, bool visitado[]);
+        void dfsPonte(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temPonte);
+        void dfsArticulacaoMatriz(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temArticulacao);
+
     public:
         GrafoMatriz();
         ~GrafoMatriz();
 
-        void inicializaMatriz(int ordem);
-        void adicionaAresta(int origem, int destino, int peso);
-        void carregaGrafo(const std::string& arquivo) override;
-        //void imprimeGrafo();
-        void dfs_matriz(int v, bool visitado[]);
-        void dfsPonte(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temPonte);
-        
-        void dfsArticulacaoMatriz(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temArticulacao);
+        void carrega_grafo(const std::string& arquivo) override;
         bool eh_completo() override;
         bool eh_bipartido() override;
         bool eh_arvore() override;

@@ -9,27 +9,26 @@ class GrafoLista : public Grafo {
         ListaEncadeada* listaAdj;
         int* pesosVertices;
         int* grauVertices;
-        void dfs(int vertice, bool visitado[]);
 
+        void inicializaLista(int ordem);
+        void adicionaAresta(int origem, int destino, int peso);
+        void dfs(int vertice, bool visitado[]);
+        void dfsDetectaCiclo(int vertice, bool visitado[], int anterior, bool& cicloDetectado);
+        void dfsArticulacao(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temArticulacao);
+        void dfsPonte(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temPonte);
+        
     public:
         GrafoLista();
         ~GrafoLista();
 
-        void inicializaLista(int ordem);
-        void adicionaAresta(int origem, int destino, int peso);
-        void carregaGrafo(const std::string& arquivo) override;
-        //void imprimeGrafo();
-        void dfsDetectaCiclo(int vertice, bool visitado[], int anterior, bool& cicloDetectado);
-        void dfsArticulacao(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temArticulacao);
-        void dfsPonte(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temPonte);
-
-        bool eh_completo() override;
+        void carrega_grafo(const std::string& arquivo) override;
         bool eh_bipartido() override;
         int n_conexo() override;
+        int get_grau() override;
+        bool eh_completo() override;
         bool eh_arvore() override;
         bool possui_articulacao() override;
         bool possui_ponte() override;
-        int get_grau() override;
 };
 
 #endif

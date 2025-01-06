@@ -16,19 +16,20 @@ class Grafo {
     public:
         virtual ~Grafo() {}
 
+        void imprimeGrafo();
         int get_ordem();
         bool eh_direcionado();
         bool vertice_ponderado();
         bool aresta_ponderada();
-        void imprimeGrafo();
-        virtual int get_grau();
+        
         virtual bool eh_bipartido();
         virtual int n_conexo();
+        virtual int get_grau();
         virtual bool eh_completo();
         virtual bool eh_arvore();
         virtual bool possui_articulacao();
         virtual bool possui_ponte();
-        virtual void carregaGrafo(const string& arquivo);
+        virtual void carrega_grafo(const string& arquivo);
 };
 
 #endif
