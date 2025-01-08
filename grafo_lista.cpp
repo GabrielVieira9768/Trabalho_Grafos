@@ -303,7 +303,7 @@ void GrafoLista::novo_grafo(const string& arquivoEntrada, const string& arquivoS
         int destino = rand() % ordem + 1;
         int peso = arestaPonderada ? rand() % 100 + 1 : 1;
 
-        if (origem != destino) {
+        if (origem != destino && !verificaArestaExistente(origem, destino)) {
             adicionaAresta(origem, destino, peso);
         }
     }
@@ -353,6 +353,16 @@ void GrafoLista::novo_grafo(const string& arquivoEntrada, const string& arquivoS
     }
 }
 
+bool GrafoLista::verificaArestaExistente(int origem, int destino) {
+    No* atual = listaAdj[origem - 1].getCabeca();
+    while (atual) {
+        if (atual->destino == destino) {
+            return true;
+        }
+        atual = atual->prox;
+    }
+    return false;
+}
 
 
 //////////////////////------AUX------/////////////////////

@@ -17,6 +17,7 @@ class GrafoLista : public Grafo {
         void dfsArticulacao(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temArticulacao);
         void dfsPonte(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temPonte);
         
+        
     public:
         GrafoLista();
         ~GrafoLista();
@@ -30,6 +31,7 @@ class GrafoLista : public Grafo {
         bool possui_articulacao() override;
         bool possui_ponte() override;
         void novo_grafo(const std::string& arquivoEntrada, const std::string& arquivoSaida, int tentativas) override;
+        bool verificaArestaExistente(int origem, int destino);
 };
 
 #endif
