@@ -30,6 +30,7 @@ class Grafo {
         virtual bool possui_articulacao();
         virtual bool possui_ponte();
         virtual void carrega_grafo(const string& arquivo);
+        virtual void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0);
 };
 
 #endif

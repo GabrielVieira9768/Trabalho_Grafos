@@ -15,6 +15,7 @@ int main(int argc, char* argv[]) {
     string tipoRepresentacao = argv[2];
     string arquivoEntrada = argv[3];
     string arquivoSaida = argc == 5 ? argv[4] : "";
+    int tentativas = 0;
 
     if (comando == "-d") {
         if (tipoRepresentacao == "-m") {
@@ -41,7 +42,9 @@ int main(int argc, char* argv[]) {
             cerr << "matheus" << endl;
             //TODO
         } else if (tipoRepresentacao == "-l") {
-            //TODO
+            GrafoLista grafo;
+
+            grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
         } else {
             cerr << "Erro: Tipo de representação inválido. Use -m ou -l." << endl;
             return 1;

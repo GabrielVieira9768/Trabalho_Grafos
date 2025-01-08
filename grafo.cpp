@@ -49,6 +49,10 @@ bool Grafo::eh_arvore() {
     return false;
 }
 
+void Grafo::novo_grafo(const std::string& arquivoEntrada, const std::string& arquivoSaida, int tentativas) {
+    cerr << "Método não implementado" << endl;
+}
+
 void Grafo::imprimeGrafo() {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
 

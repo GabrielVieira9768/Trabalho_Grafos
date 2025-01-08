@@ -13,7 +13,7 @@ class GrafoLista : public Grafo {
         void inicializaLista(int ordem);
         void adicionaAresta(int origem, int destino, int peso);
         void dfs(int vertice, bool visitado[]);
-        void dfsDetectaCiclo(int vertice, bool visitado[], int anterior, bool& cicloDetectado);
+        void dfsDetectaCiclo(int noAtual, bool marcados[], int pai, bool& existeCiclo);
         void dfsArticulacao(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temArticulacao);
         void dfsPonte(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temPonte);
         
@@ -29,6 +29,7 @@ class GrafoLista : public Grafo {
         bool eh_arvore() override;
         bool possui_articulacao() override;
         bool possui_ponte() override;
+        void novo_grafo(const std::string& arquivoEntrada, const std::string& arquivoSaida, int tentativas) override;
 };
 
 #endif
