@@ -3,6 +3,8 @@
 
 #include "grafo.h"
 
+using namespace std;
+
 class GrafoMatriz : public Grafo {
     private:
         int** matrizAdj;
@@ -13,12 +15,13 @@ class GrafoMatriz : public Grafo {
         void dfs_matriz(int v, bool visitado[]);
         void dfsPonte(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temPonte);
         void dfsArticulacaoMatriz(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temArticulacao);
+        
 
     public:
         GrafoMatriz();
         ~GrafoMatriz();
 
-        void carrega_grafo(const std::string& arquivo) override;
+        void carrega_grafo(const string& arquivo) override;
         bool eh_completo() override;
         bool eh_bipartido() override;
         bool eh_arvore() override;
@@ -26,6 +29,7 @@ class GrafoMatriz : public Grafo {
         bool possui_articulacao() override;
         int get_grau() override;
         bool possui_ponte() override;
+        void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas) override;
 
 };
 
