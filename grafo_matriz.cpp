@@ -372,3 +372,91 @@ void GrafoMatriz::dfsPonte(int v, bool* visitado, int* tempoDescoberta, int* low
         }
     }
 }
+
+void GrafoMatriz::novo_grafo(const std::string& arquivoEntrada, const std::string& arquivoSaida, int tentativas) {
+    const int MAX_TENTATIVAS = 5000;
+
+    if (tentativas >= MAX_TENTATIVAS) {
+        std::cerr << "Limite de tentativas atingido. Encerrando execução." << std::endl;
+        return;
+    }
+
+    // Abrir o arquivo de entrada
+    std::ifstream entrada(arquivoEntrada);
+    if (!entrada.is_open()) {
+        std::cerr << "Erro ao abrir o arquivo de entrada." << std::endl;
+        return;
+    }
+
+    // Ler propriedades do arquivo de entrada
+    int grau, ordem, componenteConexa;
+    bool direcionado, verticePonderado, arestaPonderada, completo, bipartido, arvore, arestaPonte, verticeArticulacao;
+
+    entrada >> grau >> ordem >> direcionado >> componenteConexa
+            >> verticePonderado >> arestaPonderada >> completo >> bipartido
+            >> arvore >> arestaPonte >> verticeArticulacao;
+    entrada.close();
+
+    // Inicializar a matriz de adjacência
+    inicializaMatriz(ordem);
+
+    // Gerar pesos dos vértices aleatórios, se necessário
+    if (verticePonderado) {
+        for (int i = 0; i < ordem; ++i) {
+            pesosVertices[i] = rand() % 100 + 1;
+        }
+    }
+
+    // Gerar arestas aleatórias
+    int numArestas = rand() % (ordem * (ordem - 1) / 2) + 1;
+    for (int i = 0; i < numArestas; ++i) {
+        int origem = rand() % ordem + 1;
+        int destino = rand() % ordem + 1;
+        int peso = arestaPonderada ? rand() % 100 + 1 : 1;
+
+        if (origem != destino && matrizAdj[origem - 1][destino - 1] == 0) {
+            adicionaAresta(origem, destino, peso);
+        }
+    }
+
+    // Verificar propriedades do grafo gerado
+    bool condicoesAtendidas = true;
+    condicoesAtendidas &= (completo == eh_completo());
+    condicoesAtendidas &= (grau == get_grau());
+    condicoesAtendidas &= (bipartido == eh_bipartido());
+    condicoesAtendidas &= (arvore == eh_arvore());
+    condicoesAtendidas &= (arestaPonte == possui_ponte());
+    condicoesAtendidas &= (verticeArticulacao == possui_articulacao());
+    condicoesAtendidas &= (componenteConexa == n_conexo());
+
+    // Salvar o grafo no arquivo de saída
+    std::ofstream saida(arquivoSaida, std::ios::trunc);
+    if (!saida.is_open()) {
+        std::cerr << "Erro ao abrir o arquivo de saída." << std::endl;
+        return;
+    }
+
+    saida << ordem << " " << direcionado << " " << verticePonderado << " " << arestaPonderada << std::endl;
+
+    if (verticePonderado) {
+        for (int i = 0; i < ordem; ++i) {
+            saida << pesosVertices[i] << (i == ordem - 1 ? "\n" : " ");
+        }
+    }
+
+    for (int i = 0; i < ordem; ++i) {
+        for (int j = 0; j < ordem; ++j) {
+            if (matrizAdj[i][j] != 0) {
+                saida << (i + 1) << " " << (j + 1) << " " << matrizAdj[i][j] << std::endl;
+            }
+        }
+    }
+    saida.close();
+
+    // Se as condições não foram atendidas, tente novamente
+    if (!condicoesAtendidas) {
+        novo_grafo(arquivoEntrada, arquivoSaida, tentativas + 1);
+    } else {
+        std::cout << "Grafo aleatório gerado e salvo em: " << arquivoSaida << std::endl;
+    }
+}

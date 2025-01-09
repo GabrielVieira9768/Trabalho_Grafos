@@ -39,8 +39,9 @@ int main(int argc, char* argv[]) {
         }
 
         if (tipoRepresentacao == "-m") {
-            cerr << "matheus" << endl;
-            //TODO
+            GrafoMatriz grafo;
+
+            grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
         } else if (tipoRepresentacao == "-l") {
             GrafoLista grafo;
 

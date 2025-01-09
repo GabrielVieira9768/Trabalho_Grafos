@@ -317,7 +317,7 @@ void GrafoLista::novo_grafo(const string& arquivoEntrada, const string& arquivoS
     condicoesAtendidas &= (verticeArticulacao == possui_articulacao());
     condicoesAtendidas &= (arvore == eh_arvore());
     condicoesAtendidas &= (arestaPonte == possui_ponte());
-    //condicoesAtendidas &= (componenteConexa == n_conexo());
+    condicoesAtendidas &= (componenteConexa == n_conexo());
 
     // Todas as condições satisfeitas
     ofstream saida(arquivoSaida, ios::trunc);
