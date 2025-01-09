@@ -84,24 +84,6 @@ void GrafoMatriz::carrega_grafo(const string& arquivo) {
     entrada.close();
 }
 
-// void GrafoMatriz::imprimeGrafo() {
-//     cout << "Matriz de Adjacência:" << endl;
-//     for (int i = 0; i < ordem; i++) {
-//         for (int j = 0; j < ordem; j++) {
-//             cout << setw(3) << matrizAdj[i][j];
-//         }
-//         cout << endl;
-//     }
-
-//     if (verticePonderado) {
-//         cout << "Pesos dos Vértices:" << endl;
-//         for (int i = 0; i < ordem; i++) {
-//             cout << pesosVertices[i] << " ";
-//         }
-//         cout << endl;
-//     }
-// }
-
 bool GrafoMatriz::eh_completo() {
     for (int i = 0; i < ordem; ++i) {
         for (int j = 0; j < ordem; ++j) {
@@ -114,9 +96,9 @@ bool GrafoMatriz::eh_completo() {
 }
 
 bool GrafoMatriz::eh_bipartido() {
-    if (ordem == 0) return true; // Grafo vazio é bipartido
+    if (ordem == 0) return true;
 
-    int totalSubsets = 1 << ordem; // 2^ordem
+    int totalSubsets = 1 << ordem;
     for (int subset = 0; subset < totalSubsets; ++subset) {
         bool* conjuntoA = new bool[ordem]();
         bool* conjuntoB = new bool[ordem]();
@@ -282,18 +264,18 @@ int GrafoMatriz::get_grau() {
     return maiorGrau;
 }
 
-void GrafoMatriz::novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0) {
+void GrafoMatriz::novo_grafo(const std::string& arquivoEntrada, const std::string& arquivoSaida, int tentativas) {
     const int MAX_TENTATIVAS = 5000;
 
     if (tentativas >= MAX_TENTATIVAS) {
-        cerr << "Limite de tentativas atingido. Encerrando execução." << endl;
+        std::cerr << "Limite de tentativas atingido. Encerrando execução." << std::endl;
         return;
     }
 
     // Abrir o arquivo de entrada
-    ifstream entrada(arquivoEntrada);
+    std::ifstream entrada(arquivoEntrada);
     if (!entrada.is_open()) {
-        cerr << "Erro ao abrir o arquivo de entrada." << endl;
+        std::cerr << "Erro ao abrir o arquivo de entrada." << std::endl;
         return;
     }
 
@@ -301,30 +283,16 @@ void GrafoMatriz::novo_grafo(const string& arquivoEntrada, const string& arquivo
     int grau, ordem, componenteConexa;
     bool direcionado, verticePonderado, arestaPonderada, completo, bipartido, arvore, arestaPonte, verticeArticulacao;
 
-    entrada >> grau >> ordem >> direcionado >> componenteConexa 
+    entrada >> grau >> ordem >> direcionado >> componenteConexa
             >> verticePonderado >> arestaPonderada >> completo >> bipartido
             >> arvore >> arestaPonte >> verticeArticulacao;
     entrada.close();
 
     // Inicializar a matriz de adjacência
-    if (matrizAdj) {
-        for (int i = 0; i < ordem; ++i) {
-            delete[] matrizAdj[i];
-        }
-        delete[] matrizAdj;
-        matrizAdj = nullptr;
-    }
-
-    matrizAdj = new int*[ordem];
-    for (int i = 0; i < ordem; ++i) {
-        matrizAdj[i] = new int[ordem]{0};
-    }
+    inicializaMatriz(ordem);
 
     // Gerar pesos dos vértices aleatórios, se necessário
-    int* pesosVertices = nullptr;
-
     if (verticePonderado) {
-        pesosVertices = new int[ordem];
         for (int i = 0; i < ordem; ++i) {
             pesosVertices[i] = rand() % 100 + 1;
         }
@@ -333,36 +301,33 @@ void GrafoMatriz::novo_grafo(const string& arquivoEntrada, const string& arquivo
     // Gerar arestas aleatórias
     int numArestas = rand() % (ordem * (ordem - 1) / 2) + 1;
     for (int i = 0; i < numArestas; ++i) {
-        int origem = rand() % ordem;
-        int destino = rand() % ordem;
+        int origem = rand() % ordem + 1;
+        int destino = rand() % ordem + 1;
         int peso = arestaPonderada ? rand() % 100 + 1 : 1;
 
-        if (origem != destino && matrizAdj[origem][destino] == 0) {
-            matrizAdj[origem][destino] = peso;
-            if (!direcionado) {
-                matrizAdj[destino][origem] = peso;
-            }
+        if (origem != destino && matrizAdj[origem - 1][destino - 1] == 0) {
+            adicionaAresta(origem, destino, peso);
         }
     }
 
     // Verificar propriedades do grafo gerado
     bool condicoesAtendidas = true;
     condicoesAtendidas &= (completo == eh_completo());
-    //condicoesAtendidas &= (grau == get_grau());
-    //condicoesAtendidas &= (bipartido == eh_bipartido());
-    //condicoesAtendidas &= (verticeArticulacao == possui_articulacao());
-    //condicoesAtendidas &= (arvore == eh_arvore());
-    //condicoesAtendidas &= (arestaPonte == possui_ponte());
+    condicoesAtendidas &= (grau == get_grau());
+    condicoesAtendidas &= (bipartido == eh_bipartido());
+    condicoesAtendidas &= (arvore == eh_arvore());
+    condicoesAtendidas &= (arestaPonte == possui_ponte());
+    condicoesAtendidas &= (verticeArticulacao == possui_articulacao());
+    condicoesAtendidas &= (componenteConexa == n_conexo());
 
-    // Todas as condições satisfeitas
-    ofstream saida(arquivoSaida, ios::trunc);
+    // Salvar o grafo no arquivo de saída
+    std::ofstream saida(arquivoSaida, std::ios::trunc);
     if (!saida.is_open()) {
-        cerr << "Erro ao abrir o arquivo de saída." << endl;
+        std::cerr << "Erro ao abrir o arquivo de saída." << std::endl;
         return;
     }
 
-    // Salvar o grafo no arquivo de saída
-    saida << ordem << " " << direcionado << " " << verticePonderado << " " << arestaPonderada << endl;
+    saida << ordem << " " << direcionado << " " << verticePonderado << " " << arestaPonderada << std::endl;
 
     if (verticePonderado) {
         for (int i = 0; i < ordem; ++i) {
@@ -373,17 +338,17 @@ void GrafoMatriz::novo_grafo(const string& arquivoEntrada, const string& arquivo
     for (int i = 0; i < ordem; ++i) {
         for (int j = 0; j < ordem; ++j) {
             if (matrizAdj[i][j] != 0) {
-                saida << (i + 1) << " " << (j + 1) << " " << matrizAdj[i][j] << endl;
+                saida << (i + 1) << " " << (j + 1) << " " << matrizAdj[i][j] << std::endl;
             }
         }
     }
     saida.close();
 
-    // Verificar se as condições foram atendidas
-    if (condicoesAtendidas) {
-        cout << "Grafo aleatório gerado e salvo em: " << arquivoSaida << endl;
-    } else {
+    // Se as condições não foram atendidas, tente novamente
+    if (!condicoesAtendidas) {
         novo_grafo(arquivoEntrada, arquivoSaida, tentativas + 1);
+    } else {
+        std::cout << "Grafo aleatório gerado e salvo em: " << arquivoSaida << std::endl;
     }
 }
 

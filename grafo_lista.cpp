@@ -12,15 +12,15 @@ GrafoLista::GrafoLista() : listaAdj(nullptr), pesosVertices(nullptr), grauVertic
 
 GrafoLista::~GrafoLista() {
     if (listaAdj) {
-        delete[] listaAdj; // Liberar o array alocado com new[]
+        delete[] listaAdj; // Liberar o array alocado com new []
     }
 
     if (pesosVertices) {
-        delete[] pesosVertices; // Liberar o array alocado com new[]
+        delete[] pesosVertices; // Liberar o array alocado com new []
     }
 
     if (grauVertices) {
-        delete[] grauVertices; // Liberar o array alocado com new[]
+        delete[] grauVertices; // Liberar o array alocado com new []
     }
 }
 
@@ -32,20 +32,19 @@ void GrafoLista::inicializaLista(int ordem) {
 
     // Alocar arrays para pesos e graus (se necessário)
     if (verticePonderado) {
-        pesosVertices = new int[ordem](); // Inicializar com zero
+        pesosVertices = new int[ordem]();
     }
 
-    grauVertices = new int[ordem](); // Inicializar com zero
+    grauVertices = new int[ordem]();
 }
 
 void GrafoLista::adicionaAresta(int origem, int destino, int peso) {
     if(origem != destino){
         listaAdj[origem - 1].insereNo(destino, peso);
         grauVertices[origem - 1]++;
-        grauVertices[destino - 1]++;
 
-        if (!direcionado) {
-            listaAdj[destino - 1].insereNo(origem, peso);
+        if(!direcionado) {
+            grauVertices[destino - 1]++;
         }
     }
 }
@@ -109,7 +108,7 @@ bool GrafoLista::eh_completo() {
 
 bool GrafoLista::eh_bipartido() {
     int n = this->ordem;
-    int total = 1 << n; // Número total de divisões possíveis
+    int total = 1 << n;
 
     // Percorre todas as divisões possíveis dos vértices em dois conjuntos
     for (int mask = 0; mask < total; ++mask) {
@@ -119,7 +118,7 @@ bool GrafoLista::eh_bipartido() {
         for (int v = 0; v < n && valido; ++v) {
             No* no = listaAdj[v].getCabeca();
             while (no != nullptr && valido) {
-                int destino = no->destino - 1; // Ajuste de índice
+                int destino = no->destino - 1;
 
                 // Se ambos os vértices estão no mesmo conjunto, a divisão não é válida
                 if (((mask >> v) & 1) == ((mask >> destino) & 1)) {
@@ -129,14 +128,11 @@ bool GrafoLista::eh_bipartido() {
             }
         }
 
-        // Se encontramos uma divisão válida, o grafo é bipartido
         if (valido) return true;
     }
 
-    // Se nenhuma divisão válida foi encontrada, o grafo não é bipartido
     return false;
 }
-
 
 
 int GrafoLista::n_conexo() {
@@ -156,7 +152,7 @@ int GrafoLista::n_conexo() {
 
 bool GrafoLista::eh_arvore() {
     bool* marcados = new bool[ordem];
-    std::fill(marcados, marcados + ordem, false);  // Inicializa todos os elementos como 'false'
+    std::fill(marcados, marcados + ordem, false);
 
     // Verifica se o grafo é conexo (se existe apenas uma componente conexa)
     if (n_conexo() != 1) {
@@ -165,10 +161,10 @@ bool GrafoLista::eh_arvore() {
     }
 
     bool existeCiclo = false;
-    dfsDetectaCiclo(0, marcados, -1, existeCiclo);  // Inicia a busca por ciclos a partir do vértice 0
+    dfsDetectaCiclo(0, marcados, -1, existeCiclo);
 
-    delete[] marcados;  // Libera a memória alocada
-    return !existeCiclo;  // Retorna verdadeiro se não houver ciclo
+    delete[] marcados;
+    return !existeCiclo;
 }
 
 
@@ -227,7 +223,7 @@ bool GrafoLista::possui_ponte() {
 int GrafoLista::get_grau() {
     if (ordem == 0) {
         cerr << "O grafo está vazio." << endl;
-        return -1; // Retorna -1 para indicar erro
+        return -1;
     }
 
     int maiorGrau = grauVertices[0];
@@ -241,19 +237,6 @@ int GrafoLista::get_grau() {
     return maiorGrau;
 }
 
-/*
-3 // Grau
-3 // Ordem
-1 // Direcionado
-2 // Componentes conexas
-1 // Vertices ponderados
-1 // Arestas ponderadas
-0 // Completo
-1 // Bipartido
-0 // Arvore
-1 // Aresta Ponte
-1 // Vertice de Articulação
-*/
 
 void GrafoLista::novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0) {
     const int MAX_TENTATIVAS = 5000;
@@ -313,11 +296,12 @@ void GrafoLista::novo_grafo(const string& arquivoEntrada, const string& arquivoS
     
     condicoesAtendidas &= (completo == eh_completo());
     condicoesAtendidas &= (grau == get_grau());
-    condicoesAtendidas &= (bipartido == eh_bipartido());
     condicoesAtendidas &= (verticeArticulacao == possui_articulacao());
-    condicoesAtendidas &= (arvore == eh_arvore());
     condicoesAtendidas &= (arestaPonte == possui_ponte());
+    condicoesAtendidas &= (bipartido == eh_bipartido());
     //condicoesAtendidas &= (componenteConexa == n_conexo());
+    //condicoesAtendidas &= (arvore == eh_arvore());
+
 
     // Todas as condições satisfeitas
     ofstream saida(arquivoSaida, ios::trunc);
@@ -366,6 +350,7 @@ bool GrafoLista::verificaArestaExistente(int origem, int destino) {
 
 
 //////////////////////------AUX------/////////////////////
+
 
 void GrafoLista::dfsPonte(int u, bool visitado[], int tempoDescoberta[], int low[], int pai[], int& tempo, bool& temPonte) {
     visitado[u] = true;
