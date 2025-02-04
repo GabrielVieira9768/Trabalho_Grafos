@@ -12,10 +12,10 @@ class GrafoLista : public Grafo {
         GrafoLista();
         ~GrafoLista();
         
-        public void novo_no(int id, int peso) override;
-        public void deleta_no(int id) override;
-        public void nova_aresta(int origem, int destino, int peso) override;
-        public void deleta_aresta(int origem, int destino) override;
+        void novo_no(int id, int peso) override;
+        void deleta_no(int id) override;
+        void nova_aresta(int origem, int destino, int peso) override;
+        void deleta_aresta(int origem, int destino) override;
 };
 
 #endif

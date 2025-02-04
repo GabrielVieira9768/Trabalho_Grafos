@@ -11,15 +11,15 @@ GrafoLista::~GrafoLista() {
 }
 
 void GrafoLista::novo_no(int id, int peso) {
-    listaNo->insereNo(id, peso);
+    listaNos->insereNo(id, peso);
 }
 
 void GrafoLista::deleta_no(int id) {
-    listaNo->removeNo(id);
+    listaNos->removeNo(id);
 }
 
 void GrafoLista::nova_aresta(int origem, int destino, int peso) {
-    No* noOrigem = listaNo->buscarNo(origem);
+    No* noOrigem = listaNos->getNo(origem);
     if (noOrigem) {
         // Criar nova aresta e adicioná-la à lista de arestas do nó de origem
         Aresta* novaAresta = new Aresta(destino, peso);
@@ -31,3 +31,7 @@ void GrafoLista::nova_aresta(int origem, int destino, int peso) {
 void GrafoLista::deleta_aresta(int origem, int destino) {
     listaNos->removeAresta(origem, destino);
 }
+
+// void GrafoLista::imprimeGrafo() {
+//     listaNos->imprimeLista();
+// }

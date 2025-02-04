@@ -20,9 +20,9 @@ int main(int argc, char* argv[]) {
     if (comando == "-d") {
         if (tipoRepresentacao == "-m") {
             // Criar o grafo usando as variáveis definidas
-            GrafoMatriz grafo;
-            grafo.carrega_grafo(arquivoEntrada);
-            grafo.imprimeGrafo();
+            // GrafoMatriz grafo;
+            // grafo.carrega_grafo(arquivoEntrada);
+            // grafo.imprimeGrafo();
         } else if (tipoRepresentacao == "-l") {
             // Criar o grafo usando as variáveis definidas
             GrafoLista grafo;
@@ -38,18 +38,18 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        if (tipoRepresentacao == "-m") {
-            GrafoMatriz grafo; 
+        // if (tipoRepresentacao == "-m") {
+        //     // GrafoMatriz grafo; 
 
-            grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
-        } else if (tipoRepresentacao == "-l") {
-            GrafoLista grafo;
+        //     // grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
+        // } else if (tipoRepresentacao == "-l") {
+        //     GrafoLista grafo;
 
-            grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
-        } else {
-            cerr << "Erro: Tipo de representação inválido. Use -m ou -l." << endl;
-            return 1;
-        }
+        //     grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
+        // } else {
+        //     cerr << "Erro: Tipo de representação inválido. Use -m ou -l." << endl;
+        //     return 1;
+        // }
     } else {
         cerr << "Erro: Comando inválido. Use -d ou -c." << endl;
         return 1;

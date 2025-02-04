@@ -1,4 +1,4 @@
-#include "ListaEncadeada.h"
+#include "lista_encadeada.h"
 
 using namespace std;
 

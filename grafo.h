@@ -22,21 +22,22 @@ class Grafo {
         bool aresta_ponderada();
         void imprimeGrafo();
         
-        bool eh_bipartido();
+        /*bool eh_bipartido();
         int n_conexo();
         int get_grau();
         bool eh_completo();
         bool eh_arvore();
         bool possui_articulacao();
         bool possui_ponte();
-        void carrega_grafo(const string& arquivo);
-        void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0);
+        void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0);*/
         
+        void carrega_grafo(const string& arquivo);
         virtual void novo_no(int id, int peso);
         virtual void deleta_no(int no);
         virtual void nova_aresta(int origem, int destino, int peso);
         virtual void deleta_aresta(int origem, int destino);
         int menor_distancia(int origem, int destino);
+        
 };
 
 #endif

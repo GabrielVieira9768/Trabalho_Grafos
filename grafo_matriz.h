@@ -21,15 +21,15 @@ class GrafoMatriz : public Grafo {
         GrafoMatriz();
         ~GrafoMatriz();
 
-        void carrega_grafo(const string& arquivo) override;
-        bool eh_completo() override;
-        bool eh_bipartido() override;
-        bool eh_arvore() override;
-        int n_conexo() override;
-        bool possui_articulacao() override;
-        int get_grau() override;
-        bool possui_ponte() override;
-        void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas) override;
+        // void carrega_grafo(const string& arquivo) override;
+        // bool eh_completo() override;
+        // bool eh_bipartido() override;
+        // bool eh_arvore() override;
+        // int n_conexo() override;
+        // bool possui_articulacao() override;
+        // int get_grau() override;
+        // bool possui_ponte() override;
+        // void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas) override;
 
 };
 
