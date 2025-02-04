@@ -1,9 +1,7 @@
 #include "grafo.h"
 #include <iostream>
 
-int Grafo::get_grau() {
-    return 0;
-}
+using namespace std;
 
 int Grafo::get_ordem() {
     return this->ordem;
@@ -17,40 +15,28 @@ bool Grafo::vertice_ponderado() {
     return this->verticePonderado;
 }
 
-void Grafo::carrega_grafo(const std::string& arquivo) {
-    std::cout << "Erro: Método carregaGrafo chamado na classe base\n";
-}
-
 bool Grafo::aresta_ponderada() {
     return this->arestaPonderada;
 }
 
-bool Grafo::eh_completo() {
-    return false;
+void novo_no(int id, int peso) {
+    cerr << "Método novo_no chamado na classe base\n";
 }
 
-bool Grafo::eh_bipartido() {
-    return false;
+void deleta_no(int id) {
+    cerr << "Método deleta_no chamado na classe base\n";
 }
 
-bool Grafo::possui_ponte() {
-    return false;
+void nova_aresta(int origem, int destino, int peso) {
+    cerr << "Método nova_aresta chamado na classe base\n";
 }
 
-bool Grafo::possui_articulacao() {
-    return false;
+void deleta_aresta(int origem, int destino) {
+    cerr << "Método deleta_aresta chamado na classe base\n";
 }
 
-int Grafo::n_conexo() {
-    return 0;
-}
-
-bool Grafo::eh_arvore() {
-    return false;
-}
-
-void Grafo::novo_grafo(const std::string& arquivoEntrada, const std::string& arquivoSaida, int tentativas) {
-    std::cout << "Erro: Método carregaGrafo chamado na classe base\n";
+void Grafo::carrega_grafo(const string& arquivo) {
+  
 }
 
 void Grafo::imprimeGrafo() {
