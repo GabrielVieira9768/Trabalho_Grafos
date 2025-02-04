@@ -39,9 +39,9 @@ void Grafo::carrega_grafo(const string& arquivo) {
   
 }
 
+/*
 void Grafo::imprimeGrafo() {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
-
     cout << "Grau: " << get_grau() << endl;
     cout << "Ordem: " << ordem << endl;
     cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
