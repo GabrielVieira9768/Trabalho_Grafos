@@ -1,24 +1,38 @@
 #ifndef LISTA_ENCADEADA_H
 #define LISTA_ENCADEADA_H
 
-struct No {
+#include <iostream>
+
+struct Aresta {
     int destino;
     int peso;
-    No* prox;
+    Aresta* proxima;
+    
+    Aresta(int destino, int peso = 1);
+};
 
-    No(int d, int p) : destino(d), peso(p), prox(nullptr) {}
+struct No {
+    int id;
+    int peso;
+    Aresta* listaArestas;
+    No* proximo;
+    
+    No(int id, int peso = 1);
 };
 
 class ListaEncadeada {
-    private:
-        No* cabeca;
+private:
+    No* cabeca;
 
-    public:
-        ListaEncadeada();
-        ~ListaEncadeada();
-        void insereNo(int destino, int peso);
-        void imprimeLista();
-        No* getCabeca() const;
+public:
+    ListaEncadeada();
+    ~ListaEncadeada();
+
+    void insereNo(int id, int peso);
+    void removeNo(int id);
+    void insereAresta(int destino, int peso);
+    void removeAresta(int origem, int destino);
+    void imprimeLista();
 };
 
 #endif
