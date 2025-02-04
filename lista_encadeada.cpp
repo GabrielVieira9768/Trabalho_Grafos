@@ -29,6 +29,31 @@ ListaEncadeada::~ListaEncadeada() {
     }
 }
 
+No* ListaEncadeada::getNo(int id) {
+    No* atual = cabeca;
+    while (atual) {
+        if (atual->id == id) {
+            return atual;
+        }
+        atual = atual->proximo;
+    }
+    return nullptr; // Retorna nullptr se o nó não for encontrado
+}
+
+Aresta* ListaEncadeada::getAresta(int origem, int destino) {
+    No* noOrigem = getNo(origem); // Busca o nó de origem
+    if (!noOrigem) return nullptr; // Se o nó não existir, retorna nullptr
+
+    Aresta* atual = noOrigem->listaArestas;
+    while (atual) {
+        if (atual->destino == destino) {
+            return atual; // Retorna a aresta se encontrada
+        }
+        atual = atual->proxima;
+    }
+    return nullptr; // Retorna nullptr se a aresta não for encontrada
+}
+
 // Insere um novo nó na lista
 void ListaEncadeada::insereNo(int id, int peso) {
     No* novoNo = new No(id, peso);

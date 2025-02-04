@@ -8,7 +8,7 @@ struct Aresta {
     int peso;
     Aresta* proxima;
     
-    Aresta(int destino, int peso = 1);
+    Aresta(int destino, int peso = 0);
 };
 
 struct No {
@@ -17,7 +17,7 @@ struct No {
     Aresta* listaArestas;
     No* proximo;
     
-    No(int id, int peso = 1);
+    No(int id, int peso = 0);
 };
 
 class ListaEncadeada {
@@ -27,7 +27,9 @@ private:
 public:
     ListaEncadeada();
     ~ListaEncadeada();
-
+    
+    No* getNo(int id);
+    Aresta* getAresta(int origem, int destino);
     void insereNo(int id, int peso);
     void removeNo(int id);
     void insereAresta(int destino, int peso);
