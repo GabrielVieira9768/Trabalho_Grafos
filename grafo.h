@@ -16,11 +16,11 @@ class Grafo {
     public:
         virtual ~Grafo() {}
         
+        void imprimeGrafo();
         int get_ordem();
         bool eh_direcionado();
         bool vertice_ponderado();
         bool aresta_ponderada();
-        void imprimeGrafo();
         
         int get_grau();
         bool eh_completo();
@@ -33,16 +33,17 @@ class Grafo {
         
         void carrega_grafo(const string& arquivo);
         
+        int menor_distancia(int origem, int destino);
         virtual void novo_no(int id, int peso);
         virtual void deleta_no(int no);
         virtual void nova_aresta(int origem, int destino, int peso);
         virtual void deleta_aresta(int origem, int destino);
-        int menor_distancia(int origem, int destino);
         
-        virtual bool existeNo(int id);
-        virtual bool existeAresta(int origem, int destino);
-        virtual int* getVizinhos(int id);
-        virtual int getGrau(int id);
+        virtual bool existeNo(int id); // Verifica se existe um nó específico
+        virtual bool existeAresta(int origem, int destino); // Verifica se existe uma aresta específica
+        virtual int getGrau(int id); // Retorna o Grau de um vértice
+        virtual int* getVizinhos(int id); // Retorna um array com todos os vizinhos de um nó
+        virtual int getNumArestas(); // Retorna o número de arestas do grafo
 };
 
 #endif

@@ -17,10 +17,11 @@ class GrafoLista : public Grafo {
         void nova_aresta(int origem, int destino, int peso) override;
         void deleta_aresta(int origem, int destino) override;
         
-        bool existeNo(int id) override;
-        bool existeAresta(int origem, int destino) override;
-        int* getVizinhos(int id) override;
-        int getGrau(int id) override;
+        bool existeNo(int id) override; // Verifica se existe um nó específico
+        bool existeAresta(int origem, int destino) override; // Verifica se existe uma aresta específica
+        int getGrau(int id) override; // Retorna o Grau de um vértice
+        int* getVizinhos(int id) override; // Retorna um array com todos os vizinhos de um nó
+        int getNumArestas() override; // Retorna o número de arestas do grafo
 };
 
 #endif

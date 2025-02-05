@@ -29,29 +29,35 @@ void GrafoLista::deleta_aresta(int origem, int destino) {
     listaNos->removeAresta(origem, destino);
 }
 
+// Verifica se existe um nó específico
 bool GrafoLista::existeNo(int id) {
     if(!listaNos->getNo(id))
         return false;
     return true;
 }
 
+// Verifica se existe uma aresta específica
 bool GrafoLista::existeAresta(int origem, int destino) {
     if(!listaNos->getAresta(int origem, int destino);)
         return false;
     return true;
 }
 
+// Retorna o Grau de um vértice
+int GrafoLista::getGrau(int id) {
+    No* no = listaNos->getNo(id);
+    return (no != nullptr) ? no->grau : -1;
+}
+
 // Retorna um array com todos os vizinho de um nó
 int* GrafoLista::getVizinhos(int id) {
     No* no = listaNos->getNo(id);
     if (!no) {
-        return nullptr; // Retorna nullptr se o nó não existir
+        return nullptr;
     }
     
-    // Alocar array dinâmico para armazenar os ids dos vizinhos
     int* vizinhos = new int[no->grau];
     
-    // Preencher o array com os ids dos vizinhos
     aresta = no->listaArestas;
     for (int i = 0; i < no->grau; i++) {
         vizinhos[i] = aresta->destino;
@@ -61,8 +67,20 @@ int* GrafoLista::getVizinhos(int id) {
     return vizinhos;
 }
 
-int GrafoLista::getGrau(int id) {
-  return listaNos->getNo(id)->grau;
+// Retorna o número de arestas do grafo
+int GrafoLista::getNumArestas() {
+    int numArestas = 0;
+    No* atual = listaNos->getCabeca();
+
+    while (atual) {
+        numArestas += atual->grau;
+        atual = atual->proximo;
+    }
+    
+    if(!direcionado)
+        numArestas = numArestas / 2;
+
+    return numArestas;
 }
 
 // void GrafoLista::imprimeGrafo() {

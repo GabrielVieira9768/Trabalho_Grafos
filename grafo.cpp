@@ -62,15 +62,17 @@ int Grafo::get_grau() {
           maiorGrau = getGrau(i);
       }
   }
+  
   return maiorGrau;
 }
 
 bool Grafo::eh_completo() {
     for (int i = 1; i <= ordem; i++) {
-        if (getGrau(i) != ordem - 1) {
+        if (getGrau(i) != ordem - 1) { // Verifica se cada nó tem grau igual (ordem - 1)
             return false;
         }
     }
+    
     return true;
 }
 
@@ -136,7 +138,7 @@ void Grafo::imprimeGrafo() {
     //cout << "Componentes conexas: " << n_conexo() << endl;
     cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
     cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
-    // cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
+    cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
     // cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
     // cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
     // cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
