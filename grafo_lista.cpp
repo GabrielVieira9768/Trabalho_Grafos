@@ -49,6 +49,12 @@ int* GrafoLista::getVizinhos(int id) {
     return vizinhos;
 }
 
+bool GrafoLista::existeNo(int id) {
+    if(!listaNos->getNo(id))
+        return false;
+    return true;
+}
+
 // void GrafoLista::imprimeGrafo() {
 //     listaNos->imprimeLista();
 // }

@@ -39,7 +39,8 @@ class Grafo {
         virtual void deleta_aresta(int origem, int destino);
         int menor_distancia(int origem, int destino);
         
-        virtual int* getVizinhos(int id);
+        virtual int getVizinhos(int id);
+        virtual bool existeNo(int id);
 };
 
 #endif

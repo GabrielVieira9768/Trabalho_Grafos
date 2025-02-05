@@ -42,6 +42,14 @@ int* Grafo::getVizinhos(int id) {
     return 0;
 }
 
+bool Grafo::existeNo(int id) {
+  return false;
+}
+
+// int Grafo::getGrau(int id) {
+//
+// }
+
 void Grafo::carrega_grafo(const string& arquivo) {
     ifstream file(arquivo.c_str());
     
@@ -60,7 +68,7 @@ void Grafo::carrega_grafo(const string& arquivo) {
         verticePonderado = verticePonderado_int;
         arestaPonderada = arestaPonderada_int;
     }
-
+    
     // Lê os pesos dos nós se ponderado
     if (verticePonderado && getline(file, linha)) {
         int peso;
@@ -87,6 +95,13 @@ void Grafo::carrega_grafo(const string& arquivo) {
             sscanf(linha.c_str(), "%d %d", &origem, &destino);
         }
         nova_aresta(origem, destino, peso);
+        
+        if(!direcionado) {
+            if(!existeNo(destino)) {
+                novo_no(destino);
+            }
+            nova_aresta(destino, origem, peso);
+        }
     }
     
     file.close();
