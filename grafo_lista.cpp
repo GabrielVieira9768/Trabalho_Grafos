@@ -17,74 +17,119 @@ void GrafoLista::novo_no(int id, int peso) {
 }
 
 void GrafoLista::deleta_no(int id) {
-    No* atual = listaNos->cabeca;
-    No* anterior = nullptr;
+    No* noParaRemover = listaNos->getNo(id);
+    if (!noParaRemover) return;
     
-    while (atual && atual->id != id) {
-        anterior = atual;
+    // Remover todas as arestas que apontam para o nó a ser removido
+    No* atual = listaNos->getCabeca();
+    while (atual) {
+        if (atual->id != id) {
+            deleta_aresta(atual->id, id);
+        }
         atual = atual->proximo;
     }
     
-    if (!atual) return;
-    
-    Aresta* arestaAtual = atual->listaArestas;
+    // Remover todas as arestas do nó
+    Aresta* arestaAtual = noParaRemover->listaArestas;
     while (arestaAtual) {
         Aresta* tempAresta = arestaAtual;
         arestaAtual = arestaAtual->proxima;
         delete tempAresta;
     }
     
-    if (anterior) {
-        anterior->proximo = atual->proximo;
-    } else {
-        listaNos->cabeca = atual->proximo;
-    }
+    // Remover o nó da lista de nós
+    No* anterior = nullptr;
+    atual = listaNos->getCabeca();
     
-    delete atual;
-}
-
-void GrafoLista::nova_aresta(int origem, int destino, int peso) {
-    No* noOrigem = listaNos->cabeca;
-    
-    while (noOrigem && noOrigem->id != origem) {
-        noOrigem = noOrigem->proximo;
-    }
-    
-    if (!noOrigem) return;
-    
-    Aresta* novaAresta = new Aresta(destino, peso);
-    novaAresta->proxima = noOrigem->listaArestas;
-    noOrigem->listaArestas = novaAresta;
-    noOrigem->grau++;
-}
-
-void GrafoLista::deleta_aresta(int origem, int destino) {
-    No* atual = listaNos->cabeca;
-    
-    while (atual && atual->id != origem) {
+    while (atual && atual != noParaRemover) {
+        anterior = atual;
         atual = atual->proximo;
     }
     
-    if (!atual) return;
+    if (anterior) {
+        anterior->proximo = noParaRemover->proximo;
+    } else {
+        listaNos->setCabeca(noParaRemover->proximo);
+    }
     
-    Aresta* arestaAtual = atual->listaArestas;
+    delete noParaRemover;
+}
+
+void GrafoLista::nova_aresta(int origem, int destino, int peso) {
+    No* noOrigem = listaNos->getNo(origem);
+    No* noDestino = listaNos->getNo(destino);
+    
+    if (!noOrigem || !noDestino) return;
+    
+    // Verificar se a aresta já existe
+    if (existeAresta(origem, destino)) return;
+    
+    // Adiciona aresta origem -> destino
+    Aresta* novaArestaOrigem = new Aresta(destino, peso);
+    novaArestaOrigem->proxima = noOrigem->listaArestas;
+    noOrigem->listaArestas = novaArestaOrigem;
+    noOrigem->grau++;
+    
+    // Adiciona aresta destino -> origem (para grafos não direcionados)
+    if (!direcionado) {
+        if (!existeAresta(destino, origem)) { // Verifica se a aresta reversa já não existe
+            Aresta* novaArestaDestino = new Aresta(origem, peso);
+            novaArestaDestino->proxima = noDestino->listaArestas;
+            noDestino->listaArestas = novaArestaDestino;
+            noDestino->grau++;
+        }
+    }
+}
+
+void GrafoLista::deleta_aresta(int origem, int destino) {
+    No* noOrigem = listaNos->getNo(origem);
+    No* noDestino = listaNos->getNo(destino);
+    
+    if (!noOrigem) return;
+    
+    Aresta* arestaAtual = noOrigem->listaArestas;
     Aresta* anterior = nullptr;
     
+    // Remover a aresta origem -> destino
     while (arestaAtual && arestaAtual->destino != destino) {
         anterior = arestaAtual;
         arestaAtual = arestaAtual->proxima;
     }
     
-    if (!arestaAtual) return;
-    
-    if (anterior) {
-        anterior->proxima = arestaAtual->proxima;
-    } else {
-        atual->listaArestas = arestaAtual->proxima;
+    if (arestaAtual) {
+        if (anterior) {
+            anterior->proxima = arestaAtual->proxima;
+        } else {
+            noOrigem->listaArestas = arestaAtual->proxima;
+        }
+        
+        delete arestaAtual;
+        noOrigem->grau--;
     }
     
-    delete arestaAtual;
-    atual->grau--;
+    // Remover a aresta destino -> origem (se for grafo não direcionado)
+    if (!direcionado && noDestino) {
+        arestaAtual = listaNos->getAresta(destino, origem);
+        anterior = nullptr;
+        
+        if (arestaAtual) {
+            // Encontrar a aresta origem -> destino
+            Aresta* temp = noDestino->listaArestas;
+            while (temp && temp != arestaAtual) {
+                anterior = temp;
+                temp = temp->proxima;
+            }
+            
+            if (anterior) {
+                anterior->proxima = arestaAtual->proxima;
+            } else {
+                noDestino->listaArestas = arestaAtual->proxima;
+            }
+            
+            delete arestaAtual;
+            noDestino->grau--;
+        }
+    }
 }
 
 // Verifica se existe um nó específico
@@ -96,7 +141,7 @@ bool GrafoLista::existeNo(int id) {
 
 // Verifica se existe uma aresta específica
 bool GrafoLista::existeAresta(int origem, int destino) {
-    if(!listaNos->getAresta(int origem, int destino);)
+    if(!listaNos->getAresta(origem, destino);)
         return false;
     return true;
 }
@@ -116,7 +161,7 @@ int* GrafoLista::getVizinhos(int id) {
     
     int* vizinhos = new int[no->grau];
     
-    aresta = no->listaArestas;
+    Aresta* aresta = no->listaArestas;
     for (int i = 0; i < no->grau; i++) {
         vizinhos[i] = aresta->destino;
         aresta = aresta->proxima;
@@ -129,7 +174,7 @@ int* GrafoLista::getVizinhos(int id) {
 int GrafoLista::getNumArestas() {
     int numArestas = 0;
     No* atual = listaNos->getCabeca();
-
+    
     while (atual) {
         numArestas += atual->grau;
         atual = atual->proximo;
@@ -137,7 +182,7 @@ int GrafoLista::getNumArestas() {
     
     if(!direcionado)
         numArestas = numArestas / 2;
-
+        
     return numArestas;
 }
 

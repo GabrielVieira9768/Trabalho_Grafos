@@ -31,6 +31,7 @@ public:
     
     No* getNo(int id);
     Aresta* getAresta(int origem, int destino);
+    void setCabeca(No* novoCabeca);
     void imprimeLista();
 };
 

@@ -121,10 +121,6 @@ void Grafo::carrega_grafo(const string& arquivo) {
             sscanf(linha.c_str(), "%d %d", &origem, &destino);
         }
         nova_aresta(origem, destino, peso);
-        
-        if(!direcionado) {
-            nova_aresta(destino, origem, peso);
-        }
     }
     
     file.close();

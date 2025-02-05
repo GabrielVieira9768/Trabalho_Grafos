@@ -57,6 +57,10 @@ Aresta* ListaEncadeada::getAresta(int origem, int destino) {
     return nullptr;
 }
 
+void ListaEncadeada::setCabeca(No* novoCabeca) {
+    cabeca = novoCabeca;
+}
+
 // Imprime a lista encadeada
 void ListaEncadeada::imprimeLista() {
     No* atual = cabeca;
