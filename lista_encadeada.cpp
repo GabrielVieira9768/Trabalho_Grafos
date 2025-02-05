@@ -17,7 +17,6 @@ ListaEncadeada::~ListaEncadeada() {
         No* temp = cabeca;
         cabeca = cabeca->proximo;
         
-        // Remove todas as arestas do nó
         Aresta* arestaAtual = temp->listaArestas;
         while (arestaAtual) {
             Aresta* tempAresta = arestaAtual;
@@ -32,13 +31,15 @@ ListaEncadeada::~ListaEncadeada() {
 // Retorna um nó da lista
 No* ListaEncadeada::getNo(int id) {
     No* atual = cabeca;
+    
     while (atual) {
         if (atual->id == id) {
             return atual;
         }
         atual = atual->proximo;
     }
-    return nullptr; // Retorna nullptr se o nó não for encontrado
+    
+    return nullptr;
 }
 
 // Insere um novo nó na lista
@@ -57,16 +58,15 @@ void ListaEncadeada::removeNo(int id) {
         anterior = atual;
         atual = atual->proximo;
     }
-
+    
     if (!atual) return; // Nó não encontrado
-
+    
     if (anterior) {
         anterior->proximo = atual->proximo;
     } else {
         cabeca = atual->proximo;
     }
-
-    // Remove todas as arestas associadas ao nó
+    
     Aresta* arestaAtual = atual->listaArestas;
     while (arestaAtual) {
         Aresta* tempAresta = arestaAtual;
@@ -79,17 +79,17 @@ void ListaEncadeada::removeNo(int id) {
 
 // Retorna uma aresta da lista
 Aresta* ListaEncadeada::getAresta(int origem, int destino) {
-    No* noOrigem = getNo(origem); // Busca o nó de origem
-    if (!noOrigem) return nullptr; // Se o nó não existir, retorna nullptr
+    No* noOrigem = getNo(origem);
+    if (!noOrigem) return nullptr;
 
     Aresta* atual = noOrigem->listaArestas;
     while (atual) {
         if (atual->destino == destino) {
-            return atual; // Retorna a aresta se encontrada
+            return atual;
         }
         atual = atual->proxima;
     }
-    return nullptr; // Retorna nullptr se a aresta não for encontrada
+    return nullptr;
 }
 
 // Insere uma aresta no primeiro nó da lista
@@ -111,7 +111,7 @@ void ListaEncadeada::removeAresta(int origem, int destino) {
         atual = atual->proximo;
     }
 
-    if (!atual) return; // Nó de origem não encontrado
+    if (!atual) return;
 
     Aresta* arestaAtual = atual->listaArestas;
     Aresta* anterior = nullptr;
@@ -121,7 +121,7 @@ void ListaEncadeada::removeAresta(int origem, int destino) {
         arestaAtual = arestaAtual->proxima;
     }
 
-    if (!arestaAtual) return; // Aresta não encontrada
+    if (!arestaAtual) return;
 
     if (anterior) {
         anterior->proxima = arestaAtual->proxima;
@@ -130,7 +130,7 @@ void ListaEncadeada::removeAresta(int origem, int destino) {
     }
 
     delete arestaAtual;
-    atual->grau--;  // Atualiza o grau do nó de origem
+    atual->grau--;
 }
 
 // Imprime a lista encadeada
@@ -140,7 +140,7 @@ void ListaEncadeada::imprimeLista() {
         cout << "No " << atual->id << " [" << atual->peso << "] -> ";
         Aresta* arestaAtual = atual->listaArestas;
         while (arestaAtual) {
-            cout << "(Destino: " << arestaAtual->destino << ", Peso: " << arestaAtual->peso << ") -> ";
+            cout << "(" << arestaAtual->destino << ", " << arestaAtual->peso << ") -> ";
             arestaAtual = arestaAtual->proxima;
         }
         cout << "NULL\n";

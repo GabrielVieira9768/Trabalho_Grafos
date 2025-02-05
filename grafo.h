@@ -44,6 +44,9 @@ class Grafo {
         virtual int getGrau(int id); // Retorna o Grau de um vértice
         virtual int* getVizinhos(int id); // Retorna um array com todos os vizinhos de um nó
         virtual int getNumArestas(); // Retorna o número de arestas do grafo
+        
+        virtual void imprimeLista(); // Imprime o grafo na forma de lista encadeada
+        virtual void imprimeMatriz(); // Imprime o grafo na forma de matriz
 };
 
 #endif

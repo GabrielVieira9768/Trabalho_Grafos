@@ -83,6 +83,6 @@ int GrafoLista::getNumArestas() {
     return numArestas;
 }
 
-// void GrafoLista::imprimeGrafo() {
-//     listaNos->imprimeLista();
-// }
+void GrafoLista::imprimeLista() {
+    listaNos->imprimeLista();
+}

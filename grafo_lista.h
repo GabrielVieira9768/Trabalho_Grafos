@@ -22,6 +22,8 @@ class GrafoLista : public Grafo {
         int getGrau(int id) override; // Retorna o Grau de um vértice
         int* getVizinhos(int id) override; // Retorna um array com todos os vizinhos de um nó
         int getNumArestas() override; // Retorna o número de arestas do grafo
+        
+        void imprimeLista() override; // Imprime o grafo na forma de lista encadeada
 };
 
 #endif

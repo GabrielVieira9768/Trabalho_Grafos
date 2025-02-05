@@ -144,3 +144,11 @@ void Grafo::imprimeGrafo() {
     // cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
     // cout << "Vertice de Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
 }
+
+void Grafo::imprimeLista() {
+  cerr << "Método imprimeLista chamado na classe base" << endl;
+}
+
+void Grafo::imprimeMatriz() {
+  cerr << "Método imprimeMatriz chamado na classe base" << endl;
+}
