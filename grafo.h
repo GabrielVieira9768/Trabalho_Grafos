@@ -32,12 +32,14 @@ class Grafo {
         void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0);*/
         
         void carrega_grafo(const string& arquivo);
+        
         virtual void novo_no(int id, int peso);
         virtual void deleta_no(int no);
         virtual void nova_aresta(int origem, int destino, int peso);
         virtual void deleta_aresta(int origem, int destino);
         int menor_distancia(int origem, int destino);
         
+        virtual int* getVizinhos(int id);
 };
 
 #endif

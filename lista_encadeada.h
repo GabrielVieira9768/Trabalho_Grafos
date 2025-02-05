@@ -14,6 +14,7 @@ struct Aresta {
 struct No {
     int id;
     int peso;
+    int grau;
     Aresta* listaArestas;
     No* proximo;
     

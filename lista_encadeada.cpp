@@ -6,7 +6,7 @@ using namespace std;
 Aresta::Aresta(int destino, int peso) : destino(destino), peso(peso), proxima(nullptr) {}
 
 // Construtor do Nó
-No::No(int id, int peso) : id(id), peso(peso), listaArestas(nullptr), proximo(nullptr) {}
+No::No(int id, int peso) : id(id), peso(peso), grau(0), listaArestas(nullptr), proximo(nullptr) {}
 
 // Construtor da Lista Encadeada
 ListaEncadeada::ListaEncadeada() : cabeca(nullptr) {}
@@ -29,6 +29,7 @@ ListaEncadeada::~ListaEncadeada() {
     }
 }
 
+// Retorna um nó da lista
 No* ListaEncadeada::getNo(int id) {
     No* atual = cabeca;
     while (atual) {
@@ -38,20 +39,6 @@ No* ListaEncadeada::getNo(int id) {
         atual = atual->proximo;
     }
     return nullptr; // Retorna nullptr se o nó não for encontrado
-}
-
-Aresta* ListaEncadeada::getAresta(int origem, int destino) {
-    No* noOrigem = getNo(origem); // Busca o nó de origem
-    if (!noOrigem) return nullptr; // Se o nó não existir, retorna nullptr
-
-    Aresta* atual = noOrigem->listaArestas;
-    while (atual) {
-        if (atual->destino == destino) {
-            return atual; // Retorna a aresta se encontrada
-        }
-        atual = atual->proxima;
-    }
-    return nullptr; // Retorna nullptr se a aresta não for encontrada
 }
 
 // Insere um novo nó na lista
@@ -90,16 +77,33 @@ void ListaEncadeada::removeNo(int id) {
     delete atual;
 }
 
+// Retorna uma aresta da lista
+Aresta* ListaEncadeada::getAresta(int origem, int destino) {
+    No* noOrigem = getNo(origem); // Busca o nó de origem
+    if (!noOrigem) return nullptr; // Se o nó não existir, retorna nullptr
+
+    Aresta* atual = noOrigem->listaArestas;
+    while (atual) {
+        if (atual->destino == destino) {
+            return atual; // Retorna a aresta se encontrada
+        }
+        atual = atual->proxima;
+    }
+    return nullptr; // Retorna nullptr se a aresta não for encontrada
+}
+
 // Insere uma aresta no primeiro nó da lista
 void ListaEncadeada::insereAresta(int destino, int peso) {
-    if (!cabeca) return; // Lista vazia
+    if (!cabeca) return;
 
     Aresta* novaAresta = new Aresta(destino, peso);
     novaAresta->proxima = cabeca->listaArestas;
     cabeca->listaArestas = novaAresta;
+
+    cabeca->grau++;
 }
 
-// Remove uma aresta de um nó específico
+// Remove uma aresta de um nó
 void ListaEncadeada::removeAresta(int origem, int destino) {
     No* atual = cabeca;
 
@@ -126,6 +130,7 @@ void ListaEncadeada::removeAresta(int origem, int destino) {
     }
 
     delete arestaAtual;
+    atual->grau--;  // Atualiza o grau do nó de origem
 }
 
 // Imprime a lista encadeada
