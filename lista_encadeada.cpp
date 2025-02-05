@@ -42,41 +42,6 @@ No* ListaEncadeada::getNo(int id) {
     return nullptr;
 }
 
-// Insere um novo nó na lista
-void ListaEncadeada::insereNo(int id, int peso) {
-    No* novoNo = new No(id, peso);
-    novoNo->proximo = cabeca;
-    cabeca = novoNo;
-}
-
-// Remove um nó e todas as suas arestas
-void ListaEncadeada::removeNo(int id) {
-    No* atual = cabeca;
-    No* anterior = nullptr;
-
-    while (atual && atual->id != id) {
-        anterior = atual;
-        atual = atual->proximo;
-    }
-    
-    if (!atual) return; // Nó não encontrado
-    
-    if (anterior) {
-        anterior->proximo = atual->proximo;
-    } else {
-        cabeca = atual->proximo;
-    }
-    
-    Aresta* arestaAtual = atual->listaArestas;
-    while (arestaAtual) {
-        Aresta* tempAresta = arestaAtual;
-        arestaAtual = arestaAtual->proxima;
-        delete tempAresta;
-    }
-
-    delete atual;
-}
-
 // Retorna uma aresta da lista
 Aresta* ListaEncadeada::getAresta(int origem, int destino) {
     No* noOrigem = getNo(origem);
@@ -90,47 +55,6 @@ Aresta* ListaEncadeada::getAresta(int origem, int destino) {
         atual = atual->proxima;
     }
     return nullptr;
-}
-
-// Insere uma aresta no primeiro nó da lista
-void ListaEncadeada::insereAresta(int destino, int peso) {
-    if (!cabeca) return;
-
-    Aresta* novaAresta = new Aresta(destino, peso);
-    novaAresta->proxima = cabeca->listaArestas;
-    cabeca->listaArestas = novaAresta;
-
-    cabeca->grau++;
-}
-
-// Remove uma aresta de um nó
-void ListaEncadeada::removeAresta(int origem, int destino) {
-    No* atual = cabeca;
-
-    while (atual && atual->id != origem) {
-        atual = atual->proximo;
-    }
-
-    if (!atual) return;
-
-    Aresta* arestaAtual = atual->listaArestas;
-    Aresta* anterior = nullptr;
-
-    while (arestaAtual && arestaAtual->destino != destino) {
-        anterior = arestaAtual;
-        arestaAtual = arestaAtual->proxima;
-    }
-
-    if (!arestaAtual) return;
-
-    if (anterior) {
-        anterior->proxima = arestaAtual->proxima;
-    } else {
-        atual->listaArestas = arestaAtual->proxima;
-    }
-
-    delete arestaAtual;
-    atual->grau--;
 }
 
 // Imprime a lista encadeada

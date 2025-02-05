@@ -31,10 +31,6 @@ public:
     
     No* getNo(int id);
     Aresta* getAresta(int origem, int destino);
-    void insereNo(int id, int peso);
-    void removeNo(int id);
-    void insereAresta(int destino, int peso);
-    void removeAresta(int origem, int destino);
     void imprimeLista();
 };
 

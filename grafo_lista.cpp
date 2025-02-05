@@ -11,22 +11,80 @@ GrafoLista::~GrafoLista() {
 }
 
 void GrafoLista::novo_no(int id, int peso) {
-    listaNos->insereNo(id, peso);
+    No* novoNo = new No(id, peso);
+    novoNo->proximo = listaNos->cabeca;
+    listaNos->cabeca = novoNo;
 }
 
 void GrafoLista::deleta_no(int id) {
-    listaNos->removeNo(id);
+    No* atual = listaNos->cabeca;
+    No* anterior = nullptr;
+    
+    while (atual && atual->id != id) {
+        anterior = atual;
+        atual = atual->proximo;
+    }
+    
+    if (!atual) return;
+    
+    Aresta* arestaAtual = atual->listaArestas;
+    while (arestaAtual) {
+        Aresta* tempAresta = arestaAtual;
+        arestaAtual = arestaAtual->proxima;
+        delete tempAresta;
+    }
+    
+    if (anterior) {
+        anterior->proximo = atual->proximo;
+    } else {
+        listaNos->cabeca = atual->proximo;
+    }
+    
+    delete atual;
 }
 
 void GrafoLista::nova_aresta(int origem, int destino, int peso) {
-    No* noOrigem = listaNos->getNo(origem);
-    if (noOrigem) {
-        noOrigem->listaArestas.insereAresta(destino, peso);
+    No* noOrigem = listaNos->cabeca;
+    
+    while (noOrigem && noOrigem->id != origem) {
+        noOrigem = noOrigem->proximo;
     }
+    
+    if (!noOrigem) return;
+    
+    Aresta* novaAresta = new Aresta(destino, peso);
+    novaAresta->proxima = noOrigem->listaArestas;
+    noOrigem->listaArestas = novaAresta;
+    noOrigem->grau++;
 }
 
 void GrafoLista::deleta_aresta(int origem, int destino) {
-    listaNos->removeAresta(origem, destino);
+    No* atual = listaNos->cabeca;
+    
+    while (atual && atual->id != origem) {
+        atual = atual->proximo;
+    }
+    
+    if (!atual) return;
+    
+    Aresta* arestaAtual = atual->listaArestas;
+    Aresta* anterior = nullptr;
+    
+    while (arestaAtual && arestaAtual->destino != destino) {
+        anterior = arestaAtual;
+        arestaAtual = arestaAtual->proxima;
+    }
+    
+    if (!arestaAtual) return;
+    
+    if (anterior) {
+        anterior->proxima = arestaAtual->proxima;
+    } else {
+        atual->listaArestas = arestaAtual->proxima;
+    }
+    
+    delete arestaAtual;
+    atual->grau--;
 }
 
 // Verifica se existe um nó específico
