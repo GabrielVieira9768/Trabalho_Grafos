@@ -22,9 +22,9 @@ class Grafo {
         bool aresta_ponderada();
         void imprimeGrafo();
         
+        int get_grau();
         /*bool eh_bipartido();
         int n_conexo();
-        int get_grau();
         bool eh_completo();
         bool eh_arvore();
         bool possui_articulacao();
@@ -39,8 +39,10 @@ class Grafo {
         virtual void deleta_aresta(int origem, int destino);
         int menor_distancia(int origem, int destino);
         
-        virtual int getVizinhos(int id);
         virtual bool existeNo(int id);
+        virtual bool existeAresta(int origem, int destino);
+        virtual int* getVizinhos(int id);
+        virtual int getGrau(int id);
 };
 
 #endif

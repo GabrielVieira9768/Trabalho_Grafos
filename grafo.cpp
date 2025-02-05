@@ -38,17 +38,32 @@ void Grafo::deleta_aresta(int origem, int destino) {
     cerr << "Método deleta_aresta chamado na classe base" << endl;
 }
 
-int* Grafo::getVizinhos(int id) {
-    return 0;
-}
-
 bool Grafo::existeNo(int id) {
   return false;
 }
 
-// int Grafo::getGrau(int id) {
-//
-// }
+bool Grafo::existeAresta(int origem, int destino) {
+  return false;
+}
+
+int* Grafo::getVizinhos(int id) {
+    return 0;
+}
+
+int getGrau(int id) {
+  return 0;
+}
+
+int Grafo::get_grau() {
+  maiorGrau = 0;
+  
+  for(int i = 1; i <= ordem; i++) {
+      if(getGrau(i) > maiorGrau) {
+          maiorGrau = getGrau(i);
+      }
+  }
+  return maiorGrau;
+}
 
 void Grafo::carrega_grafo(const string& arquivo) {
     ifstream file(arquivo.c_str());
@@ -97,9 +112,6 @@ void Grafo::carrega_grafo(const string& arquivo) {
         nova_aresta(origem, destino, peso);
         
         if(!direcionado) {
-            if(!existeNo(destino)) {
-                novo_no(destino);
-            }
             nova_aresta(destino, origem, peso);
         }
     }
@@ -109,7 +121,7 @@ void Grafo::carrega_grafo(const string& arquivo) {
 
 void Grafo::imprimeGrafo() {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
-    //cout << "Grau: " << get_grau() << endl;
+    cout << "Grau: " << get_grau() << endl;
     cout << "Ordem: " << ordem << endl;
     cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
     //cout << "Componentes conexas: " << n_conexo() << endl;

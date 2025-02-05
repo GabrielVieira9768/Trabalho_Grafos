@@ -29,6 +29,18 @@ void GrafoLista::deleta_aresta(int origem, int destino) {
     listaNos->removeAresta(origem, destino);
 }
 
+bool GrafoLista::existeNo(int id) {
+    if(!listaNos->getNo(id))
+        return false;
+    return true;
+}
+
+bool GrafoLista::existeAresta(int origem, int destino) {
+    if(!listaNos->getAresta(int origem, int destino);)
+        return false;
+    return true;
+}
+
 // Retorna um array com todos os vizinho de um nó
 int* GrafoLista::getVizinhos(int id) {
     No* no = listaNos->getNo(id);
@@ -49,10 +61,8 @@ int* GrafoLista::getVizinhos(int id) {
     return vizinhos;
 }
 
-bool GrafoLista::existeNo(int id) {
-    if(!listaNos->getNo(id))
-        return false;
-    return true;
+int GrafoLista::getGrau(int id) {
+  return listaNos->getNo(id)->grau;
 }
 
 // void GrafoLista::imprimeGrafo() {

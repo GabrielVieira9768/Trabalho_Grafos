@@ -17,8 +17,10 @@ class GrafoLista : public Grafo {
         void nova_aresta(int origem, int destino, int peso) override;
         void deleta_aresta(int origem, int destino) override;
         
-        int* getVizinhos(int id) override;
         bool existeNo(int id) override;
+        bool existeAresta(int origem, int destino) override;
+        int* getVizinhos(int id) override;
+        int getGrau(int id) override;
 };
 
 #endif
