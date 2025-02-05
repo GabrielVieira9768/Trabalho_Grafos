@@ -65,6 +65,15 @@ int Grafo::get_grau() {
   return maiorGrau;
 }
 
+bool Grafo::eh_completo() {
+    for (int i = 1; i <= ordem; i++) {
+        if (getGrau(i) != ordem - 1) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void Grafo::carrega_grafo(const string& arquivo) {
     ifstream file(arquivo.c_str());
     

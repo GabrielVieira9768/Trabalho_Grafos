@@ -23,9 +23,9 @@ class Grafo {
         void imprimeGrafo();
         
         int get_grau();
+        bool eh_completo();
         /*bool eh_bipartido();
         int n_conexo();
-        bool eh_completo();
         bool eh_arvore();
         bool possui_articulacao();
         bool possui_ponte();
