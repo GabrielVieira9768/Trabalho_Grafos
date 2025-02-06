@@ -52,7 +52,7 @@ void GrafoLista::deleta_no(int id) {
     } else {
         listaNos->setCabeca(noParaRemover->proximo);
     }
-    
+
     ordem--;
 
     delete noParaRemover;

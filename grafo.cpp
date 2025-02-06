@@ -280,11 +280,12 @@ void Grafo::carrega_grafo(const string& arquivo) {
     }
     
     string linha;
+    int ordem_int;
     
     // Lê a descrição do grafo
     if (getline(file, linha)) {
         int direcionado_int, verticePonderado_int, arestaPonderada_int;
-        sscanf(linha.c_str(), "%d %d %d %d", &ordem, &direcionado_int, &verticePonderado_int, &arestaPonderada_int);
+        sscanf(linha.c_str(), "%d %d %d %d", &ordem_int, &direcionado_int, &verticePonderado_int, &arestaPonderada_int);
         direcionado = direcionado_int;
         verticePonderado = verticePonderado_int;
         arestaPonderada = arestaPonderada_int;
@@ -293,7 +294,7 @@ void Grafo::carrega_grafo(const string& arquivo) {
     // Lê os pesos dos nós se ponderado
     if (verticePonderado && getline(file, linha)) {
         int peso;
-        for (int id = 1; id <= ordem; ++id) {
+        for (int id = 1; id <= ordem_int; ++id) {
             size_t pos = linha.find(" ");
             if (pos != string::npos) {
                 peso = atoi(linha.substr(0, pos).c_str());
@@ -330,7 +331,7 @@ void Grafo::imprimeGrafo() {
     cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
     cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
-    cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
+    //cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
     //cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
     // cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
     // cout << "Vertice de Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;

@@ -7,7 +7,7 @@ using namespace std;
 
 class Grafo {
     protected:
-        int ordem;
+        int ordem = 0;
         bool direcionado;
         bool verticePonderado;
         bool arestaPonderada;
