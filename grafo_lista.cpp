@@ -14,6 +14,7 @@ void GrafoLista::novo_no(int id, int peso) {
     No* novoNo = new No(id, peso);
     novoNo->proximo = listaNos->getCabeca();
     listaNos->setCabeca(novoNo);
+    ordem++;
 }
 
 void GrafoLista::deleta_no(int id) {
@@ -52,6 +53,8 @@ void GrafoLista::deleta_no(int id) {
         listaNos->setCabeca(noParaRemover->proximo);
     }
     
+    ordem--;
+
     delete noParaRemover;
 }
 
