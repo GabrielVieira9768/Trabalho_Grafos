@@ -50,12 +50,16 @@ int* Grafo::getVizinhos(int id) {
     return 0;
 }
 
-int getGrau(int id) {
+int Grafo::getGrau(int id) {
+  return 0;
+}
+
+int Grafo::getNumArestas() {
   return 0;
 }
 
 int Grafo::get_grau() {
-  maiorGrau = 0;
+  int maiorGrau = 0;
   
   for(int i = 1; i <= ordem; i++) {
       if(getGrau(i) > maiorGrau) {
@@ -75,6 +79,197 @@ bool Grafo::eh_completo() {
     
     return true;
 }
+
+int Grafo::n_conexo() {
+    // Aloca um array para marcar os nós visitados
+    bool* visitado = new bool[ordem + 1]; // +1 porque os nós começam de 1
+    for (int i = 1; i <= ordem; i++) {
+        visitado[i] = false;
+    }
+
+    int contador = 0;
+
+    // Percorre todos os nós do grafo
+    for (int i = 1; i <= ordem; i++) {
+        if (!visitado[i]) {
+            // Se o nó não foi visitado, inicia uma DFS a partir dele
+            DFS(i, visitado);
+            contador++; // Incrementa o contador de componentes conexos
+        }
+    }
+
+    // Libera a memória alocada para o array de visitados
+    delete[] visitado;
+
+    return contador;
+}
+
+void Grafo::DFS(int no, bool* visitado) {
+    // Marca o nó como visitado
+    visitado[no] = true;
+
+    // Obtém os vizinhos do nó
+    int* vizinhos = getVizinhos(no);
+
+    // Se o nó tiver vizinhos, percorre cada um deles
+    if (vizinhos) {
+        for (int i = 0; i < getGrau(no); i++) {
+            int vizinho = vizinhos[i];
+            if (!visitado[vizinho]) {
+                // Se o vizinho não foi visitado, realiza uma DFS a partir dele
+                DFS(vizinho, visitado);
+            }
+        }
+
+        // Libera a memória alocada para o array de vizinhos
+        delete[] vizinhos;
+    }
+}
+
+bool Grafo::eh_arvore() {
+    // Verifica se o número de arestas é igual a (ordem - 1)
+    if (getNumArestas() != ordem - 1) {
+        return false;
+    }
+
+    // Verifica se o grafo é conexo
+    bool* visitado = new bool[ordem + 1]; // +1 porque os nós começam de 1
+    for (int i = 1; i <= ordem; i++) {
+        visitado[i] = false;
+    }
+
+    // Realiza uma DFS para verificar conexidade e ausência de ciclos
+    bool temCiclo = DFS_verificaCiclo(1, -1, visitado);
+
+    // Verifica se todos os nós foram visitados (grafo conexo)
+    bool conexo = true;
+    for (int i = 1; i <= ordem; i++) {
+        if (!visitado[i]) {
+            conexo = false;
+            break;
+        }
+    }
+
+    // Libera a memória alocada para o array de visitados
+    delete[] visitado;
+
+    // O grafo é uma árvore se for conexo e não tiver ciclos
+    return conexo && !temCiclo;
+}
+
+bool Grafo::DFS_verificaCiclo(int no, int pai, bool* visitado) {
+    visitado[no] = true;
+
+    // Obtém os vizinhos do nó
+    int* vizinhos = getVizinhos(no);
+
+    // Se o nó tiver vizinhos, percorre cada um deles
+    if (vizinhos) {
+        for (int i = 0; i < getGrau(no); i++) {
+            int vizinho = vizinhos[i];
+
+            if (!visitado[vizinho]) {
+                // Se o vizinho não foi visitado, realiza uma DFS a partir dele
+                if (DFS_verificaCiclo(vizinho, no, visitado)) {
+                    // Se encontrou um ciclo, retorna true
+                    delete[] vizinhos;
+                    return true;
+                }
+            } else if (vizinho != pai) {
+                // Se o vizinho já foi visitado e não é o pai, há um ciclo
+                delete[] vizinhos;
+                return true;
+            }
+        }
+
+        // Libera a memória alocada para o array de vizinhos
+        delete[] vizinhos;
+    }
+
+    // Não encontrou ciclos
+    return false;
+}
+
+// bool Grafo::possui_ponte() {
+//     // Aloca arrays para armazenar o tempo de descoberta e o menor tempo alcançável
+//     int* tempoDescoberta = new int[ordem + 1]; // +1 porque os nós começam de 1
+//     int* menorTempo = new int[ordem + 1];
+//     bool* visitado = new bool[ordem + 1];
+
+//     // Inicializa os arrays
+//     for (int i = 1; i <= ordem; i++) {
+//         visitado[i] = false;
+//         tempoDescoberta[i] = -1;
+//         menorTempo[i] = -1;
+//     }
+
+//     // Variável para armazenar o tempo de descoberta atual
+//     int tempo = 0;
+
+//     // Realiza a DFS para cada nó não visitado
+//     for (int i = 1; i <= ordem; i++) {
+//         if (!visitado[i]) {
+//             if (DFS_verificaPonte(i, -1, tempo, tempoDescoberta, menorTempo, visitado)) {
+//                 // Se encontrou uma ponte, libera a memória e retorna true
+//                 delete[] tempoDescoberta;
+//                 delete[] menorTempo;
+//                 delete[] visitado;
+//                 return true;
+//             }
+//         }
+//     }
+
+//     // Libera a memória alocada
+//     delete[] tempoDescoberta;
+//     delete[] menorTempo;
+//     delete[] visitado;
+
+//     // Se não encontrou pontes, retorna false
+//     return false;
+// }
+
+// bool Grafo::DFS_verificaPonte(int no, int pai, int& tempo, int* tempoDescoberta, int* menorTempo, bool* visitado) {
+//     // Marca o nó como visitado e define o tempo de descoberta e o menor tempo alcançável
+//     visitado[no] = true;
+//     tempoDescoberta[no] = menorTempo[no] = ++tempo;
+
+//     // Obtém os vizinhos do nó
+//     int* vizinhos = getVizinhos(no);
+
+//     // Se o nó tiver vizinhos, percorre cada um deles
+//     if (vizinhos) {
+//         for (int i = 0; i < getGrau(no); i++) {
+//             int vizinho = vizinhos[i];
+
+//             if (!visitado[vizinho]) {
+//                 // Se o vizinho não foi visitado, realiza uma DFS a partir dele
+//                 if (DFS_verificaPonte(vizinho, no, tempo, tempoDescoberta, menorTempo, visitado)) {
+//                     // Se encontrou uma ponte, retorna true
+//                     delete[] vizinhos;
+//                     return true;
+//                 }
+
+//                 // Atualiza o menor tempo alcançável do nó atual
+//                 menorTempo[no] = min(menorTempo[no], menorTempo[vizinho]);
+
+//                 // Verifica se a aresta (no, vizinho) é uma ponte
+//                 if (menorTempo[vizinho] > tempoDescoberta[no]) {
+//                     delete[] vizinhos;
+//                     return true;
+//                 }
+//             } else if (vizinho != pai) {
+//                 // Se o vizinho já foi visitado e não é o pai, atualiza o menor tempo alcançável
+//                 menorTempo[no] = min(menorTempo[no], tempoDescoberta[vizinho]);
+//             }
+//         }
+
+//         // Libera a memória alocada para o array de vizinhos
+//         delete[] vizinhos;
+//     }
+
+//     // Não encontrou pontes
+//     return false;
+// }
 
 void Grafo::carrega_grafo(const string& arquivo) {
     ifstream file(arquivo.c_str());
@@ -131,14 +326,16 @@ void Grafo::imprimeGrafo() {
     cout << "Grau: " << get_grau() << endl;
     cout << "Ordem: " << ordem << endl;
     cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
-    //cout << "Componentes conexas: " << n_conexo() << endl;
+    cout << "Componentes conexas: " << n_conexo() << endl;
     cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
     cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
+    cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
+    //cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
     // cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
-    // cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
-    // cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
     // cout << "Vertice de Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
+
+    imprimeLista();
 }
 
 void Grafo::imprimeLista() {

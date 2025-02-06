@@ -75,3 +75,7 @@ void ListaEncadeada::imprimeLista() {
         atual = atual->proximo;
     }
 }
+
+No* ListaEncadeada::getCabeca() {
+    return cabeca;
+}

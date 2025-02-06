@@ -33,6 +33,7 @@ public:
     Aresta* getAresta(int origem, int destino);
     void setCabeca(No* novoCabeca);
     void imprimeLista();
+    No* getCabeca(); 
 };
 
 #endif

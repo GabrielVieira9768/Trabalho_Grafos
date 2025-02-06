@@ -12,8 +12,8 @@ GrafoLista::~GrafoLista() {
 
 void GrafoLista::novo_no(int id, int peso) {
     No* novoNo = new No(id, peso);
-    novoNo->proximo = listaNos->cabeca;
-    listaNos->cabeca = novoNo;
+    novoNo->proximo = listaNos->getCabeca();
+    listaNos->setCabeca(novoNo);
 }
 
 void GrafoLista::deleta_no(int id) {
@@ -141,8 +141,10 @@ bool GrafoLista::existeNo(int id) {
 
 // Verifica se existe uma aresta específica
 bool GrafoLista::existeAresta(int origem, int destino) {
-    if(!listaNos->getAresta(origem, destino);)
+    if(!listaNos->getAresta(origem, destino)){
         return false;
+    }
+
     return true;
 }
 
@@ -152,7 +154,7 @@ int GrafoLista::getGrau(int id) {
     return (no != nullptr) ? no->grau : -1;
 }
 
-// Retorna um array com todos os vizinho de um nó
+//Retorna um array com todos os vizinho de um nó
 int* GrafoLista::getVizinhos(int id) {
     No* no = listaNos->getNo(id);
     if (!no) {
@@ -170,6 +172,7 @@ int* GrafoLista::getVizinhos(int id) {
     return vizinhos;
 }
 
+
 // Retorna o número de arestas do grafo
 int GrafoLista::getNumArestas() {
     int numArestas = 0;
@@ -185,6 +188,7 @@ int GrafoLista::getNumArestas() {
         
     return numArestas;
 }
+
 
 void GrafoLista::imprimeLista() {
     listaNos->imprimeLista();

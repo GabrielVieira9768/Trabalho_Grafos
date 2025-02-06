@@ -11,25 +11,15 @@ class GrafoMatriz : public Grafo {
         int* pesosVertices;
 
         void inicializaMatriz(int ordem);
-        void adicionaAresta(int origem, int destino, int peso);
-        void dfs_matriz(int v, bool visitado[]);
-        void dfsPonte(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temPonte);
-        void dfsArticulacaoMatriz(int v, bool* visitado, int* tempoDescoberta, int* low, int* pai, int& tempo, bool& temArticulacao);
-        
 
     public:
         GrafoMatriz();
         ~GrafoMatriz();
 
-        // void carrega_grafo(const string& arquivo) override;
-        // bool eh_completo() override;
-        // bool eh_bipartido() override;
-        // bool eh_arvore() override;
-        // int n_conexo() override;
-        // bool possui_articulacao() override;
-        // int get_grau() override;
-        // bool possui_ponte() override;
-        // void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas) override;
+        void novo_no(int id, int peso) override;
+        void deleta_no(int id) override;
+        void nova_aresta(int origem, int destino, int peso) override;
+        void deleta_aresta(int origem, int destino) override;
 
 };
 
