@@ -1,3 +1,6 @@
+// Novo comando para executar o trabalho: g++ -std=c++11 -I./include -o main main.cpp ./src/grafo_lista.cpp ./src/lista_encadeada.cpp ./src/grafo.cpp
+// Comando para rodar os arquivos: ./main -d -l ./entradas/nome_do_arquivo.txt
+
 #include <iostream>
 #include <string>
 #include "./grafo_lista.h"
@@ -7,7 +10,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
-        cerr << "Uso: ./main -d|-c -m|-l <arquivo_entrada> [arquivo_saida]" << endl;
+        cerr << "Uso: ./main -d|-c -m|-l <./entradas/arquivo_entrada> [arquivo_saida]" << endl;
         return 1;
     }
 

@@ -18,4 +18,4 @@ O programa pode ser executado com diferentes argumentos na linha de comando. Aba
 
 ### Sintaxe
 ```bash
-./main -d|-c -m|-l <arquivo_entrada> [arquivo_saida]
+./main -d|-c -m|-l <./entradas/arquivo_entrada> [arquivo_saida]
