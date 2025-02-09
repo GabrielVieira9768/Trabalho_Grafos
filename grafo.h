@@ -25,16 +25,16 @@ class Grafo {
         int get_grau();
         bool eh_completo();
         int n_conexo();
-        bool eh_arvore();
+        //bool eh_arvore();
         //bool possui_ponte();
-        /*bool eh_bipartido();
-        bool possui_articulacao();
-        void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0);*/
+        //bool eh_bipartido();
+        //bool possui_articulacao();
+        //void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0);*/
         
         void carrega_grafo(const string& arquivo);
         void DFS(int no, bool* visitado);
-        bool DFS_verificaCiclo(int no, int pai, bool* visitado);
-        //bool DFS_verificaPonte(int no, int pai, int& tempo, int* tempoDescoberta, int* menorTempo, bool* visitado);
+        //bool DFS_verificaCiclo(int no, int pai, bool* visitado);
+        //bool DFS_ponte(int u, int pai, int& tempo, int* descoberta, int* menor, bool* visitado);
         
         int menor_distancia(int origem, int destino);
         virtual void novo_no(int id, int peso);
