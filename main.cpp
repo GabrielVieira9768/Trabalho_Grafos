@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
-#include "grafo_lista.h"
-#include "grafo_matriz.h"
+#include "./grafo_lista.h"
+#include "./grafo_matriz.h"
 
 using namespace std;
 

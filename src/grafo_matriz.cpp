@@ -1,4 +1,4 @@
-#include "grafo_matriz.h"
+#include "./grafo_matriz.h"
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
@@ -29,29 +29,7 @@ void GrafoMatriz::deleta_no(int id) {
 }
 
 void GrafoMatriz::nova_aresta(int origem, int destino, int peso) {
-    listaNos->insereAresta(origem, destino, peso);
-
-    if (!matrizAdj) {
-        inicializaMatriz(ordem);
-    }
-
-    matrizAdj[origem - 1][destino - 1] = peso;
-
-    if (!direcionado) {
-        matrizAdj[destino - 1][origem - 1] = peso;
-    }
-
-    if (arestaPonderada) {
-        pesosVertices[origem - 1] = peso;
-        pesosVertices[destino - 1] = peso;
-    }
-
-    if (verticePonderado) {
-        pesosVertices[origem - 1] = peso;
-        pesosVertices[destino - 1] = peso;
-    }  
-
-
+    // TO DO
 }
 
 void GrafoMatriz::deleta_aresta(int origem, int destino) {
