@@ -192,6 +192,10 @@ int GrafoLista::getNumArestas() {
     return numArestas;
 }
 
+int GrafoLista::getPesoAresta(int origem, int destino) {
+    Aresta* aresta = listaNos->getAresta(origem, destino);
+    return (aresta != nullptr) ? aresta->peso : -1;
+}
 
 void GrafoLista::imprimeLista() {
     listaNos->imprimeLista();

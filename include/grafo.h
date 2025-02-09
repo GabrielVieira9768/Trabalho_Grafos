@@ -33,10 +33,10 @@ class Grafo {
         
         void carrega_grafo(const string& arquivo);
         void DFS(int no, bool* visitado);
+        void calculaMenorDistancia();
         //bool DFS_verificaCiclo(int no, int pai, bool* visitado);
         //bool DFS_ponte(int u, int pai, int& tempo, int* descoberta, int* menor, bool* visitado);
         
-        int menor_distancia(int origem, int destino);
         virtual void novo_no(int id, int peso);
         virtual void deleta_no(int no);
         virtual void nova_aresta(int origem, int destino, int peso);
@@ -47,6 +47,7 @@ class Grafo {
         virtual int getGrau(int id); // Retorna o Grau de um vértice
         virtual int* getVizinhos(int id); // Retorna um array com todos os vizinhos de um nó
         virtual int getNumArestas(); // Retorna o número de arestas do grafo
+        virtual int getPesoAresta(int origem, int destino); // Retorna o peso de uma aresta
         
         virtual void imprimeLista(); // Imprime o grafo na forma de lista encadeada
         virtual void imprimeMatriz(); // Imprime o grafo na forma de matriz

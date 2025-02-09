@@ -38,6 +38,10 @@ void Grafo::deleta_aresta(int origem, int destino) {
     cerr << "Método deleta_aresta chamado na classe base" << endl;
 }
 
+int Grafo::getPesoAresta(int origem, int destino) {
+    return 0;
+}
+
 bool Grafo::existeNo(int id) {
   return false;
 }
@@ -126,6 +130,58 @@ void Grafo::DFS(int no, bool* visitado) {
     }
 }
 
+void Grafo::calculaMenorDistancia() {
+    // Inicializa a matriz de distâncias com um valor alto (infinito)
+    const int INF = 1e9; // Representa infinito para comparação
+    int** dist = new int*[ordem];
+
+    for (int i = 0; i < ordem; i++) {
+        dist[i] = new int[ordem];
+        for (int j = 0; j < ordem; j++) {
+            if (i == j) {
+                dist[i][j] = 0; // A distância de um nó para ele mesmo é 0
+            } else if (existeAresta(i + 1, j + 1)) {
+                dist[i][j] = getPesoAresta(i + 1, j + 1); // Assumindo uma função para obter o peso da aresta
+            } else {
+                dist[i][j] = INF;
+            }
+        }
+    }
+
+    for (int k = 0; k < ordem; k++) {
+        for (int i = 0; i < ordem; i++) {
+            for (int j = 0; j < ordem; j++) {
+                if (dist[i][k] < INF && dist[k][j] < INF) {
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+    }
+
+    // Pega maior caminho
+    int cont = 0;
+    int inicio;
+    int fim;
+    
+    for (int i = 0; i < ordem; i++) {
+        for (int j = 0; j < ordem; j++) {
+            if (dist[i][j] < INF && dist[i][j] > cont) {
+                cont = dist[i][j];
+                inicio = i;
+                fim = j;
+            }
+        }
+    }
+
+    cout << "Maior menor distância: (" << inicio + 1 << ", " << fim + 1 << ") - " << cont << endl; 
+
+    // Libera a memória alocada
+    for (int i = 0; i < ordem; i++) {
+        delete[] dist[i];
+    }
+    delete[] dist;
+}
+
 void Grafo::carrega_grafo(const string& arquivo) {
     ifstream file(arquivo.c_str());
     
@@ -186,6 +242,8 @@ void Grafo::imprimeGrafo() {
     cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
     cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
+    
+    calculaMenorDistancia();
     // cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
     // cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
     // cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
