@@ -100,7 +100,19 @@ void GrafoMatriz::nova_aresta(int origem, int destino, int peso) {
 }
 
 void GrafoMatriz::deleta_aresta(int origem, int destino) {
-    //listaNos->removeAresta(origem, destino);
+    origem--;
+    destino--;
+
+    if (origem < 0 || origem >= ordem || destino < 0 || destino >= ordem) {
+        cerr << "Erro: Índices fora dos limites." << endl;
+        return;
+    }
+
+    matrizAdj[origem][destino] = 0; // Remove a aresta
+
+    if (!direcionado) {
+        matrizAdj[destino][origem] = 0; // Remove também no caso de grafo não direcionado
+    }
 }
 
 bool GrafoMatriz::existeAresta(int origem, int destino) {
