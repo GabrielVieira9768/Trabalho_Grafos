@@ -71,7 +71,21 @@ void GrafoMatriz::novo_no(int id, int peso) {
 }
 
 void GrafoMatriz::deleta_no(int id) {
-    //todo
+    if (id < 1 || id > ordem) {
+        cerr << "Erro: ID do nó inválido." << endl;
+        return;
+    }
+
+    // Remove o nó e recalcula os IDs
+    for (int i = id - 1; i < ordem - 1; i++) {
+        pesosVertices[i] = pesosVertices[i + 1]; // Atualiza os pesos dos vértices
+        for (int j = 0; j < ordem; j++) {
+            matrizAdj[i][j] = matrizAdj[i + 1][j]; // Atualiza as arestas
+            matrizAdj[j][i] = matrizAdj[j][i + 1];
+        }
+    }
+
+    ordem--;
 }
 
 void GrafoMatriz::nova_aresta(int origem, int destino, int peso) {
