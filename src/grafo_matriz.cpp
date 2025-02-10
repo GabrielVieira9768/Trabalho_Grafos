@@ -8,9 +8,21 @@
 
 using namespace std;
 
-GrafoMatriz::GrafoMatriz() : matrizAdj(nullptr), pesosVertices(nullptr) {}
+GrafoMatriz::GrafoMatriz() : capacidade(10), matrizAdj(nullptr), pesosVertices(nullptr) {
+    matrizAdj = new int*[capacidade];
+    for (int i = 0; i < capacidade; i++) {
+        matrizAdj[i] = new int[capacidade](); // Inicializa com 0
+    }
+
+    if (verticePonderado) {
+        pesosVertices = new int[capacidade](); // Inicializa com 0
+    }
+
+    cout << "Construtor de GrafoMatriz chamado. Capacidade inicial: " << capacidade << endl;
+}
 
 GrafoMatriz::~GrafoMatriz() {
+    cout << "Destrutor de GrafoMatriz chamado." << endl;
     if (matrizAdj) {
         for (int i = 0; i < ordem; i++) {
             delete[] matrizAdj[i];
@@ -20,20 +32,91 @@ GrafoMatriz::~GrafoMatriz() {
     delete[] pesosVertices;
 }
 
+void GrafoMatriz::redimensionarMatriz() {
+    int novaCapacidade = capacidade * 2;
+
+    // Aloca uma nova matriz com o dobro do tamanho
+    int** novaMatriz = new int*[novaCapacidade];
+    for (int i = 0; i < novaCapacidade; i++) {
+        novaMatriz[i] = new int[novaCapacidade]();
+    }
+
+    // Copia os valores da matriz antiga para a nova
+    for (int i = 0; i < ordem; i++) {
+        for (int j = 0; j < ordem; j++) {
+            novaMatriz[i][j] = matrizAdj[i][j];
+        }
+    }
+
+    // Libera a memória da matriz antiga
+    for (int i = 0; i < capacidade; i++) {
+        delete[] matrizAdj[i];
+    }
+    delete[] matrizAdj;
+
+    // Atualiza a matriz e a capacidade
+    matrizAdj = novaMatriz;
+    capacidade = novaCapacidade;
+
+    cout << "Matriz redimensionada. Nova capacidade: " << capacidade << endl;
+}
+
 void GrafoMatriz::novo_no(int id, int peso) {
-    //listaNos->insereNo(id, peso);
+    // Verifica se a capacidade é suficiente
+    if (ordem >= capacidade) {
+        redimensionarMatriz();
+    }
+
+    // Adiciona o nó
+    if (verticePonderado) {
+        pesosVertices[id - 1] = peso;
+    }
+
+    ordem++;
+    cout << "Nó " << id << " adicionado. Ordem atual: " << ordem << endl;
 }
 
 void GrafoMatriz::deleta_no(int id) {
-    //listaNos->removeNo(id);
+    //todo
 }
 
 void GrafoMatriz::nova_aresta(int origem, int destino, int peso) {
-    // TO DO
+    origem--;
+    destino--;
+
+    matrizAdj[origem][destino] = peso;
+
+    if (!direcionado) {
+        matrizAdj[destino][origem] = peso;
+    }
+
+    cout << "Aresta " << origem + 1 << " -> " << destino + 1 << " adicionada com peso " << peso << "." << endl;
 }
 
 void GrafoMatriz::deleta_aresta(int origem, int destino) {
     //listaNos->removeAresta(origem, destino);
+}
+
+bool GrafoMatriz::existeAresta(int origem, int destino) {
+    origem--;
+    destino--;
+
+    if (origem < 0 || origem >= ordem || destino < 0 || destino >= ordem) {
+        return false; // Índices fora dos limites
+    }
+
+    return matrizAdj[origem][destino] != 0; // Aresta existe se o peso for diferente de 0
+}
+
+int GrafoMatriz::getPesoAresta(int origem, int destino) {
+    origem--;
+    destino--;
+
+    if (origem < 0 || origem >= ordem || destino < 0 || destino >= ordem) {
+        return 0; // Índices fora dos limites
+    }
+
+    return matrizAdj[origem][destino]; // Retorna o peso da aresta
 }
 
 // void GrafoMatriz::inicializaMatriz(int ordem) {

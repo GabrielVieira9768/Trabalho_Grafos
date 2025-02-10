@@ -23,9 +23,9 @@ int main(int argc, char* argv[]) {
     if (comando == "-d") {
         if (tipoRepresentacao == "-m") {
             // Criar o grafo usando as variáveis definidas
-            // GrafoMatriz grafo;
-            // grafo.carrega_grafo(arquivoEntrada);
-            // grafo.imprimeGrafo();
+            GrafoMatriz grafo;
+            grafo.carrega_grafo(arquivoEntrada);
+            grafo.imprimeGrafo();
         } else if (tipoRepresentacao == "-l") {
             // Criar o grafo usando as variáveis definidas
             GrafoLista grafo;
