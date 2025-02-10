@@ -250,6 +250,7 @@ void Grafo::imprimeGrafo() {
     // cout << "Vertice de Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
 
     imprimeLista();
+    imprimeMatriz();
 }
 
 void Grafo::imprimeLista() {

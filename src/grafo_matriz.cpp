@@ -17,12 +17,9 @@ GrafoMatriz::GrafoMatriz() : capacidade(10), matrizAdj(nullptr), pesosVertices(n
     if (verticePonderado) {
         pesosVertices = new int[capacidade](); // Inicializa com 0
     }
-
-    cout << "Construtor de GrafoMatriz chamado. Capacidade inicial: " << capacidade << endl;
 }
 
 GrafoMatriz::~GrafoMatriz() {
-    cout << "Destrutor de GrafoMatriz chamado." << endl;
     if (matrizAdj) {
         for (int i = 0; i < ordem; i++) {
             delete[] matrizAdj[i];
@@ -57,8 +54,6 @@ void GrafoMatriz::redimensionarMatriz() {
     // Atualiza a matriz e a capacidade
     matrizAdj = novaMatriz;
     capacidade = novaCapacidade;
-
-    cout << "Matriz redimensionada. Nova capacidade: " << capacidade << endl;
 }
 
 void GrafoMatriz::novo_no(int id, int peso) {
@@ -73,7 +68,6 @@ void GrafoMatriz::novo_no(int id, int peso) {
     }
 
     ordem++;
-    cout << "Nó " << id << " adicionado. Ordem atual: " << ordem << endl;
 }
 
 void GrafoMatriz::deleta_no(int id) {
@@ -89,8 +83,6 @@ void GrafoMatriz::nova_aresta(int origem, int destino, int peso) {
     if (!direcionado) {
         matrizAdj[destino][origem] = peso;
     }
-
-    cout << "Aresta " << origem + 1 << " -> " << destino + 1 << " adicionada com peso " << peso << "." << endl;
 }
 
 void GrafoMatriz::deleta_aresta(int origem, int destino) {
@@ -118,6 +110,28 @@ int GrafoMatriz::getPesoAresta(int origem, int destino) {
 
     return matrizAdj[origem][destino]; // Retorna o peso da aresta
 }
+
+void GrafoMatriz::imprimeMatriz() {
+    cout << "Matriz de Adjacência:" << endl;
+
+    // Cabeçalho com os índices dos vértices
+    cout << setw(4) << " ";
+    for (int i = 0; i < ordem; i++) {
+        cout << setw(4) << (i + 1);
+    }
+    cout << endl;
+
+    // Impressão da matriz
+    for (int i = 0; i < ordem; i++) {
+        cout << setw(4) << (i + 1);  // Índice da linha
+        for (int j = 0; j < ordem; j++) {
+            cout << setw(4) << matrizAdj[i][j];
+        }
+        cout << endl;
+    }
+}
+
+
 
 // void GrafoMatriz::inicializaMatriz(int ordem) {
 //     this->ordem = ordem;
