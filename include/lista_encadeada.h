@@ -5,20 +5,20 @@
 
 struct Aresta {
     int destino;
-    int peso;
+    float peso;
     Aresta* proxima;
     
-    Aresta(int destino, int peso = 0);
+    Aresta(int destino, float peso = 0);
 };
 
 struct No {
     int id;
-    int peso;
+    float peso;
     int grau;
     Aresta* listaArestas;
     No* proximo;
     
-    No(int id, int peso = 0);
+    No(int id, float peso = 0);
 };
 
 class ListaEncadeada {

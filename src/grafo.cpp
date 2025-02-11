@@ -22,7 +22,7 @@ bool Grafo::aresta_ponderada() {
     return this->arestaPonderada;
 }
 
-void Grafo::novo_no(int id, int peso) {
+void Grafo::novo_no(int id, float peso) {
     cerr << "Método novo_no chamado na classe base" << endl;
 }
 
@@ -30,7 +30,7 @@ void Grafo::deleta_no(int id) {
     cerr << "Método deleta_no chamado na classe base" << endl;
 }
 
-void Grafo::nova_aresta(int origem, int destino, int peso) {
+void Grafo::nova_aresta(int origem, int destino, float peso) {
     cerr << "Método nova_aresta chamado na classe base"<< endl;
 }
 
@@ -38,7 +38,7 @@ void Grafo::deleta_aresta(int origem, int destino) {
     cerr << "Método deleta_aresta chamado na classe base" << endl;
 }
 
-int Grafo::getPesoAresta(int origem, int destino) {
+float Grafo::getPesoAresta(int origem, int destino) {
     return 0;
 }
 
@@ -132,22 +132,23 @@ void Grafo::DFS(int no, bool* visitado) {
 
 void Grafo::calculaMenorDistancia() {
     // Inicializa a matriz de distâncias com um valor alto (infinito)
-    const int INF = 1e9; // Representa infinito para comparação
-    int** dist = new int*[ordem];
+    const float INF = 1e9f;  // Representa infinito para comparação
+    float** dist = new float*[ordem];
 
     for (int i = 0; i < ordem; i++) {
-        dist[i] = new int[ordem];
+        dist[i] = new float[ordem];
         for (int j = 0; j < ordem; j++) {
             if (i == j) {
-                dist[i][j] = 0; // A distância de um nó para ele mesmo é 0
+                dist[i][j] = 0.0f;  // A distância de um nó para ele mesmo é 0
             } else if (existeAresta(i + 1, j + 1)) {
-                dist[i][j] = getPesoAresta(i + 1, j + 1); // Assumindo uma função para obter o peso da aresta
+                dist[i][j] = getPesoAresta(i + 1, j + 1); // Assumindo que retorna float
             } else {
                 dist[i][j] = INF;
             }
         }
     }
 
+    // Floyd-Warshall para encontrar menores distâncias
     for (int k = 0; k < ordem; k++) {
         for (int i = 0; i < ordem; i++) {
             for (int j = 0; j < ordem; j++) {
@@ -158,8 +159,8 @@ void Grafo::calculaMenorDistancia() {
         }
     }
 
-    // Pega maior caminho
-    int cont = 0;
+    // Pega maior menor caminho
+    float cont = 0.0f;
     int inicio;
     int fim;
     
@@ -173,13 +174,32 @@ void Grafo::calculaMenorDistancia() {
         }
     }
 
-    cout << "Maior menor distância: (" << inicio + 1 << ", " << fim + 1 << ") - " << cont << endl; 
+    cout << "Maior menor distância: (" << inicio + 1 << ", " << fim + 1 << ") - " << cont << endl;
 
     // Libera a memória alocada
     for (int i = 0; i < ordem; i++) {
         delete[] dist[i];
     }
     delete[] dist;
+}
+
+
+void Grafo::deleta_primeira_aresta(int id) {
+    int* vizinhos = getVizinhos(id);
+    int grau = getGrau(id);
+
+    if (grau == 0) return;  // Não há arestas para deletar
+
+    int menor = vizinhos[0];  // Inicializa com o primeiro vizinho
+
+    for (int i = 1; i < grau; i++) {  // Começa do segundo vizinho
+        if (vizinhos[i] < menor) {
+            menor = vizinhos[i];
+        }
+    }
+
+    cout << "Excluindo primeira aresta do nó " << id << "..." << endl;
+    deleta_aresta(id, menor);
 }
 
 void Grafo::carrega_grafo(const string& arquivo) {
@@ -204,7 +224,7 @@ void Grafo::carrega_grafo(const string& arquivo) {
     
     // Lê os pesos dos nós se ponderado
     if (verticePonderado && getline(file, linha)) {
-        int peso;
+        float peso;
         for (int id = 1; id <= ordem_int; ++id) {
             size_t pos = linha.find(" ");
             if (pos != string::npos) {
@@ -221,9 +241,11 @@ void Grafo::carrega_grafo(const string& arquivo) {
     while (getline(file, linha)) {
         if (linha.empty()) continue;
         
-        int origem, destino, peso = 0;
+        int origem, destino;
+        float peso = 0.0f;
+
         if (arestaPonderada) {
-            sscanf(linha.c_str(), "%d %d %d", &origem, &destino, &peso);
+            sscanf(linha.c_str(), "%d %d %f", &origem, &destino, &peso);
         } else {
             sscanf(linha.c_str(), "%d %d", &origem, &destino);
         }
@@ -244,11 +266,6 @@ void Grafo::imprimeGrafo() {
     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
     
     calculaMenorDistancia();
-    // cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << endl;
-    // cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << endl;
-    // cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << endl;
-    // cout << "Vertice de Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
-
     imprimeLista();
     imprimeMatriz();
 }

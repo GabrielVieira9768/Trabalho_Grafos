@@ -3,10 +3,10 @@
 using namespace std;
 
 // Construtor da Aresta
-Aresta::Aresta(int destino, int peso) : destino(destino), peso(peso), proxima(nullptr) {}
+Aresta::Aresta(int destino, float peso) : destino(destino), peso(peso), proxima(nullptr) {}
 
 // Construtor do Nó
-No::No(int id, int peso) : id(id), peso(peso), grau(0), listaArestas(nullptr), proximo(nullptr) {}
+No::No(int id, float peso) : id(id), peso(peso), grau(0), listaArestas(nullptr), proximo(nullptr) {}
 
 // Construtor da Lista Encadeada
 ListaEncadeada::ListaEncadeada() : cabeca(nullptr) {}
