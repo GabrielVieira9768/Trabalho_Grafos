@@ -94,16 +94,25 @@ int GrafoMatriz::getGrau(int id) {
 }
 
 void GrafoMatriz::novo_no(int id, float peso) {
+    // Verifica se o ID é válido
+    if (id <= 0) {
+        cerr << "Erro: ID do nó inválido (deve ser maior que 0)." << endl;
+        return;
+    }
+
     // Verifica se a capacidade é suficiente
-    if (ordem >= capacidade) {
+    if (id >= capacidade) {
         redimensionarMatriz();
     }
 
-    // Adiciona o nó
-    if (verticePonderado) {
-        pesosVertices[id - 1] = peso;
+    // Verifica se pesosVertices foi alocado
+    if (!pesosVertices) {
+        cerr << "Erro: pesosVertices não foi alocado." << endl;
+        return;
     }
 
+    // Adiciona o nó
+    pesosVertices[id - 1] = peso; // Acesso seguro
     ordem++;
 }
 
