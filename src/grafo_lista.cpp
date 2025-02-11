@@ -10,7 +10,7 @@ GrafoLista::~GrafoLista() {
     delete listaNos;
 }
 
-void GrafoLista::novo_no(int id, int peso) {
+void GrafoLista::novo_no(int id, float peso) {
     No* novoNo = new No(id, peso);
     novoNo->proximo = listaNos->getCabeca();
     listaNos->setCabeca(novoNo);
@@ -20,7 +20,7 @@ void GrafoLista::novo_no(int id, int peso) {
 void GrafoLista::deleta_no(int id) {
     No* noParaRemover = listaNos->getNo(id);
     if (!noParaRemover) return;
-    
+
     // Remover todas as arestas que apontam para o nó a ser removido
     No* atual = listaNos->getCabeca();
     while (atual) {
@@ -29,15 +29,7 @@ void GrafoLista::deleta_no(int id) {
         }
         atual = atual->proximo;
     }
-    
-    // Remover todas as arestas do nó
-    Aresta* arestaAtual = noParaRemover->listaArestas;
-    while (arestaAtual) {
-        Aresta* tempAresta = arestaAtual;
-        arestaAtual = arestaAtual->proxima;
-        delete tempAresta;
-    }
-    
+
     // Remover o nó da lista de nós
     No* anterior = nullptr;
     atual = listaNos->getCabeca();
@@ -53,12 +45,15 @@ void GrafoLista::deleta_no(int id) {
         listaNos->setCabeca(noParaRemover->proximo);
     }
 
+    cout << "Excluindo nó " << id << "..." << endl;
+
     ordem--;
 
+    // Chama o destruidor do nó, que vai limpar as arestas associadas e deletar o nó
     delete noParaRemover;
 }
 
-void GrafoLista::nova_aresta(int origem, int destino, int peso) {
+void GrafoLista::nova_aresta(int origem, int destino, float peso) {
     No* noOrigem = listaNos->getNo(origem);
     No* noDestino = listaNos->getNo(destino);
     
@@ -192,7 +187,7 @@ int GrafoLista::getNumArestas() {
     return numArestas;
 }
 
-int GrafoLista::getPesoAresta(int origem, int destino) {
+float GrafoLista::getPesoAresta(int origem, int destino) {
     Aresta* aresta = listaNos->getAresta(origem, destino);
     return (aresta != nullptr) ? aresta->peso : -1;
 }

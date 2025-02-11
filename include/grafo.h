@@ -6,7 +6,7 @@
 using namespace std;
 
 class Grafo {
-    protected:
+    protected: 
         int ordem = 0;
         bool direcionado;
         bool verticePonderado;
@@ -25,21 +25,15 @@ class Grafo {
         int get_grau();
         bool eh_completo();
         int n_conexo();
-        //bool eh_arvore();
-        //bool possui_ponte();
-        //bool eh_bipartido();
-        //bool possui_articulacao();
-        //void novo_grafo(const string& arquivoEntrada, const string& arquivoSaida, int tentativas = 0);*/
         
         void carrega_grafo(const string& arquivo);
         void DFS(int no, bool* visitado);
         void calculaMenorDistancia();
-        //bool DFS_verificaCiclo(int no, int pai, bool* visitado);
-        //bool DFS_ponte(int u, int pai, int& tempo, int* descoberta, int* menor, bool* visitado);
+        void deleta_primeira_aresta(int id);
         
-        virtual void novo_no(int id, int peso);
+        virtual void novo_no(int id, float peso);
         virtual void deleta_no(int no);
-        virtual void nova_aresta(int origem, int destino, int peso);
+        virtual void nova_aresta(int origem, int destino, float peso);
         virtual void deleta_aresta(int origem, int destino);
         
         virtual bool existeNo(int id); // Verifica se existe um nó específico
@@ -47,7 +41,7 @@ class Grafo {
         virtual int getGrau(int id); // Retorna o Grau de um vértice
         virtual int* getVizinhos(int id); // Retorna um array com todos os vizinhos de um nó
         virtual int getNumArestas(); // Retorna o número de arestas do grafo
-        virtual int getPesoAresta(int origem, int destino); // Retorna o peso de uma aresta
+        virtual float getPesoAresta(int origem, int destino); // Retorna o peso de uma aresta
         
         virtual void imprimeLista(); // Imprime o grafo na forma de lista encadeada
         virtual void imprimeMatriz(); // Imprime o grafo na forma de matriz

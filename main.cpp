@@ -10,14 +10,13 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
-        cerr << "Uso: ./main -d|-c -m|-l <./entradas/arquivo_entrada> [arquivo_saida]" << endl;
+        cerr << "Uso: ./main -d -m|-l <./entradas/arquivo_entrada>" << endl;
         return 1;
     }
 
     string comando = argv[1];
     string tipoRepresentacao = argv[2];
     string arquivoEntrada = argv[3];
-    string arquivoSaida = argc == 5 ? argv[4] : "";
     int tentativas = 0;
 
     if (comando == "-d") {
@@ -30,31 +29,15 @@ int main(int argc, char* argv[]) {
             // Criar o grafo usando as variáveis definidas
             GrafoLista grafo;
             grafo.carrega_grafo(arquivoEntrada);
+            grafo.deleta_no(1);
+            grafo.deleta_primeira_aresta(2);
             grafo.imprimeGrafo();
         } else {
             cerr << "Erro: Tipo de representação inválido. Use -m ou -l." << endl;
             return 1;
         }
-    } else if (comando == "-c") {
-        if (arquivoSaida.empty()) {
-            cerr << "Erro: Arquivo de saída necessário para criação de grafo." << endl;
-            return 1;
-        }
-
-        // if (tipoRepresentacao == "-m") {
-        //     // GrafoMatriz grafo; 
-
-        //     // grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
-        // } else if (tipoRepresentacao == "-l") {
-        //     GrafoLista grafo;
-
-        //     grafo.novo_grafo(arquivoEntrada, arquivoSaida, tentativas);
-        // } else {
-        //     cerr << "Erro: Tipo de representação inválido. Use -m ou -l." << endl;
-        //     return 1;
-        // }
     } else {
-        cerr << "Erro: Comando inválido. Use -d ou -c." << endl;
+        cerr << "Erro: Comando inválido. Use -d." << endl;
         return 1;
     }
 

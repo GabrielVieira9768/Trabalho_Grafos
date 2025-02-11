@@ -20,7 +20,7 @@ GrafoMatriz::~GrafoMatriz() {
     delete[] pesosVertices;
 }
 
-void GrafoMatriz::novo_no(int id, int peso) {
+void GrafoMatriz::novo_no(int id, float peso) {
     //listaNos->insereNo(id, peso);
 }
 
@@ -28,7 +28,7 @@ void GrafoMatriz::deleta_no(int id) {
     //listaNos->removeNo(id);
 }
 
-void GrafoMatriz::nova_aresta(int origem, int destino, int peso) {
+void GrafoMatriz::nova_aresta(int origem, int destino, float peso) {
     // TO DO
 }
 

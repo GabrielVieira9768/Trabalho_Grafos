@@ -16,9 +16,9 @@ class GrafoMatriz : public Grafo {
         GrafoMatriz();
         ~GrafoMatriz();
 
-        void novo_no(int id, int peso) override;
+        void novo_no(int id, float peso) override;
         void deleta_no(int id) override;
-        void nova_aresta(int origem, int destino, int peso) override;
+        void nova_aresta(int origem, int destino, float peso) override;
         void deleta_aresta(int origem, int destino) override;
 
 };
