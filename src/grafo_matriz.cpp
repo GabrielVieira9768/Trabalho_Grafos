@@ -56,6 +56,44 @@ void GrafoMatriz::redimensionarMatriz() {
     capacidade = novaCapacidade;
 }
 
+int* GrafoMatriz::getVizinhos(int id) {
+    id--; // Ajusta o índice para começar de 0
+    int* vizinhos = new int[ordem]; // Aloca um array para os vizinhos
+    int count = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (matrizAdj[id][i] != 0) { // Se há uma aresta entre id e i
+            vizinhos[count++] = i + 1; // Adiciona o vizinho (ajusta o índice para começar de 1)
+        }
+    }
+
+    // Redimensiona o array para o tamanho correto
+    int* resultado = new int[count];
+    for (int i = 0; i < count; i++) {
+        resultado[i] = vizinhos[i];
+    }
+
+    delete[] vizinhos; // Libera o array temporário
+    return resultado;
+}
+
+int GrafoMatriz::getGrau(int id) {
+    id--; // Ajusta o índice para começar de 0
+    int grau = 0;
+
+    for (int i = 0; i < ordem; i++) {
+        if (matrizAdj[id][i] != 0) { // Conta as arestas de saída
+            grau++;
+        }
+        if (!direcionado && matrizAdj[i][id] != 0) { // Se não for direcionado, conta as arestas de entrada
+            grau++;
+        }
+    }
+
+    return grau;
+}
+
+
 void GrafoMatriz::novo_no(int id, int peso) {
     // Verifica se a capacidade é suficiente
     if (ordem >= capacidade) {

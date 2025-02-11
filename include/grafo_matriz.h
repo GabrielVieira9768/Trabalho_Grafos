@@ -25,6 +25,8 @@ class GrafoMatriz : public Grafo {
 
         bool existeAresta(int origem, int destino) override;
         int getPesoAresta(int origem, int destino) override;
+        int* getVizinhos(int id) override;
+        int getGrau(int id) override;
 
         void imprimeMatriz();
 };
