@@ -267,6 +267,7 @@ void Grafo::imprimeGrafo() {
     
     calculaMenorDistancia();
     imprimeLista();
+    imprimeMatriz();
 }
 
 void Grafo::imprimeLista() {

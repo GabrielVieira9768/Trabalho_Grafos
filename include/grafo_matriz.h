@@ -9,8 +9,10 @@ class GrafoMatriz : public Grafo {
     private:
         int** matrizAdj;
         int* pesosVertices;
+        int capacidade;
 
         void inicializaMatriz(int ordem);
+        void redimensionarMatriz(); // Função para redimensionar a matriz
 
     public:
         GrafoMatriz();
@@ -21,6 +23,10 @@ class GrafoMatriz : public Grafo {
         void nova_aresta(int origem, int destino, float peso) override;
         void deleta_aresta(int origem, int destino) override;
 
+        bool existeAresta(int origem, int destino) override;
+        int getPesoAresta(int origem, int destino) override;
+
+        void imprimeMatriz();
 };
 
 #endif
