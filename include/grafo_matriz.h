@@ -7,11 +7,10 @@ using namespace std;
 
 class GrafoMatriz : public Grafo {
     private:
-        int** matrizAdj;
-        int* pesosVertices;
+        float** matrizAdj;
+        float* pesosVertices;
         int capacidade;
 
-        void inicializaMatriz(int ordem);
         void redimensionarMatriz(); // Função para redimensionar a matriz
 
     public:
@@ -24,7 +23,7 @@ class GrafoMatriz : public Grafo {
         void deleta_aresta(int origem, int destino) override;
 
         bool existeAresta(int origem, int destino) override;
-        int getPesoAresta(int origem, int destino) override;
+        float getPesoAresta(int origem, int destino) override;
 
         void imprimeMatriz();
 };
