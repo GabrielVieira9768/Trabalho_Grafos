@@ -94,7 +94,7 @@ int GrafoMatriz::getGrau(int id) {
 }
 
 
-void GrafoMatriz::novo_no(int id, int peso) {
+void GrafoMatriz::novo_no(int id, float peso) {
     // Verifica se a capacidade é suficiente
     if (ordem >= capacidade) {
         redimensionarMatriz();
@@ -126,7 +126,7 @@ void GrafoMatriz::deleta_no(int id) {
     ordem--;
 }
 
-void GrafoMatriz::nova_aresta(int origem, int destino, int peso) {
+void GrafoMatriz::nova_aresta(int origem, int destino, float peso) {
     origem--;
     destino--;
 
@@ -164,7 +164,7 @@ bool GrafoMatriz::existeAresta(int origem, int destino) {
     return matrizAdj[origem][destino] != 0; // Aresta existe se o peso for diferente de 0
 }
 
-int GrafoMatriz::getPesoAresta(int origem, int destino) {
+float GrafoMatriz::getPesoAresta(int origem, int destino) {
     origem--;
     destino--;
 

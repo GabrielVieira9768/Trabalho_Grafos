@@ -24,7 +24,7 @@ class GrafoMatriz : public Grafo {
         void deleta_aresta(int origem, int destino) override;
 
         bool existeAresta(int origem, int destino) override;
-        int getPesoAresta(int origem, int destino) override;
+        float getPesoAresta(int origem, int destino) override;
         int* getVizinhos(int id) override;
         int getGrau(int id) override;
 
