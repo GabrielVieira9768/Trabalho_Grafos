@@ -27,7 +27,7 @@ class GrafoMatriz : public Grafo {
         int* getVizinhos(int id) override;
         int getGrau(int id) override;
 
-        void imprimeMatriz();
+        void imprimeMatriz() override;
 };
 
 #endif
