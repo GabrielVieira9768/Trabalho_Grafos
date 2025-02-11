@@ -1,6 +1,6 @@
 # Trabalho de Grafos - Representações em C++
 
-Este é um projeto em C++ que permite a manipulação de grafos utilizando duas representações: lista de adjacência e matriz de adjacência. O código permite tanto a criação quanto a leitura de grafos a partir de arquivos de entrada, além de possibilitar a impressão dos grafos na tela ou a exportação para um arquivo de saída.
+Este é um projeto em C++ que permite a manipulação de grafos utilizando duas representações: lista de adjacência e matriz de adjacência. O código permite tanto a leitura de grafos a partir de arquivos de entrada, além de possibilitar a impressão das informações dos grafos na tela.
 
 ## Funcionalidades
 
@@ -14,7 +14,7 @@ O programa possui as seguintes funcionalidades principais:
 
 3. **Remoção de Arestas:** Permite remover a primeira aresta de um nó especificado.
 
-4. **Cálculo da Menor Distância:** Calcula a menor distância entre dois nós, permitindo a determinação do caminho mais curto entre eles.
+4. **Cálculo da Menor Distância:** Calcula a maior menor distância entre dois nós, permitindo a determinação do caminho mais curto entre eles.
 
 ## Como Usar
 
@@ -37,25 +37,12 @@ Para carregar um grafo na representação por matriz e exibi-lo:
 ./main -d -m ./entradas/grafo.txt
 ```
 
-Para remover um nó no grafo:
+Para carregar um grafo na representação por lista e exibi-lo:
 ```bash
-./main -r -m ./entradas/grafo.txt
-```
-
-Para remover a primeira aresta de um nó:
-```bash
-./main -e -m ./entradas/grafo.txt <nó>
-```
-
-Para calcular a menor distância entre dois nós:
-```bash
-./main -s -m ./entradas/grafo.txt <nó_origem> <nó_destino>
+./main -d -l ./entradas/grafo.txt
 ```
 
 ## Observações
 - A funcionalidade de recalcular IDs dos nós na representação por matriz garante que a remoção de nós mantenha o grafo isomorfo ao original.
 - O cálculo da menor distância é feito utilizando algoritmos eficientes para grafos ponderados.
-
-## Contribuições
-Contribuições são bem-vindas! Sinta-se à vontade para fazer um fork do projeto e enviar pull requests com melhorias ou correções.
 
