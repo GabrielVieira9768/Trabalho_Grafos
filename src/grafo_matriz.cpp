@@ -4,29 +4,29 @@
 #include <cstdlib>
 #include <iomanip>
 #include <cstring>
-#include <string> 
+#include <string>
+#include <vector>
 
 using namespace std;
 
-GrafoMatriz::GrafoMatriz() : capacidade(10), matrizAdj(nullptr), pesosVertices(nullptr) {
+GrafoMatriz::GrafoMatriz() 
+    : capacidade(10), matrizAdj(nullptr), pesosVertices(nullptr) {
     matrizAdj = new float*[capacidade];
     for (int i = 0; i < capacidade; i++) {
         matrizAdj[i] = new float[capacidade](); // Inicializa com 0
     }
 
-    if (verticePonderado) {
-        pesosVertices = new float[capacidade](); // Inicializa com 0
-    }
+    pesosVertices = new float[capacidade](); // Aloca sempre, independentemente de verticePonderado
 }
 
 GrafoMatriz::~GrafoMatriz() {
     if (matrizAdj) {
-        for (int i = 0; i < ordem; i++) {
-            delete[] matrizAdj[i];
+        for (int i = 0; i < capacidade; i++) {
+            delete[] matrizAdj[i]; // Libera cada linha da matriz
         }
-        delete[] matrizAdj;
+        delete[] matrizAdj; // Libera o array de ponteiros
     }
-    delete[] pesosVertices;
+    delete[] pesosVertices; // Libera o array de pesos
 }
 
 void GrafoMatriz::redimensionarMatriz() {
@@ -39,8 +39,8 @@ void GrafoMatriz::redimensionarMatriz() {
     }
 
     // Copia os valores da matriz antiga para a nova
-    for (int i = 0; i < ordem; i++) {
-        for (int j = 0; j < ordem; j++) {
+    for (int i = 0; i < capacidade; i++) {
+        for (int j = 0; j < capacidade; j++) {
             novaMatriz[i][j] = matrizAdj[i][j];
         }
     }
@@ -50,6 +50,14 @@ void GrafoMatriz::redimensionarMatriz() {
         delete[] matrizAdj[i];
     }
     delete[] matrizAdj;
+
+    // Redimensiona pesosVertices
+    float* novosPesos = new float[novaCapacidade]();
+    for (int i = 0; i < capacidade; i++) {
+        novosPesos[i] = pesosVertices[i];
+    }
+    delete[] pesosVertices;
+    pesosVertices = novosPesos;
 
     // Atualiza a matriz e a capacidade
     matrizAdj = novaMatriz;
@@ -74,24 +82,47 @@ int* GrafoMatriz::getVizinhos(int id) {
     }
 
     delete[] vizinhos; // Libera o array temporário
-    return resultado;
+    return resultado; // Retorna o array redimensionado
 }
 
 int GrafoMatriz::getGrau(int id) {
     id--; // Ajusta o índice para começar de 0
     int grau = 0;
 
+    // Conta as arestas de saída
     for (int i = 0; i < ordem; i++) {
-        if (matrizAdj[id][i] != 0) { // Conta as arestas de saída
+        if (matrizAdj[id][i] != 0) {
             grau++;
         }
-        if (!direcionado && matrizAdj[i][id] != 0) { // Se não for direcionado, conta as arestas de entrada
-            grau++;
+    }
+
+    // Se o grafo for direcionado, conta as arestas de entrada
+    if (direcionado) {
+        for (int i = 0; i < ordem; i++) {
+            if (matrizAdj[i][id] != 0) {
+                grau++;
+            }
         }
     }
 
     return grau;
 }
+
+// int GrafoMatriz::getGrau(int id) {
+//     id--; // Ajusta o índice para começar de 0
+//     int grau = 0;
+
+//     for (int i = 0; i < ordem; i++) {
+//         if (matrizAdj[id][i] != 0) { // Conta as arestas de saída
+//             grau++;
+//         }
+//         if (!direcionado && matrizAdj[i][id] != 0) { // Se não for direcionado, conta as arestas de entrada
+//             grau++;
+//         }
+//     }
+
+//     return grau;
+// }
 
 void GrafoMatriz::novo_no(int id, float peso) {
     // Verifica se o ID é válido
@@ -105,16 +136,30 @@ void GrafoMatriz::novo_no(int id, float peso) {
         redimensionarMatriz();
     }
 
-    // Verifica se pesosVertices foi alocado
-    if (!pesosVertices) {
-        cerr << "Erro: pesosVertices não foi alocado." << endl;
-        return;
-    }
-
     // Adiciona o nó
     pesosVertices[id - 1] = peso; // Acesso seguro
     ordem++;
 }
+
+// void GrafoMatriz::deleta_no(int id) {
+//     if (id < 1 || id > ordem) {
+//         cerr << "Erro: ID do nó inválido." << endl;
+//         return;
+//     }
+
+//     // Remove o nó e recalcula os IDs
+//     for (int i = id - 1; i < ordem - 1; i++) {
+//         pesosVertices[i] = pesosVertices[i + 1]; // Atualiza os pesos dos vértices
+//         for (int j = 0; j < ordem; j++) {
+//             matrizAdj[i][j] = matrizAdj[i + 1][j]; // Atualiza as arestas
+//             matrizAdj[j][i] = matrizAdj[j][i + 1];
+//         }
+//     }
+
+//     cout << "Excluindo nó " << id << "..." << endl;
+    
+//     ordem--;
+// }
 
 void GrafoMatriz::deleta_no(int id) {
     if (id < 1 || id > ordem) {
@@ -122,18 +167,82 @@ void GrafoMatriz::deleta_no(int id) {
         return;
     }
 
-    // Remove o nó e recalcula os IDs
+    // Remove todas as arestas que apontam para o nó a ser deletado
+    for (int i = 0; i < ordem; i++) {
+        if (matrizAdj[i][id - 1] != 0) { // Remove arestas de entrada
+            deleta_aresta(i + 1, id);
+        }
+        if (matrizAdj[id - 1][i] != 0) { // Remove arestas de saída
+            deleta_aresta(id, i + 1);
+        }
+    }
+
+    // Remove o nó da matriz de adjacência e ajusta os índices
     for (int i = id - 1; i < ordem - 1; i++) {
-        pesosVertices[i] = pesosVertices[i + 1]; // Atualiza os pesos dos vértices
+        // Atualiza os pesos dos vértices (se o grafo for ponderado nos vértices)
+        if (verticePonderado) {
+            pesosVertices[i] = pesosVertices[i + 1];
+        }
+
+        // Move as linhas para cima
         for (int j = 0; j < ordem; j++) {
-            matrizAdj[i][j] = matrizAdj[i + 1][j]; // Atualiza as arestas
+            matrizAdj[i][j] = matrizAdj[i + 1][j];
+        }
+
+        // Move as colunas para a esquerda
+        for (int j = 0; j < ordem; j++) {
             matrizAdj[j][i] = matrizAdj[j][i + 1];
         }
     }
 
-    cout << "Excluindo nó " << id << "..." << endl;
-    
+    // Atualiza a ordem do grafo
     ordem--;
+
+    // Redimensiona a matriz de adjacência e o vetor de pesos (se necessário)
+    if (ordem > 0) {
+        // Cria uma nova matriz temporária com o tamanho reduzido
+        float** novaMatriz = new float*[ordem];
+        for (int i = 0; i < ordem; i++) {
+            novaMatriz[i] = new float[ordem];
+            for (int j = 0; j < ordem; j++) {
+                novaMatriz[i][j] = matrizAdj[i][j];
+            }
+        }
+
+        // Libera a memória da matriz antiga
+        for (int i = 0; i < capacidade; i++) {
+            delete[] matrizAdj[i];
+        }
+        delete[] matrizAdj;
+
+        // Atualiza a matriz de adjacência e a capacidade
+        matrizAdj = novaMatriz;
+        capacidade = ordem;
+
+        // Redimensiona o vetor de pesos (se o grafo for ponderado nos vértices)
+        if (verticePonderado) {
+            float* novosPesos = new float[ordem];
+            for (int i = 0; i < ordem; i++) {
+                novosPesos[i] = pesosVertices[i];
+            }
+            delete[] pesosVertices;
+            pesosVertices = novosPesos;
+        }
+    } else {
+        // Se o grafo ficar vazio, libera toda a memória
+        for (int i = 0; i < capacidade; i++) {
+            delete[] matrizAdj[i];
+        }
+        delete[] matrizAdj;
+        matrizAdj = nullptr;
+
+        if (verticePonderado) {
+            delete[] pesosVertices;
+            pesosVertices = nullptr;
+        }
+    }
+
+    cout << "Excluindo nó " << id << "..." << endl;
 }
 
 void GrafoMatriz::nova_aresta(int origem, int destino, float peso) {
@@ -185,21 +294,41 @@ float GrafoMatriz::getPesoAresta(int origem, int destino) {
     return matrizAdj[origem][destino]; // Retorna o peso da aresta
 }
 
+// void GrafoMatriz::imprimeMatriz() {
+//     cout << "Matriz de Adjacência:" << endl;
+
+//     // Cabeçalho com os índices dos vértices
+//     cout << setw(4) << " ";
+//     for (int i = 0; i < ordem; i++) {
+//         cout << setw(4) << (i + 1);
+//     }
+//     cout << endl;
+
+//     // Impressão da matriz
+//     for (int i = 0; i < ordem; i++) {
+//         cout << setw(4) << (i + 1);  // Índice da linha
+//         for (int j = 0; j < ordem; j++) {
+//             cout << setw(4) << matrizAdj[i][j];
+//         }
+//         cout << endl;
+//     }
+// }
+
 void GrafoMatriz::imprimeMatriz() {
     cout << "Matriz de Adjacência:" << endl;
 
     // Cabeçalho com os índices dos vértices
-    cout << setw(4) << " ";
+    cout << setw(10) << " ";
     for (int i = 0; i < ordem; i++) {
-        cout << setw(4) << (i + 1);
+        cout << setw(10) << (i + 1);
     }
     cout << endl;
 
     // Impressão da matriz
     for (int i = 0; i < ordem; i++) {
-        cout << setw(4) << (i + 1);  // Índice da linha
+        cout << setw(10) << (i + 1);  // Índice da linha
         for (int j = 0; j < ordem; j++) {
-            cout << setw(4) << matrizAdj[i][j];
+            cout << setw(10) << matrizAdj[i][j];
         }
         cout << endl;
     }
