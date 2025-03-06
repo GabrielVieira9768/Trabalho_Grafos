@@ -183,6 +183,85 @@ void Grafo::calculaMenorDistancia() {
     delete[] dist;
 }
 
+void Grafo::arvoreSteiner(int *vetTerminais, int tam, bool *marcados) {
+    int cont = 0, i, v, aux;
+
+    // Inicializa todos os vértices como não visitados
+    for (i = 1; i <= ordem; i++) {
+        marcados[i] = false;
+    }
+
+    // Marca o primeiro vértice terminal
+    v = vetTerminais[cont];
+    marcados[v] = true;
+    cont++;
+
+    // Enquanto não terminar o vetor de vértices terminais
+    while (cont < tam) {
+        v = vetTerminais[cont]; // Próximo vértice terminal
+        if (!marcados[v]) {     // Verifica se não está marcado
+            marcados[v] = true; // Marca o vértice terminal
+
+            // Encontra o caminho mais curto para conectar o terminal à árvore
+            int* vizinhos = getVizinhos(v);
+            int grau = getGrau(v);
+
+            for (i = 0; i < grau; i++) {
+                int vizinho = vizinhos[i];
+                if (marcados[vizinho]) {
+                    // Conecta o terminal ao vizinho já marcado
+                    aux = vizinho;
+                    while (!marcados[aux]) {
+                        marcados[aux] = true;
+                        aux = getPai(aux); // Função auxiliar para obter o pai na árvore
+                    }
+                    break;
+                }
+            }
+
+            delete[] vizinhos; // Libera a memória alocada para os vizinhos
+        }
+        cont++;
+    }
+}
+
+// Função auxiliar para obter o pai de um vértice na árvore
+int Grafo::getPai(int id) {
+    // Implementação depende da estrutura da árvore
+    // Aqui, assumimos que o pai é o primeiro vizinho
+    int* vizinhos = getVizinhos(id);
+    int pai = vizinhos[0];
+    delete[] vizinhos;
+    return pai;
+}
+
+void Grafo::imprimeArvoreSteiner(int *vetTerminais, int tam) {
+    bool* marcados = new bool[ordem + 1]; // Array para marcar os vértices da árvore de Steiner
+    arvoreSteiner(vetTerminais, tam, marcados); // Executa o algoritmo para encontrar a árvore de Steiner
+
+    cout << "Árvore de Steiner:" << endl;
+
+    // Percorre todos os vértices marcados
+    for (int i = 1; i <= ordem; i++) {
+        if (marcados[i]) {
+            int* vizinhos = getVizinhos(i);
+            int grau = getGrau(i);
+
+            // Percorre os vizinhos do vértice atual
+            for (int j = 0; j < grau; j++) {
+                int vizinho = vizinhos[j];
+                if (marcados[vizinho]) {
+                    // Se o vizinho também está na árvore de Steiner, imprime a aresta
+                    cout << "Aresta: (" << i << ", " << vizinho << ") - Peso: " << getPesoAresta(i, vizinho) << endl;
+                }
+            }
+
+            delete[] vizinhos; // Libera a memória alocada para os vizinhos
+        }
+    }
+
+    delete[] marcados; // Libera a memória alocada para o array de marcação
+}
 
 void Grafo::deleta_primeira_aresta(int id) {
     int* vizinhos = getVizinhos(id);
@@ -268,6 +347,13 @@ void Grafo::imprimeGrafo() {
     calculaMenorDistancia();
     imprimeLista();
     imprimeMatriz();
+
+    // Exemplo de terminais para a árvore de Steiner
+    int terminais[] = {1, 3, 5, 6}; // Defina os terminais conforme necessário
+    int tam = sizeof(terminais) / sizeof(terminais[0]);
+
+    // Imprime a árvore de Steiner
+    imprimeArvoreSteiner(terminais, tam);
 }
 
 void Grafo::imprimeLista() {

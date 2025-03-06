@@ -24,15 +24,15 @@ int main(int argc, char* argv[]) {
             // Criar o grafo usando as variáveis definidas
             GrafoMatriz grafo;
             grafo.carrega_grafo(arquivoEntrada);
-            grafo.deleta_no(1);
-            grafo.deleta_primeira_aresta(2);
+            //grafo.deleta_no(1);
+            //grafo.deleta_primeira_aresta(2);
             grafo.imprimeGrafo();
         } else if (tipoRepresentacao == "-l") {
             // Criar o grafo usando as variáveis definidas
             GrafoLista grafo;
             grafo.carrega_grafo(arquivoEntrada);
-            grafo.deleta_no(1);
-            grafo.deleta_primeira_aresta(2);
+            //grafo.deleta_no(1);
+            //grafo.deleta_primeira_aresta(2);
             grafo.imprimeGrafo();
         } else {
             cerr << "Erro: Tipo de representação inválido. Use -m ou -l." << endl;
