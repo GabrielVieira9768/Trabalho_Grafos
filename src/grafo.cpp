@@ -183,45 +183,45 @@ void Grafo::calculaMenorDistancia() {
     delete[] dist;
 }
 
+// teste
 void Grafo::arvoreSteiner(int *vetTerminais, int tam, bool *marcados) {
-    int cont = 0, i, v, aux;
-
-    // Inicializa todos os vértices como não visitados
-    for (i = 1; i <= ordem; i++) {
+    // Inicializa todos os nós como não pertencentes à árvore
+    for (int i = 0; i <= ordem; i++) {
         marcados[i] = false;
     }
 
-    // Marca o primeiro vértice terminal
-    v = vetTerminais[cont];
-    marcados[v] = true;
-    cont++;
+    // Marca o primeiro terminal como pertencente à árvore
+    marcados[vetTerminais[0]] = true;
 
-    // Enquanto não terminar o vetor de vértices terminais
-    while (cont < tam) {
-        v = vetTerminais[cont]; // Próximo vértice terminal
-        if (!marcados[v]) {     // Verifica se não está marcado
-            marcados[v] = true; // Marca o vértice terminal
+    for (int i = 1; i < tam; i++) {
+        int v = vetTerminais[i];
+        if (marcados[v]) continue;
 
-            // Encontra o caminho mais curto para conectar o terminal à árvore
-            int* vizinhos = getVizinhos(v);
-            int grau = getGrau(v);
+        int *vizinhos = getVizinhos(v);
+        int grau = getGrau(v);
+        int melhorVizinho = -1;
+        int menorPeso = INT_MAX;
 
-            for (i = 0; i < grau; i++) {
-                int vizinho = vizinhos[i];
-                if (marcados[vizinho]) {
-                    // Conecta o terminal ao vizinho já marcado
-                    aux = vizinho;
-                    while (!marcados[aux]) {
-                        marcados[aux] = true;
-                        aux = getPai(aux); // Função auxiliar para obter o pai na árvore
-                    }
-                    break;
-                }
+        for (int j = 0; j < grau; j++) {
+            int vizinho = vizinhos[j];
+            int peso = getPesoAresta(v, vizinho);
+
+            if (marcados[vizinho] && peso < menorPeso) {
+                melhorVizinho = vizinho;
+                menorPeso = peso;
             }
-
-            delete[] vizinhos; // Libera a memória alocada para os vizinhos
         }
-        cont++;
+
+        if (melhorVizinho != -1) {
+            // Antes de adicionar, verifica se já existe um caminho entre v e melhorVizinho
+            bool *visitado = new bool[ordem + 1]{false};
+            if (!dfsExisteCaminho(v, melhorVizinho, visitado)) { 
+                marcados[v] = true; // Adiciona o nó à árvore
+            }
+            delete[] visitado;
+        }
+
+        delete[] vizinhos;
     }
 }
 
@@ -233,6 +233,28 @@ int Grafo::getPai(int id) {
     int pai = vizinhos[0];
     delete[] vizinhos;
     return pai;
+}
+
+// teste
+bool Grafo::dfsExisteCaminho(int origem, int destino, bool *visitado) {
+    if (origem == destino) return true;
+    visitado[origem] = true;
+
+    int *vizinhos = getVizinhos(origem);
+    int grau = getGrau(origem);
+    
+    for (int i = 0; i < grau; i++) {
+        int vizinho = vizinhos[i];
+        if (!visitado[vizinho]) {
+            if (dfsExisteCaminho(vizinho, destino, visitado)) {
+                delete[] vizinhos;
+                return true;
+            }
+        }
+    }
+    
+    delete[] vizinhos;
+    return false;
 }
 
 void Grafo::imprimeArvoreSteiner(int *vetTerminais, int tam) {

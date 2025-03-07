@@ -32,6 +32,7 @@ class Grafo {
         void deleta_primeira_aresta(int id);
         void arvoreSteiner(int *vetTerminais, int tam, bool *marcados);
         void imprimeArvoreSteiner(int *vetTerminais, int tam);
+        bool dfsExisteCaminho(int origem, int destino, bool *visitado);
         
         virtual void novo_no(int id, float peso);
         virtual void deleta_no(int no);
