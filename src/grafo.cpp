@@ -3,6 +3,11 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+// teste
+#include <set>
+#include <queue>
+#include <limits>
+#include <vector>
 
 using namespace std;
 
@@ -268,6 +273,10 @@ void Grafo::imprimeGrafo() {
     calculaMenorDistancia();
     imprimeLista();
     imprimeMatriz();
+
+    int terminais[] = {1, 3, 2};  // Nó terminais do problema
+    int tamanho = sizeof(terminais) / sizeof(terminais[0]);
+    steinerTree(terminais, tamanho);
 }
 
 void Grafo::imprimeLista() {
@@ -276,4 +285,107 @@ void Grafo::imprimeLista() {
 
 void Grafo::imprimeMatriz() {
   cerr << "Método imprimeMatriz chamado na classe base" << endl;
+}
+
+
+// Implementação do método de Steiner
+void Grafo::steinerTree(int* terminais, int tamanho) {
+    if (tamanho == 0) {
+        cerr << "Nenhum nó terminal foi fornecido." << endl;
+        return;
+    }
+
+    set<int> conjuntoSteiner;
+    for (int i = 0; i < tamanho; i++) {
+        conjuntoSteiner.insert(terminais[i]);
+    }
+
+    vector<int> predecessor(ordem + 1, -1);
+    vector<float> distancia(ordem + 1, numeric_limits<float>::max());
+
+    priority_queue<pair<float, int>, vector<pair<float, int>>, greater<pair<float, int>>> pq;
+
+    // Inicializa os nós terminais
+    for (int i = 0; i < tamanho; i++) {
+        int t = terminais[i];
+        if (t < 1 || t > ordem) {
+            cerr << "Erro: nó terminal fora do intervalo válido." << endl;
+            return;
+        }
+        distancia[t] = 0;
+        pq.push({0, t});
+    
+
+    // Algoritmo de Dijkstra modificado
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        float dist_u = pq.top().first;
+        pq.pop();
+
+        if (dist_u > distancia[u]) continue;
+
+        int* vizinhos = getVizinhos(u);
+        int grau = getGrau(u);
+
+        if (vizinhos == nullptr) continue;  
+
+        for (int i = 0; i < grau; i++) {
+            int v = vizinhos[i];
+            if (v < 1 || v > ordem) continue;
+
+            float peso = getPesoAresta(u, v);
+            if (distancia[v] > dist_u + peso) {
+                distancia[v] = dist_u + peso;
+                predecessor[v] = u;
+                pq.push({distancia[v], v});
+            }
+        }
+
+        delete[] vizinhos;  
+    }
+
+    // **Passo 2: Conectar os terminais na árvore de Steiner**
+    set<pair<int, int>> arestasSteiner;
+    for (int i = 0; i < tamanho; i++) {
+        int atual = terminais[i];
+        while (predecessor[atual] != -1) {
+            int pai = predecessor[atual];
+
+            // **Adiciona as arestas corretamente**
+            if (arestasSteiner.find({min(atual, pai), max(atual, pai)}) == arestasSteiner.end()) {
+                arestasSteiner.insert({min(atual, pai), max(atual, pai)});
+            }
+
+            conjuntoSteiner.insert(atual);
+            conjuntoSteiner.insert(pai);
+
+            atual = pai;
+        }
+    }
+
+    // **Depuração extra**
+    cout << "Predecessores:" << endl;
+    for (int i = 1; i <= ordem; i++) {
+        if (predecessor[i] != -1) {
+            cout << "Nó " << i << " -> Predecessor: " << predecessor[i] << endl;
+        }
+    }
+
+    // **Imprime os nós da Árvore de Steiner**
+    cout << "Árvore de Steiner encontrada com os nós: ";
+    for (int no : conjuntoSteiner) {
+        cout << no << " ";
+    }
+    cout << endl;
+
+    // **Imprime as arestas corretamente**
+    cout << "E com as arestas: ";
+    if (arestasSteiner.empty()) {
+        cout << "Nenhuma aresta encontrada." << endl;
+    } else {
+        for (auto aresta : arestasSteiner) {
+            cout << "(" << aresta.first << ", " << aresta.second << ") ";
+        }
+        cout << endl;
+    }
 }
