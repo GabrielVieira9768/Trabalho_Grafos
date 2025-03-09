@@ -26,6 +26,9 @@ void GrafoLista::deleta_no(int id) {
     while (atual) {
         if (atual->id != id) {
             deleta_aresta(atual->id, id);
+            if (!direcionado) { // Remove a aresta reversa em grafos não direcionados
+                deleta_aresta(id, atual->id);
+            }
         }
         atual = atual->proximo;
     }
@@ -83,7 +86,7 @@ void GrafoLista::deleta_aresta(int origem, int destino) {
     No* noOrigem = listaNos->getNo(origem);
     No* noDestino = listaNos->getNo(destino);
     
-    if (!noOrigem) return;
+    if (!noOrigem || !noDestino) return;
     
     Aresta* arestaAtual = noOrigem->listaArestas;
     Aresta* anterior = nullptr;
@@ -148,26 +151,64 @@ bool GrafoLista::existeAresta(int origem, int destino) {
 
 // Retorna o Grau de um vértice
 int GrafoLista::getGrau(int id) {
-    No* no = listaNos->getNo(id);
-    return (no != nullptr) ? no->grau : -1;
+    No* no = listaNos->getNo(id); // Obtém o nó com o ID especificado
+    if (!no) {
+        return -1; // Retorna -1 se o nó não existir
+    }
+
+    // Grau de saída (número de arestas na lista de adjacência do nó)
+    int grauSaida = no->grau;
+
+    // Se o grafo for direcionado, calcula o grau de entrada
+    if (direcionado) {
+        int grauEntrada = 0;
+        No* atual = listaNos->getCabeca();
+
+        // Percorre todos os nós para contar as arestas que apontam para o nó atual
+        while (atual) {
+            Aresta* arestaAtual = atual->listaArestas;
+            while (arestaAtual) {
+                if (arestaAtual->destino == id) {
+                    grauEntrada++;
+                }
+                arestaAtual = arestaAtual->proxima;
+            }
+            atual = atual->proximo;
+        }
+
+        return grauSaida + grauEntrada; // Retorna o grau total (saída + entrada)
+    }
+
+    return grauSaida; // Retorna o grau de saída (grafo não direcionado)
 }
 
 //Retorna um array com todos os vizinho de um nó
 int* GrafoLista::getVizinhos(int id) {
-    No* no = listaNos->getNo(id);
+    No* no = listaNos->getNo(id); // Obtém o nó com o ID especificado
     if (!no) {
-        return nullptr;
-    }
-    
-    int* vizinhos = new int[no->grau];
-    
-    Aresta* aresta = no->listaArestas;
-    for (int i = 0; i < no->grau; i++) {
-        vizinhos[i] = aresta->destino;
-        aresta = aresta->proxima;
+        return nullptr; // Retorna nullptr se o nó não existir
     }
 
-    return vizinhos;
+    // Conta o número de vizinhos
+    int count = 0;
+    Aresta* arestaAtual = no->listaArestas;
+    while (arestaAtual) {
+        count++;
+        arestaAtual = arestaAtual->proxima;
+    }
+
+    // Aloca um array para armazenar os vizinhos
+    int* vizinhos = new int[count];
+    arestaAtual = no->listaArestas;
+    int index = 0;
+
+    // Preenche o array com os IDs dos vizinhos
+    while (arestaAtual) {
+        vizinhos[index++] = arestaAtual->destino;
+        arestaAtual = arestaAtual->proxima;
+    }
+
+    return vizinhos; // Retorna o array de vizinhos
 }
 
 

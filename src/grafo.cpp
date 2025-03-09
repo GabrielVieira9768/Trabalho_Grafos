@@ -462,10 +462,12 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         // **Passo 2: Conectar os terminais na árvore de Steiner**
         int arestasSteiner[MAX_NODES][2];
         int arestasSteinerSize = 0;
+        bool visitado[MAX_NODES] = {false}; // Evita ciclos
 
         for (int i = 0; i < tamanho; i++) {
             int atual = terminais[i];
-            while (predecessor[atual] != -1) {
+            while (predecessor[atual] != -1 && !visitado[atual]) {
+                visitado[atual] = true; // Marca o nó como visitado
                 int pai = predecessor[atual];
 
                 // **Adiciona as arestas corretamente**
