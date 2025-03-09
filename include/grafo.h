@@ -12,6 +12,7 @@ class Grafo {
         bool verticePonderado;
         bool arestaPonderada;
         string nomeArquivo;
+        bool** arestasAdicionadas;
         
     public:
         virtual ~Grafo() {}
@@ -30,8 +31,13 @@ class Grafo {
         void DFS(int no, bool* visitado);
         void calculaMenorDistancia();
         void deleta_primeira_aresta(int id);
-        void arvoreSteiner(int *vetTerminais, int tam, bool *marcados);
+        void arvoreSteinerGuloso(int *vetTerminais, int tam, bool *marcados);
         void imprimeArvoreSteiner(int *vetTerminais, int tam);
+        int* reconstruirCaminho(int destino, int* pai);
+        int* encontraCaminhoMaisCurto(int origem, bool *marcados);
+        bool existeCaminhoDFS(int atual, int destino, bool *visitado, bool *marcados);
+        bool formaCiclo(int u, int v, bool *marcados);
+        bool adicionaArestaSegura(int u, int v, bool *marcados);
         
         virtual void novo_no(int id, float peso);
         virtual void deleta_no(int no);

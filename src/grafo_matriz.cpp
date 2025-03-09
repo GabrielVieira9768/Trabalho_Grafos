@@ -85,6 +85,31 @@ int* GrafoMatriz::getVizinhos(int id) {
     return resultado; // Retorna o array redimensionado
 }
 
+// int* GrafoMatriz::getVizinhos(int id) {
+//     id--; // Ajusta o índice para começar de 0
+//     int* vizinhos = new int[ordem]; // Aloca um array para os vizinhos
+//     int count = 0;
+
+//     for (int i = 0; i < ordem; i++) {
+//         if (matrizAdj[id][i] != 0) { // Se há uma aresta entre id e i
+//             vizinhos[count++] = i + 1; // Adiciona o vizinho (ajusta o índice para começar de 1)
+//         }
+//     }
+
+//     // Redimensiona o array para o tamanho correto
+//     int* resultado = new int[count + 1]; // +1 para armazenar o tamanho no índice 0
+//     resultado[0] = count; // Armazena o número de vizinhos no índice 0
+//     for (int i = 0; i < count; i++) {
+//         resultado[i + 1] = vizinhos[i]; // Copia os vizinhos para o array resultado
+//         cout << "Resultado: " << resultado[i + 1] << endl;
+//     }
+
+
+
+//     delete[] vizinhos; // Libera o array temporário
+//     return resultado; // Retorna o array redimensionado
+// }
+
 int GrafoMatriz::getGrau(int id) {
     id--; // Ajusta o índice para começar de 0
     int grau = 0;

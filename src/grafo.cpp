@@ -183,46 +183,210 @@ void Grafo::calculaMenorDistancia() {
     delete[] dist;
 }
 
-void Grafo::arvoreSteiner(int *vetTerminais, int tam, bool *marcados) {
-    int cont = 0, i, v, aux;
-
+void Grafo::arvoreSteinerGuloso(int *vetTerminais, int tam, bool *marcados) {
     // Inicializa todos os vértices como não visitados
-    for (i = 1; i <= ordem; i++) {
+    for (int i = 1; i <= ordem; i++) {
         marcados[i] = false;
     }
 
     // Marca o primeiro vértice terminal
-    v = vetTerminais[cont];
-    marcados[v] = true;
-    cont++;
+    int primeiroTerminal = vetTerminais[0];
+    marcados[primeiroTerminal] = true;
 
-    // Enquanto não terminar o vetor de vértices terminais
-    while (cont < tam) {
-        v = vetTerminais[cont]; // Próximo vértice terminal
-        if (!marcados[v]) {     // Verifica se não está marcado
-            marcados[v] = true; // Marca o vértice terminal
-
-            // Encontra o caminho mais curto para conectar o terminal à árvore
-            int* vizinhos = getVizinhos(v);
-            int grau = getGrau(v);
-
-            for (i = 0; i < grau; i++) {
-                int vizinho = vizinhos[i];
-                if (marcados[vizinho]) {
-                    // Conecta o terminal ao vizinho já marcado
-                    aux = vizinho;
-                    while (!marcados[aux]) {
-                        marcados[aux] = true;
-                        aux = getPai(aux); // Função auxiliar para obter o pai na árvore
+    // Conecta os terminais restantes
+    for (int cont = 1; cont < tam; cont++) {
+        int terminalAtual = vetTerminais[cont];
+        if (!marcados[terminalAtual]) {
+            // Encontra o caminho mais curto do terminal atual até a árvore
+            int* caminho = encontraCaminhoMaisCurto(terminalAtual, marcados);
+            
+            // Se encontrou um caminho, marca todos os nós no caminho
+            if (caminho != NULL) {
+                for (int i = 1; i <= caminho[0]; i++) {
+                    // Verifica se a adição da aresta cria um ciclo
+                    if (adicionaArestaSegura(caminho[i], terminalAtual, marcados)) {
+                        marcados[caminho[i]] = true;
                     }
-                    break;
                 }
+                delete[] caminho;
             }
-
-            delete[] vizinhos; // Libera a memória alocada para os vizinhos
         }
-        cont++;
     }
+}
+
+bool Grafo::adicionaArestaSegura(int u, int v, bool *marcados) {
+    // Verifica se os índices são válidos
+    if (u < 1 || u > ordem || v < 1 || v > ordem) {
+        return false; // Índices inválidos
+    }
+
+    // Ajusta os índices para acessar a matriz corretamente
+    int u_idx = u - 1;
+    int v_idx = v - 1;
+
+    // Verifica se a matriz foi alocada corretamente
+    if (!arestasAdicionadas || !arestasAdicionadas[u_idx] || !arestasAdicionadas[v_idx]) {
+        return false; // Matriz não alocada corretamente
+    }
+
+    // Verifica se a aresta já foi adicionada
+    if (arestasAdicionadas[u_idx][v_idx] || arestasAdicionadas[v_idx][u_idx]) {
+        return false; // Aresta já foi adicionada
+    }
+
+    // Verifica se a adição da aresta cria um ciclo
+    if (formaCiclo(u, v, marcados)) {
+        return false; // Aresta forma um ciclo, não adiciona
+    }
+
+    // Adiciona a aresta à Árvore de Steiner
+    arestasAdicionadas[u_idx][v_idx] = true;
+    if (!direcionado) {
+        arestasAdicionadas[v_idx][u_idx] = true;
+    }
+
+    return true; // Aresta adicionada com sucesso
+}
+
+int* Grafo::encontraCaminhoMaisCurto(int origem, bool *marcados) {
+    // Array para guardar os pais no caminho
+    int* pai = new int[ordem + 1];
+    for (int i = 1; i <= ordem; i++) {
+        pai[i] = -1;
+    }
+
+    // Array para guardar as distâncias
+    float* distancia = new float[ordem + 1];
+    for (int i = 1; i <= ordem; i++) {
+        distancia[i] = 1e9f; // Inicializa com infinito
+    }
+
+    // Array para marcar os nós visitados
+    bool* visitado = new bool[ordem + 1];
+    for (int i = 1; i <= ordem; i++) {
+        visitado[i] = false;
+    }
+
+    // Inicializa a origem
+    distancia[origem] = 0;
+    visitado[origem] = true;
+
+    // Fila para o algoritmo guloso
+    int* fila = new int[ordem + 1];
+    int inicio = 0, fim = 0;
+    fila[fim++] = origem;
+
+    // Enquanto houver nós na fila
+    while (inicio < fim) {
+        int atual = fila[inicio++];
+
+        // Se o nó atual está na árvore, encontramos o caminho
+        if (marcados[atual]) {
+            // Reconstruímos o caminho
+            int* caminho = reconstruirCaminho(atual, pai);
+            delete[] pai;
+            delete[] distancia;
+            delete[] visitado;
+            delete[] fila;
+            return caminho;
+        }
+
+        // Percorre os vizinhos do nó atual
+        int* vizinhos = getVizinhos(atual);
+        int grau = getGrau(atual);
+
+        for (int i = 0; i < grau; i++) {
+            int vizinho = vizinhos[i];
+            float pesoAresta = getPesoAresta(atual, vizinho);
+
+            // Se encontramos um caminho mais curto para o vizinho
+            if (!visitado[vizinho] && distancia[vizinho] > distancia[atual] + pesoAresta) {
+                distancia[vizinho] = distancia[atual] + pesoAresta;
+                pai[vizinho] = atual;
+                visitado[vizinho] = true;
+                fila[fim++] = vizinho;
+            }
+        }
+
+        delete[] vizinhos;
+    }
+
+    // Se não encontramos caminho, retornamos NULL
+    delete[] pai;
+    delete[] distancia;
+    delete[] visitado;
+    delete[] fila;
+    return NULL;
+}
+
+bool Grafo::formaCiclo(int u, int v, bool *marcados) {
+    // Se u ou v não estão na árvore, não há ciclo
+    if (!marcados[u] || !marcados[v]) {
+        return false;
+    }
+    
+    // Verificamos se já existe um caminho entre u e v na árvore atual
+    // Se já existe, adicionar uma nova aresta criaria um ciclo
+    bool *visitado = new bool[ordem + 1];
+    for (int i = 1; i <= ordem; i++) {
+        visitado[i] = false;
+    }
+    
+    // Iniciamos a busca a partir de u, procurando se podemos alcançar v
+    bool existeCaminho = existeCaminhoDFS(u, v, visitado, marcados);
+    
+    delete[] visitado;
+    return existeCaminho; // Se existe caminho, então adicionar a aresta formaria ciclo
+}
+
+bool Grafo::existeCaminhoDFS(int atual, int destino, bool *visitado, bool *marcados) {
+    // Marcamos o nó atual como visitado
+    visitado[atual] = true;
+    
+    // Se chegamos ao destino, encontramos um caminho
+    if (atual == destino) {
+        return true;
+    }
+    
+    // Percorremos todos os vizinhos do nó atual
+    int* vizinhos = getVizinhos(atual);
+    int grau = getGrau(atual);
+    
+    for (int i = 0; i < grau; i++) {
+        int vizinho = vizinhos[i];
+    
+        // Só consideramos vizinhos que estão na árvore (marcados) e ainda não foram visitados
+        if (marcados[vizinho] && !visitado[vizinho]) {
+            // Continuamos a busca a partir deste vizinho
+            if (existeCaminhoDFS(vizinho, destino, visitado, marcados)) {
+                delete[] vizinhos;
+                return true; // Encontramos um caminho
+            }
+        }
+    }
+    
+    delete[] vizinhos;
+    return false; // Não encontramos caminho para o destino
+}
+
+int* Grafo::reconstruirCaminho(int destino, int* pai) {
+    // Conta o número de nós no caminho
+    int tamanho = 0;
+    for (int no = destino; no != -1; no = pai[no]) {
+        tamanho++;
+    }
+
+    // Aloca o array para o caminho
+    int* caminho = new int[tamanho + 1]; // +1 para armazenar o tamanho no índice 0
+    caminho[0] = tamanho;
+
+    // Reconstruímos o caminho do final para o início
+    int i = tamanho;
+    for (int no = destino; no != -1; no = pai[no]) {
+        caminho[i--] = no;
+    }
+
+    return caminho;
 }
 
 // Função auxiliar para obter o pai de um vértice na árvore
@@ -237,30 +401,20 @@ int Grafo::getPai(int id) {
 
 void Grafo::imprimeArvoreSteiner(int *vetTerminais, int tam) {
     bool* marcados = new bool[ordem + 1]; // Array para marcar os vértices da árvore de Steiner
-    arvoreSteiner(vetTerminais, tam, marcados); // Executa o algoritmo para encontrar a árvore de Steiner
+    arvoreSteinerGuloso(vetTerminais, tam, marcados); // Executa o algoritmo para encontrar a árvore de Steiner
 
     cout << "Árvore de Steiner:" << endl;
 
-    // Percorre todos os vértices marcados
+    // Percorre todas as arestas adicionadas
     for (int i = 1; i <= ordem; i++) {
-        if (marcados[i]) {
-            int* vizinhos = getVizinhos(i);
-            int grau = getGrau(i);
-
-            // Percorre os vizinhos do vértice atual
-            for (int j = 0; j < grau; j++) {
-                int vizinho = vizinhos[j];
-                if (marcados[vizinho]) {
-                    // Se o vizinho também está na árvore de Steiner, imprime a aresta
-                    cout << "Aresta: (" << i << ", " << vizinho << ") - Peso: " << getPesoAresta(i, vizinho) << endl;
-                }
+        for (int j = 1; j <= ordem; j++) {
+            if (arestasAdicionadas[i][j]) {
+                cout << "Aresta: (" << i << ", " << j << ") - Peso: " << getPesoAresta(i, j) << endl;
             }
-
-            delete[] vizinhos; // Libera a memória alocada para os vizinhos
         }
     }
 
-    delete[] marcados; // Libera a memória alocada para o array de marcação
+    delete[] marcados;
 }
 
 void Grafo::deleta_primeira_aresta(int id) {
@@ -349,7 +503,7 @@ void Grafo::imprimeGrafo() {
     imprimeMatriz();
 
     // Exemplo de terminais para a árvore de Steiner
-    int terminais[] = {1, 3, 5, 6}; // Defina os terminais conforme necessário
+    int terminais[] = {1, 3, 5, 4}; // Defina os terminais conforme necessário
     int tam = sizeof(terminais) / sizeof(terminais[0]);
 
     // Imprime a árvore de Steiner

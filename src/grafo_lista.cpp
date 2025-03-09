@@ -4,10 +4,22 @@ using namespace std;
 
 GrafoLista::GrafoLista() {
     listaNos = new ListaEncadeada();
+
+    // No construtor da classe Grafo
+    arestasAdicionadas = new bool*[ordem];
+    for (int i = 0; i < ordem; i++) {
+        arestasAdicionadas[i] = new bool[ordem](); // Inicializa com false
+    }
 }
 
 GrafoLista::~GrafoLista() {
     delete listaNos;
+
+    // No destrutor da classe Grafo
+    for (int i = 0; i < ordem; i++) {
+        delete[] arestasAdicionadas[i];
+    }
+    delete[] arestasAdicionadas;
 }
 
 void GrafoLista::novo_no(int id, float peso) {
