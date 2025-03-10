@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <ctime>
+#include <iomanip>
 
 #define maximo 1000000;
 
@@ -392,6 +394,9 @@ Pair pop(Pair arr[], int &n) {
 }
 
 void Grafo::steinerTree(int *terminais, int tamanho) {
+    // Início da medição de tempo
+    clock_t inicio = clock();
+
     if (tamanho == 0) {
         cerr << "Nenhum nó terminal foi fornecido." << endl;
         return;
@@ -414,7 +419,7 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
     Pair pq[MAX_NODES];
     int pqSize = 0;
 
-    // **Passo 1: Executar Dijkstra para cada terminal**
+    // Executar Dijkstra para cada terminal
     for (int i = 0; i < tamanho; i++) {
         int t = terminais[i];
         if (t < 1 || t > ordem) {
@@ -453,11 +458,11 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         }
     }
 
-    // **Passo 2: Construir a árvore de Steiner**
+    // Construir a árvore de Steiner
     int arestasSteiner[MAX_NODES][2];
     int arestasSteinerSize = 0;
     bool visitado[MAX_NODES] = {false};
-    float pesoTotal = 0.0; // Variável para armazenar o peso total das arestas
+    float pesoTotal = 0.0;
 
     for (int i = 0; i < tamanho; i++) {
         int atual = terminais[i];
@@ -507,7 +512,7 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         }
     }
 
-    // **Depuração extra: Exibir predecessores**  
+    // Depuração extra: Exibir predecessores
     /*
     cout << "Predecessores:" << endl;
     for (int i = 1; i <= ordem; i++) {
@@ -517,7 +522,7 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
     }
     */
 
-    // **Impressão única da resposta final**
+    // Impressão única da resposta final
     cout << "Árvore de Steiner encontrada com os nós: ";
     for (int i = 0; i < conjuntoSteinerSize; i++) {
         cout << conjuntoSteiner[i] << " ";
@@ -534,6 +539,12 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         cout << endl;
     }
 
-    // **Impressão do somatório do peso**
+    // Impressão do somatório do peso
     cout << "Peso total da Árvore de Steiner: " << pesoTotal << endl;
+
+    // Fim da medição de tempo
+    clock_t fim = clock();
+    double tempo_execucao = double(fim - inicio) / CLOCKS_PER_SEC;
+    cout << fixed << setprecision(6); // Numero de casa decimais
+    cout << "Tempo de execução: " << tempo_execucao << " segundos" << endl;
 }
