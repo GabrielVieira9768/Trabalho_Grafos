@@ -326,13 +326,13 @@ void Grafo::imprimeGrafo()
     cout << "Ordem: " << ordem << endl;
     cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
     // cout << "Componentes conexas: " << n_conexo() << endl;
-    cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
-    cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
+    //cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
+    //cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
     // cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
 
     //calculaMenorDistancia();
-    imprimeLista();
-    imprimeMatriz();
+    //imprimeLista();
+    //imprimeMatriz();
 
     int terminais[] = {1, 3, 4, 5}; // Nó terminais do problema
     int tamanho = sizeof(terminais) / sizeof(terminais[0]);
@@ -350,46 +350,46 @@ void Grafo::imprimeMatriz()
 }
 
 // Implementação do método de Steiner
-const int MAX_NODES = 6000; // Defina um tamanho máximo para os nós
+const int MAX_NOS = 6000; // Defina um tamanho máximo para os nós
 
 struct Pair {
-    float first;
-    int second;
+    float primeiro;
+    int segundo;
 };
 
-void swap(Pair &a, Pair &b) {
+void trocar(Pair &a, Pair &b) {
     Pair temp = a;
     a = b;
     b = temp;
 }
 
-void heapify(Pair arr[], int n, int i) {
-    int largest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
+void agrupar(Pair arr[], int n, int i) {
+    int maior = i;
+    int esq = 2 * i + 1;
+    int dir = 2 * i + 2;
 
-    if (left < n && arr[left].first > arr[largest].first)
-        largest = left;
+    if (esq < n && arr[esq].primeiro > arr[maior].primeiro)
+        maior = esq;
 
-    if (right < n && arr[right].first > arr[largest].first)
-        largest = right;
+    if (dir < n && arr[dir].primeiro > arr[maior].primeiro)
+        maior = dir;
 
-    if (largest != i) {
-        swap(arr[i], arr[largest]);
-        heapify(arr, n, largest);
+    if (maior != i) {
+        trocar(arr[i], arr[maior]);
+        agrupar(arr, n, maior);
     }
 }
 
-void push(Pair arr[], int &n, Pair value) {
-    arr[n++] = value;
+void push(Pair arr[], int &n, Pair valor) {
+    arr[n++] = valor;
     for (int i = n / 2 - 1; i >= 0; i--)
-        heapify(arr, n, i);
+        agrupar(arr, n, i);
 }
 
 Pair pop(Pair arr[], int &n) {
     Pair root = arr[0];
     arr[0] = arr[--n];
-    heapify(arr, n, 0);
+    agrupar(arr, n, 0);
     return root;
 }
 
@@ -402,21 +402,21 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         return;
     }
 
-    int conjuntoSteiner[MAX_NODES] = {0};
+    int conjuntoSteiner[MAX_NOS] = {0};
     int conjuntoSteinerSize = 0;
     for (int i = 0; i < tamanho; i++) {
         conjuntoSteiner[conjuntoSteinerSize++] = terminais[i];
     }
 
-    int predecessor[MAX_NODES];
-    float distancia[MAX_NODES];
+    int predecessor[MAX_NOS];
+    float distancia[MAX_NOS];
 
-    for (int i = 0; i < MAX_NODES; i++) {
+    for (int i = 0; i < MAX_NOS; i++) {
         predecessor[i] = -1;
         distancia[i] = maximo;
     }
 
-    Pair pq[MAX_NODES];
+    Pair pq[MAX_NOS];
     int pqSize = 0;
 
     // Executar Dijkstra para cada terminal
@@ -431,8 +431,8 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
 
         while (pqSize > 0) {
             Pair top = pop(pq, pqSize);
-            int u = top.second;
-            float dist_u = top.first;
+            int u = top.segundo;
+            float dist_u = top.primeiro;
 
             if (dist_u > distancia[u])
                 continue;
@@ -459,9 +459,9 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
     }
 
     // Construir a árvore de Steiner
-    int arestasSteiner[MAX_NODES][2];
+    int arestasSteiner[MAX_NOS][2];
     int arestasSteinerSize = 0;
-    bool visitado[MAX_NODES] = {false};
+    bool visitado[MAX_NOS] = {false};
     float pesoTotal = 0.0;
 
     for (int i = 0; i < tamanho; i++) {
