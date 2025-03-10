@@ -320,13 +320,13 @@ void Grafo::carrega_grafo(const string &arquivo)
 void Grafo::imprimeGrafo()
 {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
-    cout << "Grau: " << get_grau() << endl;
+    // cout << "Grau: " << get_grau() << endl;
     cout << "Ordem: " << ordem << endl;
     cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
-    cout << "Componentes conexas: " << n_conexo() << endl;
+    // cout << "Componentes conexas: " << n_conexo() << endl;
     cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
     cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
-    cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
+    // cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
 
     //calculaMenorDistancia();
     imprimeLista();
@@ -399,7 +399,6 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
 
     int conjuntoSteiner[MAX_NODES] = {0};
     int conjuntoSteinerSize = 0;
-
     for (int i = 0; i < tamanho; i++) {
         conjuntoSteiner[conjuntoSteinerSize++] = terminais[i];
     }
@@ -415,7 +414,7 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
     Pair pq[MAX_NODES];
     int pqSize = 0;
 
-    // Inicializa os nós terminais
+    // **Passo 1: Executar Dijkstra para cada terminal**
     for (int i = 0; i < tamanho; i++) {
         int t = terminais[i];
         if (t < 1 || t > ordem) {
@@ -425,7 +424,6 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         distancia[t] = 0;
         push(pq, pqSize, {0, t});
 
-        // Algoritmo de Dijkstra modificado
         while (pqSize > 0) {
             Pair top = pop(pq, pqSize);
             int u = top.second;
@@ -436,12 +434,11 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
 
             int *vizinhos = getVizinhos(u);
             int grau = getGrau(u);
-
             if (vizinhos == nullptr)
                 continue;
 
-            for (int i = 0; i < grau; i++) {
-                int v = vizinhos[i];
+            for (int j = 0; j < grau; j++) {
+                int v = vizinhos[j];
                 if (v < 1 || v > ordem)
                     continue;
 
@@ -452,85 +449,91 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
                     push(pq, pqSize, {distancia[v], v});
                 }
             }
-
             delete[] vizinhos;
         }
+    }
 
-        // **Passo 2: Conectar os terminais na árvore de Steiner**
-        int arestasSteiner[MAX_NODES][2];
-        int arestasSteinerSize = 0;
-        bool visitado[MAX_NODES] = {false}; // Evita ciclos
+    // **Passo 2: Construir a árvore de Steiner**
+    int arestasSteiner[MAX_NODES][2];
+    int arestasSteinerSize = 0;
+    bool visitado[MAX_NODES] = {false};
+    float pesoTotal = 0.0; // Variável para armazenar o peso total das arestas
 
-        for (int i = 0; i < tamanho; i++) {
-            int atual = terminais[i];
-            while (predecessor[atual] != -1 && !visitado[atual]) {
-                visitado[atual] = true; // Marca o nó como visitado
-                int pai = predecessor[atual];
+    for (int i = 0; i < tamanho; i++) {
+        int atual = terminais[i];
+        while (predecessor[atual] != -1 && !visitado[atual]) {
+            visitado[atual] = true;
+            int pai = predecessor[atual];
 
-                // **Adiciona as arestas corretamente**
-                bool existe = false;
-                for (int j = 0; j < arestasSteinerSize; j++) {
-                    if ((arestasSteiner[j][0] == min(atual, pai) && (arestasSteiner[j][1] == max(atual, pai)))) {
-                        existe = true;
-                        break;
-                    }
+            // Adiciona a aresta se ainda não foi inserida
+            bool existe = false;
+            for (int j = 0; j < arestasSteinerSize; j++) {
+                if ((arestasSteiner[j][0] == min(atual, pai) && arestasSteiner[j][1] == max(atual, pai))) {
+                    existe = true;
+                    break;
                 }
-                if (!existe) {
-                    arestasSteiner[arestasSteinerSize][0] = min(atual, pai);
-                    arestasSteiner[arestasSteinerSize][1] = max(atual, pai);
-                    arestasSteinerSize++;
-                }
-
-                bool noExiste = false;
-                for (int j = 0; j < conjuntoSteinerSize; j++) {
-                    if (conjuntoSteiner[j] == atual) {
-                        noExiste = true;
-                        break;
-                    }
-                }
-                if (!noExiste) {
-                    conjuntoSteiner[conjuntoSteinerSize++] = atual;
-                }
-
-                noExiste = false;
-                for (int j = 0; j < conjuntoSteinerSize; j++) {
-                    if (conjuntoSteiner[j] == pai) {
-                        noExiste = true;
-                        break;
-                    }
-                }
-                if (!noExiste) {
-                    conjuntoSteiner[conjuntoSteinerSize++] = pai;
-                }
-
-                atual = pai;
             }
-        }
-
-        // **Depuração extra**
-        cout << "Predecessores:" << endl;
-        for (int i = 1; i <= ordem; i++) {
-            if (predecessor[i] != -1) {
-                cout << "Nó " << i << " -> Predecessor: " << predecessor[i] << endl;
+            if (!existe) {
+                arestasSteiner[arestasSteinerSize][0] = min(atual, pai);
+                arestasSteiner[arestasSteinerSize][1] = max(atual, pai);
+                pesoTotal += getPesoAresta(atual, pai); // Soma o peso da aresta
+                arestasSteinerSize++;
             }
-        }
 
-        // **Imprime os nós da Árvore de Steiner**
-        cout << "Árvore de Steiner encontrada com os nós: ";
-        for (int i = 0; i < conjuntoSteinerSize; i++) {
-            cout << conjuntoSteiner[i] << " ";
-        }
-        cout << endl;
-
-        // **Imprime as arestas corretamente**
-        cout << "E com as arestas: ";
-        if (arestasSteinerSize == 0) {
-            cout << "Nenhuma aresta encontrada." << endl;
-        } else {
-            for (int i = 0; i < arestasSteinerSize; i++) {
-                cout << "(" << arestasSteiner[i][0] << ", " << arestasSteiner[i][1] << ") ";
+            // Adiciona os nós no conjunto Steiner
+            bool noExiste = false;
+            for (int j = 0; j < conjuntoSteinerSize; j++) {
+                if (conjuntoSteiner[j] == atual) {
+                    noExiste = true;
+                    break;
+                }
             }
-            cout << endl;
+            if (!noExiste) {
+                conjuntoSteiner[conjuntoSteinerSize++] = atual;
+            }
+
+            noExiste = false;
+            for (int j = 0; j < conjuntoSteinerSize; j++) {
+                if (conjuntoSteiner[j] == pai) {
+                    noExiste = true;
+                    break;
+                }
+            }
+            if (!noExiste) {
+                conjuntoSteiner[conjuntoSteinerSize++] = pai;
+            }
+
+            atual = pai;
         }
     }
+
+    // **Depuração extra: Exibir predecessores**  
+    /*
+    cout << "Predecessores:" << endl;
+    for (int i = 1; i <= ordem; i++) {
+        if (predecessor[i] != -1) {
+            cout << "Nó " << i << " -> Predecessor: " << predecessor[i] << endl;
+        }
+    }
+    */
+
+    // **Impressão única da resposta final**
+    cout << "Árvore de Steiner encontrada com os nós: ";
+    for (int i = 0; i < conjuntoSteinerSize; i++) {
+        cout << conjuntoSteiner[i] << " ";
+    }
+    cout << endl;
+
+    cout << "E com as arestas: ";
+    if (arestasSteinerSize == 0) {
+        cout << "Nenhuma aresta encontrada." << endl;
+    } else {
+        for (int i = 0; i < arestasSteinerSize; i++) {
+            cout << "(" << arestasSteiner[i][0] << ", " << arestasSteiner[i][1] << ") ";
+        }
+        cout << endl;
+    }
+
+    // **Impressão do somatório do peso**
+    cout << "Peso total da Árvore de Steiner: " << pesoTotal << endl;
 }
