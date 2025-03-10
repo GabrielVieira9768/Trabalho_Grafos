@@ -3,11 +3,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-// teste
-#include <set>
-#include <queue>
-#include <limits>
-#include <vector>
+
+#define maximo 1000000;
 
 using namespace std;
 
@@ -412,7 +409,7 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
 
     for (int i = 0; i < MAX_NODES; i++) {
         predecessor[i] = -1;
-        distancia[i] = numeric_limits<float>::max();
+        distancia[i] = maximo;
     }
 
     Pair pq[MAX_NODES];

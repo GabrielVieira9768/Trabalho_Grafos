@@ -12,7 +12,7 @@ class Grafo {
         bool verticePonderado;
         bool arestaPonderada;
         string nomeArquivo;
-        
+
     public:
         virtual ~Grafo() {}
         
