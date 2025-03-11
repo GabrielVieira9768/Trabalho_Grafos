@@ -755,4 +755,4 @@ void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alp
 //     double tempo_execucao = double(fim - inicio) / CLOCKS_PER_SEC;
 //     cout << fixed << setprecision(6); // Numero de casa decimais
 //     cout << "Tempo de execução: " << tempo_execucao << " segundos" << endl;
-// }
+// }.
