@@ -369,12 +369,22 @@ void Grafo::imprimeGrafo()
 
     float performance = 0.0f;
     cout << "Guloso Normal" << endl;
-    steinerTree(terminais, tamanhoTerminais, performance, false);
+    //steinerTree(terminais, tamanhoTerminais, performance, false);
 
     cout << endl;
 
     cout << "Guloso Randomizado" << endl;
     steinerTree(terminais, tamanhoTerminais, performance, true, 0.5);
+
+    cout << endl;
+
+    cout << "Guloso Randomizado" << endl;
+    steinerTree(terminais, tamanhoTerminais, performance, true, 0.1);
+
+    cout << endl;
+
+    cout << "Guloso Randomizado" << endl;
+    steinerTree(terminais, tamanhoTerminais, performance, true, 0.9);
 
     cout << endl;
 
@@ -460,14 +470,8 @@ Pair popRandomizado(Pair arr[], int &n, float alpha)
     return selecionado;
 }
 
-struct AlphaPerformance {
-    float alpha;
-    float performance;
-};
-
-void Grafo::steinerTree(int *terminais, int tamanho, float &performance, bool randomizado, float alpha)
+void Grafo::steinerTree(int *terminais, int tamanho, float &pesoSolucao, bool randomizado, float alpha)
 {
-    // Início da medição de tempo
     clock_t inicio = clock();
 
     if (tamanho == 0)
@@ -476,15 +480,11 @@ void Grafo::steinerTree(int *terminais, int tamanho, float &performance, bool ra
         return;
     }
 
-    int conjuntoSteiner[MAX_NOS] = {0};
-    int conjuntoSteinerSize = 0;
-    for (int i = 0; i < tamanho; i++)
-    {
-        conjuntoSteiner[conjuntoSteinerSize++] = terminais[i];
-    }
-
     int predecessor[MAX_NOS];
     float distancia[MAX_NOS];
+    bool visitado[MAX_NOS] = {false};
+    Pair pq[MAX_NOS];
+    int pqSize = 0;
 
     for (int i = 0; i < MAX_NOS; i++)
     {
@@ -492,32 +492,16 @@ void Grafo::steinerTree(int *terminais, int tamanho, float &performance, bool ra
         distancia[i] = maximo;
     }
 
-    Pair pq[MAX_NOS];
-    int pqSize = 0;
-
     // Executar Dijkstra para cada terminal
     for (int i = 0; i < tamanho; i++)
     {
         int t = terminais[i];
-        if (t < 1 || t > ordem)
-        {
-            cerr << "Erro: nó terminal fora do intervalo válido." << endl;
-            return;
-        }
         distancia[t] = 0;
         push(pq, pqSize, {0, t});
 
         while (pqSize > 0)
         {
-            Pair top;
-            if (randomizado)
-            {
-                top = popRandomizado(pq, pqSize, alpha);
-            }
-            else
-            {
-                top = pop(pq, pqSize);
-            }
+            Pair top = randomizado ? popRandomizado(pq, pqSize, alpha) : pop(pq, pqSize);
             int u = top.segundo;
             float dist_u = top.primeiro;
 
@@ -526,15 +510,12 @@ void Grafo::steinerTree(int *terminais, int tamanho, float &performance, bool ra
 
             int *vizinhos = getVizinhos(u);
             int grau = getGrau(u);
-            if (vizinhos == nullptr)
+            if (!vizinhos)
                 continue;
 
             for (int j = 0; j < grau; j++)
             {
                 int v = vizinhos[j];
-                if (v < 1 || v > ordem)
-                    continue;
-
                 float peso = getPesoAresta(u, v);
                 if (distancia[v] > dist_u + peso)
                 {
@@ -550,75 +531,25 @@ void Grafo::steinerTree(int *terminais, int tamanho, float &performance, bool ra
     // Construir a árvore de Steiner
     int arestasSteiner[MAX_NOS][2];
     int arestasSteinerSize = 0;
-    bool visitado[MAX_NOS] = {false};
-    float pesoTotal = 0.0;
-    performance = 0.0; // Inicializa o desempenho como 0
+    pesoSolucao = 0.0f;
 
+    cout << "Árvore de Steiner encontrada com os nós: ";
     for (int i = 0; i < tamanho; i++)
     {
+        cout << terminais[i] << " ";
         int atual = terminais[i];
         while (predecessor[atual] != -1 && !visitado[atual])
         {
             visitado[atual] = true;
             int pai = predecessor[atual];
 
-            // Adiciona a aresta se ainda não foi inserida
-            bool existe = false;
-            for (int j = 0; j < arestasSteinerSize; j++)
-            {
-                if ((arestasSteiner[j][0] == min(atual, pai) && arestasSteiner[j][1] == max(atual, pai)))
-                {
-                    existe = true;
-                    break;
-                }
-            }
-            if (!existe)
-            {
-                arestasSteiner[arestasSteinerSize][0] = min(atual, pai);
-                arestasSteiner[arestasSteinerSize][1] = max(atual, pai);
-                performance += getPesoAresta(atual, pai); // Soma o peso da aresta
-                pesoTotal += getPesoAresta(atual, pai); // Soma o peso da aresta
-                arestasSteinerSize++;
-            }
-
-            // Adiciona os nós no conjunto Steiner
-            bool noExiste = false;
-            for (int j = 0; j < conjuntoSteinerSize; j++)
-            {
-                if (conjuntoSteiner[j] == atual)
-                {
-                    noExiste = true;
-                    break;
-                }
-            }
-            if (!noExiste)
-            {
-                conjuntoSteiner[conjuntoSteinerSize++] = atual;
-            }
-
-            noExiste = false;
-            for (int j = 0; j < conjuntoSteinerSize; j++)
-            {
-                if (conjuntoSteiner[j] == pai)
-                {
-                    noExiste = true;
-                    break;
-                }
-            }
-            if (!noExiste)
-            {
-                conjuntoSteiner[conjuntoSteinerSize++] = pai;
-            }
+            arestasSteiner[arestasSteinerSize][0] = min(atual, pai);
+            arestasSteiner[arestasSteinerSize][1] = max(atual, pai);
+            pesoSolucao += getPesoAresta(atual, pai);
+            arestasSteinerSize++;
 
             atual = pai;
         }
-    }
-
-    // Impressão única da resposta final
-    cout << "Árvore de Steiner encontrada com os nós: ";
-    for (int i = 0; i < conjuntoSteinerSize; i++)
-    {
-        cout << conjuntoSteiner[i] << " ";
     }
     cout << endl;
 
@@ -636,66 +567,68 @@ void Grafo::steinerTree(int *terminais, int tamanho, float &performance, bool ra
         cout << endl;
     }
 
-    // Impressão do somatório do peso
-    cout << "Peso total da Árvore de Steiner: " << pesoTotal << endl;
-
-    cout << "Peso total da Árvore de Steiner (performance Reativo): " << performance << endl;
-
-    // Fim da medição de tempo
+    cout << "Peso total da Árvore de Steiner: " << pesoSolucao << endl;
+    cout << " Alpha: " << alpha << ", Peso total: " << pesoSolucao << endl;
     clock_t fim = clock();
-    double tempo_execucao = double(fim - inicio) / CLOCKS_PER_SEC;
-    cout << fixed << setprecision(6); // Numero de casa decimais
-    cout << "Tempo de execução: " << tempo_execucao << " segundos" << endl;
+    cout << "Tempo de execução: " << fixed << setprecision(6) << double(fim - inicio) / CLOCKS_PER_SEC << " segundos" << endl;
 }
 
-void updatePerformance(AlphaPerformance* alphaList, int size, float alpha, float performance) {
-    for (int i = 0; i < size; i++) {
-        if (alphaList[i].alpha == alpha) {
-            alphaList[i].performance = performance;
-            break;
+void Grafo::steinerTreeReativo(int *terminais, int tamanho)
+{
+    const int n_alphas = 5; // Definição constante para evitar erro de variável não constante
+    float alphas[n_alphas] = {0.1, 0.3, 0.5, 0.7, 0.9};
+    float probabilidades[n_alphas] = {1.0 / n_alphas, 1.0 / n_alphas, 1.0 / n_alphas, 1.0 / n_alphas, 1.0 / n_alphas};
+    float desempenho[n_alphas] = {0};
+    int contadores[n_alphas] = {0};
+
+    int iteracoes = 10;
+    int bloco = 5;
+    srand(time(NULL)); // Inicializa a semente do rand()
+
+    for (int it = 0; it < iteracoes; it++)
+    {
+        // Escolher alpha com base nas probabilidades
+        float r = (float)rand() / RAND_MAX; // Geração de número aleatório entre 0 e 1
+        float acumulado = 0;
+        int idx_alpha = 0;
+        for (int i = 0; i < n_alphas; i++)
+        {
+            acumulado += probabilidades[i];
+            if (r <= acumulado)
+            {
+                idx_alpha = i;
+                break;
+            }
+        }
+
+        float alpha = alphas[idx_alpha];
+        float pesoSolucao = 0.0f;
+        steinerTree(terminais, tamanho, pesoSolucao, true, alpha);
+
+        desempenho[idx_alpha] += pesoSolucao;
+        contadores[idx_alpha]++;
+
+        cout << "Iteração " << it + 1 << " - Alpha: " << alpha << ", Peso total: " << pesoSolucao << endl;
+
+        // Atualizar probabilidades a cada 'bloco' iterações
+        if ((it + 1) % bloco == 0)
+        {
+            float somatorio = 0;
+            for (int i = 0; i < n_alphas; i++)
+            {
+                if (contadores[i] > 0)
+                {
+                    desempenho[i] /= contadores[i]; // Média do desempenho
+                }
+                somatorio += 1.0 / (desempenho[i] + 1e-6); // Evita divisão por zero
+            }
+            
+            for (int i = 0; i < n_alphas; i++)
+            {
+                probabilidades[i] = (1.0 / (desempenho[i] + 1e-6)) / somatorio;
+            }
         }
     }
-}
-
-float chooseBestAlpha(AlphaPerformance* alphaList, int size) {
-    float bestAlpha = alphaList[0].alpha;
-    float bestPerformance = alphaList[0].performance;
-
-    for (int i = 1; i < size; i++) {
-        if (alphaList[i].performance < bestPerformance) { // Assumindo que menor peso é melhor
-            bestPerformance = alphaList[i].performance;
-            bestAlpha = alphaList[i].alpha;
-        }
-    }
-
-    return bestAlpha;
-}
-
-void Grafo::steinerTreeReativo(int *terminais, int tamanho) {
-    
-    AlphaPerformance* alphaList = new AlphaPerformance[5]; // Exemplo com 5 valores de alpha
-    float alphaValues[] = {0.1, 0.3, 0.5, 0.7, 0.9}; // Valores de alpha
-
-    for (int i = 0; i < 5; i++) {
-        alphaList[i].alpha = alphaValues[i];
-        alphaList[i].performance = 0.0f; // Inicializa o desempenho como 0
-    }
-
-    int numIterations = 10; // Número de iterações do algoritmo
-    for (int iter = 0; iter < numIterations; iter++) {
-        // Escolhe o melhor alpha com base no desempenho acumulado
-        float alpha = chooseBestAlpha(alphaList, 5);
-
-        // Executa o algoritmo guloso randomizado com o alpha escolhido
-        float performance = 0.0f; // Variável para armazenar o desempenho
-        steinerTree(terminais, tamanho, performance, true, alpha);
-
-        // Atualiza o desempenho do alpha usado
-        updatePerformance(alphaList, 5, alpha, performance);
-    }
-
-    // Libera a memória alocada para o array de alphaList
-    delete[] alphaList;
 }
 ;
 
