@@ -32,6 +32,7 @@ class Grafo {
         void deleta_primeira_aresta(int id);
         void steinerTree(int *terminais, int tamanho, float &performance, bool randomizado = false, float alpha = 0.5);
         void steinerTreeReativo(int *terminais, int tamanho);
+        int* geraTerminaisAleatorios(int ordem, int& tamanhoTerminais);
         
         virtual void novo_no(int id, float peso);
         virtual void deleta_no(int no);

@@ -319,6 +319,30 @@ void Grafo::carrega_grafo(const string &arquivo)
     file.close();
 }
 
+// Função para gerar terminais aleatórios
+int* Grafo::geraTerminaisAleatorios(int ordem, int& tamanhoTerminais) {
+    std::srand(std::time(nullptr));
+    tamanhoTerminais = ordem / 10;
+    
+    int* terminais = new int[tamanhoTerminais];
+    bool selecionados[ordem+1];
+
+    for (int i = 0; i <= ordem; ++i) {
+        selecionados[i] = false;
+    }
+
+    int count = 0;
+    while (count < tamanhoTerminais) {
+        int potencialTerminal = (std::rand() % ordem) + 1;
+        
+        if (!selecionados[potencialTerminal]) {
+            terminais[count++] = potencialTerminal;
+            selecionados[potencialTerminal] = true;
+        }
+    }
+    return terminais;
+}
+
 void Grafo::imprimeGrafo()
 {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
@@ -334,21 +358,30 @@ void Grafo::imprimeGrafo()
     // imprimeLista();
     // imprimeMatriz();
 
-    int terminais[] = {47, 80, 600, 93, 12, 142, 444, 69, 1593, 2800, 4890, 702, 3006}; // Nó terminais do problema
-    int tamanho = sizeof(terminais) / sizeof(terminais[0]);
+    int tamanhoTerminais;
+    int* terminais = geraTerminaisAleatorios(ordem, tamanhoTerminais);
+
+    cout << "Terminais gerados: ";
+    for (int i = 0; i < tamanhoTerminais; ++i)
+        cout << terminais[i] << " ";
+
+    cout << endl;
+
     float performance = 0.0f;
     cout << "Guloso Normal" << endl;
-    steinerTree(terminais, tamanho, performance, false);
+    steinerTree(terminais, tamanhoTerminais, performance, false);
 
     cout << endl;
 
     cout << "Guloso Randomizado" << endl;
-    steinerTree(terminais, tamanho, performance, true, 0.5);
+    steinerTree(terminais, tamanhoTerminais, performance, true, 0.5);
 
     cout << endl;
 
     cout << "Guloso Randomizado Reativo" << endl;
-    steinerTreeReativo(terminais, tamanho);
+    steinerTreeReativo(terminais, tamanhoTerminais);
+
+    delete[] terminais;
 }
 
 void Grafo::imprimeLista()
