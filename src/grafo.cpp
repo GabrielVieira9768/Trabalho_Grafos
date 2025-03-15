@@ -3,11 +3,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-// teste
-#include <set>
-#include <queue>
-#include <limits>
-#include <vector>
+
+#define maximo 1000000
 
 using namespace std;
 
@@ -335,7 +332,7 @@ void Grafo::imprimeGrafo()
     //imprimeLista();
     //imprimeMatriz();
 
-    int terminais[] = {1, 2, 4, 5}; // Nó terminais do problema
+    int terminais[] = {8, 12, 16, 24}; // Nó terminais do problema
     int tamanho = sizeof(terminais) / sizeof(terminais[0]);
     steinerTree(terminais, tamanho);
 }
@@ -485,7 +482,7 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         // Reinicializa as estruturas para cada terminal
         for (int j = 0; j <= ordem; j++) {
             predecessor[j] = -1;
-            distancia[j] = numeric_limits<float>::max();
+            distancia[j] = maximo;
         }
         
         distancia[t] = 0;
