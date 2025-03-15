@@ -330,7 +330,7 @@ void Grafo::imprimeGrafo()
     cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
     cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
 
-    calculaMenorDistancia();
+    //calculaMenorDistancia();
     //imprimeLista();
     //imprimeMatriz();
 
@@ -349,7 +349,6 @@ void Grafo::imprimeMatriz()
     cerr << "Método imprimeMatriz chamado na classe base" << endl;
 }
 
-// Implementação do método de Steiner
 void Grafo::steinerTree(int *terminais, int tamanho) {
     // Início da medição de tempo
     clock_t inicio = clock();
@@ -453,14 +452,16 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
     // Estrutura para arestas
     struct Aresta {
         int origem, destino;
+        float peso;
     };
     
     // Array para armazenar as arestas da árvore
     Aresta* arestas = new Aresta[ordem * 2];  // no máximo ordem-1 arestas, mas para segurança
     int numArestas = 0;
+    float pesoTotal = 0.0f;  // Variável para armazenar o peso total das arestas
     
     // Função para adicionar uma aresta se ela ainda não existe
-    auto adicionarAresta = [&](int a, int b) {
+    auto adicionarAresta = [&](int a, int b, float peso) {
         if (a > b) {
             int temp = a;
             a = b;
@@ -477,7 +478,11 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         // Adicionar nova aresta
         arestas[numArestas].origem = a;
         arestas[numArestas].destino = b;
+        arestas[numArestas].peso = peso;
         numArestas++;
+        
+        // Acumular o peso total
+        pesoTotal += peso;
     };
     
     // Executa o Dijkstra para cada nó terminal
@@ -535,7 +540,8 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
                     int pai = predecessor[atual];
                     
                     // Adicionar aresta
-                    adicionarAresta(atual, pai);
+                    float peso = getPesoAresta(atual, pai);
+                    adicionarAresta(atual, pai, peso);
                     
                     // Marcar nós como parte da árvore
                     nosSteiner[atual] = true;
@@ -568,6 +574,9 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         }
         cout << endl;
     }
+    
+    // Exibir o peso total das arestas
+    cout << "Peso total das arestas da Árvore de Steiner: " << pesoTotal << endl;
     
     // Libera a memória alocada
     delete[] predecessor;
