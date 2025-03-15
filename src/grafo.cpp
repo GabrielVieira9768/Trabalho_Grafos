@@ -335,7 +335,7 @@ void Grafo::imprimeGrafo()
     //imprimeLista();
     //imprimeMatriz();
 
-    int terminais[] = {8, 12, 16, 24}; // Nó terminais do problema
+    int terminais[] = {1, 2, 4, 5}; // Nó terminais do problema
     int tamanho = sizeof(terminais) / sizeof(terminais[0]);
     steinerTree(terminais, tamanho);
 }
@@ -357,101 +357,220 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
         return;
     }
 
-    // Conjunto de nós da Árvore de Steiner
-    set<int> conjuntoSteiner;
+    // Arrays para armazenar predecessores e distâncias
+    int* predecessor = new int[ordem + 1];
+    float* distancia = new float[ordem + 1];
+    
+    // Array para marcar nós que fazem parte da árvore de Steiner
+    bool* nosSteiner = new bool[ordem + 1]();  // inicializa com zeros
+    
+    // Marcar os nós terminais como parte da árvore
     for (int i = 0; i < tamanho; i++) {
-        conjuntoSteiner.insert(terminais[i]);
+        int t = terminais[i];
+        if (t >= 1 && t <= ordem) {
+            nosSteiner[t] = true;
+        } else {
+            cerr << "Erro: nó terminal fora do intervalo válido." << endl;
+            delete[] predecessor;
+            delete[] distancia;
+            delete[] nosSteiner;
+            return;
+        }
     }
-
-    // Vetores para armazenar predecessores e distâncias
-    vector<int> predecessor(ordem + 1, -1);
-    vector<float> distancia(ordem + 1, numeric_limits<float>::max());
-
-    // Fila de prioridade para o Dijkstra
-    priority_queue<pair<float, int>, vector<pair<float, int>>, greater<pair<float, int>>> pq;
-
+    
+    // Estrutura para a implementação manual do heap/fila de prioridade
+    struct HeapNode {
+        float distancia;
+        int no;
+    };
+    
+    // Heap simplificado - vetor + tamanho atual
+    int maxHeapSize = ordem * ordem; // capacidade máxima estimada
+    HeapNode* heap = new HeapNode[maxHeapSize];
+    int heapSize = 0;
+    
+    // Funções auxiliares para o heap
+    auto heapPush = [&](float dist, int node) {
+        if (heapSize >= maxHeapSize) return;
+        
+        int i = heapSize++;
+        heap[i].distancia = dist;
+        heap[i].no = node;
+        
+        // Mover para cima (upheap)
+        while (i > 0) {
+            int parent = (i - 1) / 2;
+            if (heap[parent].distancia <= heap[i].distancia) break;
+            
+            // Trocar com o pai
+            HeapNode temp = heap[i];
+            heap[i] = heap[parent];
+            heap[parent] = temp;
+            
+            i = parent;
+        }
+    };
+    
+    auto heapPop = [&]() {
+        if (heapSize <= 0) return;
+        
+        heap[0] = heap[--heapSize];
+        
+        // Mover para baixo (downheap)
+        int i = 0;
+        while (true) {
+            int smallest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            
+            if (left < heapSize && heap[left].distancia < heap[smallest].distancia)
+                smallest = left;
+            
+            if (right < heapSize && heap[right].distancia < heap[smallest].distancia)
+                smallest = right;
+            
+            if (smallest == i) break;
+            
+            // Trocar com o menor filho
+            HeapNode temp = heap[i];
+            heap[i] = heap[smallest];
+            heap[smallest] = temp;
+            
+            i = smallest;
+        }
+    };
+    
+    auto heapTop = [&]() -> HeapNode {
+        return heap[0];
+    };
+    
+    auto heapEmpty = [&]() -> bool {
+        return heapSize == 0;
+    };
+    
+    // Estrutura para arestas
+    struct Aresta {
+        int origem, destino;
+    };
+    
+    // Array para armazenar as arestas da árvore
+    Aresta* arestas = new Aresta[ordem * 2];  // no máximo ordem-1 arestas, mas para segurança
+    int numArestas = 0;
+    
+    // Função para adicionar uma aresta se ela ainda não existe
+    auto adicionarAresta = [&](int a, int b) {
+        if (a > b) {
+            int temp = a;
+            a = b;
+            b = temp;
+        }
+        
+        // Verificar se a aresta já existe
+        for (int i = 0; i < numArestas; i++) {
+            if (arestas[i].origem == a && arestas[i].destino == b) {
+                return;
+            }
+        }
+        
+        // Adicionar nova aresta
+        arestas[numArestas].origem = a;
+        arestas[numArestas].destino = b;
+        numArestas++;
+    };
+    
     // Executa o Dijkstra para cada nó terminal
     for (int i = 0; i < tamanho; i++) {
         int t = terminais[i];
-        if (t < 1 || t > ordem) {
-            cerr << "Erro: nó terminal fora do intervalo válido." << endl;
-            return;
-        }
-
+        
         // Reinicializa as estruturas para cada terminal
-        fill(predecessor.begin(), predecessor.end(), -1);
-        fill(distancia.begin(), distancia.end(), numeric_limits<float>::max());
-
+        for (int j = 0; j <= ordem; j++) {
+            predecessor[j] = -1;
+            distancia[j] = numeric_limits<float>::max();
+        }
+        
         distancia[t] = 0;
-        pq.push({0, t});
-
+        heapSize = 0; // Reset do heap
+        heapPush(0, t);
+        
         // Algoritmo de Dijkstra
-        while (!pq.empty()) {
-            int u = pq.top().second;
-            float dist_u = pq.top().first;
-            pq.pop();
-
+        while (!heapEmpty()) {
+            HeapNode atual = heapTop();
+            int u = atual.no;
+            float dist_u = atual.distancia;
+            heapPop();
+            
             if (dist_u > distancia[u])
                 continue;
-
+            
             int *vizinhos = getVizinhos(u);
             int grau = getGrau(u);
-
+            
             if (!vizinhos)
                 continue;
-
+            
             for (int j = 0; j < grau; j++) {
                 int v = vizinhos[j];
                 if (v < 1 || v > ordem)
                     continue;
-
+                
                 float peso = getPesoAresta(u, v);
                 if (distancia[v] > dist_u + peso) {
                     distancia[v] = dist_u + peso;
                     predecessor[v] = u;
-                    pq.push({distancia[v], v});
+                    heapPush(distancia[v], v);
                 }
             }
-
+            
             delete[] vizinhos;
         }
-    }
-
-    // Constrói a Árvore de Steiner
-    set<pair<int, int>> arestasSteiner;
-    for (int i = 0; i < tamanho; i++) {
-        int atual = terminais[i];
-        while (predecessor[atual] != -1) {
-            int pai = predecessor[atual];
-
-            // Adiciona a aresta ao conjunto Steiner
-            if (arestasSteiner.find({min(atual, pai), max(atual, pai)}) == arestasSteiner.end()) {
-                arestasSteiner.insert({min(atual, pai), max(atual, pai)});
+        
+        // Adicionar caminhos à árvore de Steiner
+        for (int j = 0; j < tamanho; j++) {
+            int destino = terminais[j];
+            if (i != j) {  // Não precisamos processar o mesmo terminal
+                int atual = destino;
+                while (predecessor[atual] != -1) {
+                    int pai = predecessor[atual];
+                    
+                    // Adicionar aresta
+                    adicionarAresta(atual, pai);
+                    
+                    // Marcar nós como parte da árvore
+                    nosSteiner[atual] = true;
+                    nosSteiner[pai] = true;
+                    
+                    atual = pai;
+                }
             }
-
-            // Adiciona os nós ao conjunto Steiner
-            conjuntoSteiner.insert(atual);
-            conjuntoSteiner.insert(pai);
-
-            atual = pai;
         }
     }
-
+    
     // Impressão dos nós da Árvore de Steiner
     cout << "Árvore de Steiner encontrada com os nós: ";
-    for (int no : conjuntoSteiner) {
-        cout << no << " ";
+    int contNos = 0;
+    for (int i = 1; i <= ordem; i++) {
+        if (nosSteiner[i]) {
+            cout << i << " ";
+            contNos++;
+        }
     }
     cout << endl;
-
+    
     // Impressão das arestas da Árvore de Steiner
     cout << "E com as arestas: ";
-    if (arestasSteiner.empty()) {
+    if (numArestas == 0) {
         cout << "Nenhuma aresta encontrada." << endl;
     } else {
-        for (auto aresta : arestasSteiner) {
-            cout << "(" << aresta.first << ", " << aresta.second << ") ";
+        for (int i = 0; i < numArestas; i++) {
+            cout << "(" << arestas[i].origem << ", " << arestas[i].destino << ") ";
         }
         cout << endl;
     }
+    
+    // Libera a memória alocada
+    delete[] predecessor;
+    delete[] distancia;
+    delete[] nosSteiner;
+    delete[] heap;
+    delete[] arestas;
 }
