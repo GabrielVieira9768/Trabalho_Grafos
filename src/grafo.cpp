@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <ctime>
+#include <iomanip>
 
 #define maximo 1000000
 
@@ -349,6 +351,9 @@ void Grafo::imprimeMatriz()
 
 // Implementação do método de Steiner
 void Grafo::steinerTree(int *terminais, int tamanho) {
+    // Início da medição de tempo
+    clock_t inicio = clock();
+
     if (tamanho == 0) {
         cerr << "Nenhum nó terminal foi fornecido." << endl;
         return;
@@ -570,4 +575,10 @@ void Grafo::steinerTree(int *terminais, int tamanho) {
     delete[] nosSteiner;
     delete[] heap;
     delete[] arestas;
+
+    // Fim da medição de tempo
+    clock_t fim = clock();
+    double tempo_execucao = double(fim - inicio) / CLOCKS_PER_SEC;
+    cout << fixed << setprecision(6); // Numero de casa decimais
+    cout << "Tempo de execução: " << tempo_execucao << " segundos" << endl;
 }
