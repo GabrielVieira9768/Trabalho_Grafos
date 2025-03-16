@@ -1,5 +1,6 @@
 // Comando para compilar: g++ -o main.out main.cpp src/*.cpp -I./include/ -g -Wall -Werror
-// Comando para rodar os arquivos: ./main -p -l|-m ./entradas/nome_do_arquivo.txt
+// Comando para rodar os arquivos: time|valgrind main.out -p -m|-l ./entradas/grafo2.txt
+// Caso não dê para rodar sem o ./ no main.out é só executar a linha 'export PATH=$PATH:.' no terminal
 
 #include <iostream>
 #include <string>
