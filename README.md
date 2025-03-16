@@ -1,48 +1,40 @@
 # Trabalho de Grafos - Representações em C++
 
-Este é um projeto em C++ que permite a manipulação de grafos utilizando duas representações: lista de adjacência e matriz de adjacência. O código permite tanto a leitura de grafos a partir de arquivos de entrada, além de possibilitar a impressão das informações dos grafos na tela.
+Este é um projeto em C++ que permite a manipulação de grafos utilizando duas representações: lista de adjacência e matriz de adjacência. O código permite tanto a leitura de grafos a partir de arquivos de entrada, além de possibilitar a impressão das informações dos grafos na tela e a geração de uma Árvore de Steiner.
 
 ## Funcionalidades
 
 O programa possui as seguintes funcionalidades principais:
 
-1. **Exibir o Grafo:** Carrega um grafo a partir de um arquivo de entrada e o exibe na tela, utilizando uma das representações:
-   - Matriz de Adjacência
-   - Lista de Adjacência
+1) **Algoritmo Guloso para Árvore de Steiner:** Implementação do algoritmo guloso para encontrar uma árvore de Steiner em um grafo, considerando um conjunto de nós terminais e a minimização do custo total das arestas.
 
-2. **Remoção de Nós:** Permite remover um nó do grafo. Na representação por matriz de adjacência, os IDs dos nós são recalculados automaticamente, gerando um grafo isomorfo ao original.
+2) **Algoritmo Randomizado:** Algoritmo de abordagem randomizada para resolver problemas de otimização no grafo, oferecendo soluções alternativas para o problema da árvore de Steiner.
 
-3. **Remoção de Arestas:** Permite remover a primeira aresta de um nó especificado.
+3) **Algoritmo Reativo:** Implementação de um algoritmo reativo para melhorar a eficiência e qualidade das soluções, ajustando dinamicamente os parâmetros de busca durante a execução, de acordo com as condições do grafo.
 
-4. **Cálculo da Menor Distância:** Calcula a maior menor distância entre dois nós, permitindo a determinação do caminho mais curto entre eles.
-
-## Como Usar
-
-O programa pode ser executado com diferentes argumentos na linha de comando. Abaixo estão as opções de uso:
-
-### Sintaxe
+## Compilação
 ```bash
-./main -d -m|-l <./entradas/arquivo_entrada>
+g++ -o main.out main.cpp src/*.cpp -I./include/ -g -Wall -Werror
+```
+
+### Execução
+```bash
+time|valgrind main.out -p -m|-l ./entradas/<arquivo_entrada>.txt
 ```
 
 ### Argumentos
-- **-d:** Define a operação desejada.
+- **-p:** Define a operação desejada.
 - **-m:** Utiliza a representação por matriz de adjacência.
 - **-l:** Utiliza a representação por lista de adjacência.
 - **<arquivo_entrada>:** Caminho para o arquivo de entrada contendo a descrição do grafo.
 
 ## Exemplo de Uso
-Para carregar um grafo na representação por matriz e exibi-lo:
+Para carregar um grafo na representação por matriz e gerar a árvore de Steiner:
 ```bash
-./main -d -m ./entradas/grafo.txt
+main.out -p -m ./entradas/grafo.txt
 ```
 
-Para carregar um grafo na representação por lista e exibi-lo:
+Para carregar um grafo na representação por lista e gerar a árvore de Steiner:
 ```bash
-./main -d -l ./entradas/grafo.txt
+main.out -p -l ./entradas/grafo.txt
 ```
-
-## Observações
-- A funcionalidade de recalcular IDs dos nós na representação por matriz garante que a remoção de nós mantenha o grafo isomorfo ao original.
-- O cálculo da menor distância é feito utilizando algoritmos eficientes para grafos ponderados.
-
