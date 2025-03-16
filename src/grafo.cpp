@@ -305,7 +305,7 @@ void Grafo::carrega_grafo(const string &arquivo)
 
 int* Grafo::geraTerminaisAleatorios(int ordem, int& tamanhoTerminais) {
     std::srand(std::time(nullptr));
-    tamanhoTerminais = 50;
+    tamanhoTerminais = 3;
     
     int* terminais = new int[tamanhoTerminais];
     bool selecionados[ordem+1];
@@ -349,8 +349,6 @@ void Grafo::imprimeGrafo()
         cout << terminais[i] << " ";
 
     cout << endl;
-
-    float alpha = 0.3;
 
     cout << "Guloso Normal" << endl;
     steinerTree(terminais, tamanhoTerminais, false);
@@ -404,6 +402,8 @@ void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alp
     int *melhorArestasDestino = new int[ordem * 2];
 
     int numIteracoes = 5;
+
+    float custoTotal = 0.0f;
 
     for (int iter = 0; iter < (reativo ? numIteracoes : 1); iter++)
     {
@@ -689,6 +689,8 @@ void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alp
             custo += getPesoAresta(arestas[i].origem, arestas[i].destino);
         }
 
+            custoTotal = custo;
+
         if (reativo && custo < melhorCusto)
         {
             melhorCusto = custo;
@@ -780,6 +782,9 @@ void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alp
         }
         cout << endl;
     }
+
+    cout << "Custo total: " << fixed << setprecision(2) << custoTotal << endl;
+
 
     clock_t fim = clock();
     double tempoDecorrido = double(fim - inicio) / CLOCKS_PER_SEC;
