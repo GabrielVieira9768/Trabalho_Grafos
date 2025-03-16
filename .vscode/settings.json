@@ -44,6 +44,12 @@
         "typeinfo": "cpp",
         "__locale": "cpp",
         "locale": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "bit": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "set": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp"
     }
 }
