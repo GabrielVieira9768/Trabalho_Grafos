@@ -303,6 +303,29 @@ void Grafo::carrega_grafo(const string &arquivo)
     file.close();
 }
 
+int* Grafo::geraTerminaisAleatorios(int ordem, int& tamanhoTerminais) {
+    std::srand(std::time(nullptr));
+    tamanhoTerminais = 100;
+    
+    int* terminais = new int[tamanhoTerminais];
+    bool selecionados[ordem+1];
+
+    for (int i = 0; i <= ordem; ++i) {
+        selecionados[i] = false;
+    }
+
+    int count = 0;
+    while (count < tamanhoTerminais) {
+        int potencialTerminal = (std::rand() % ordem) + 1;
+        
+        if (!selecionados[potencialTerminal]) {
+            terminais[count++] = potencialTerminal;
+            selecionados[potencialTerminal] = true;
+        }
+    }
+    return terminais;
+}
+
 void Grafo::imprimeGrafo()
 {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
@@ -318,21 +341,27 @@ void Grafo::imprimeGrafo()
     // imprimeLista();
     // imprimeMatriz();
 
-    int terminais[] = {8, 12, 16, 24};
-    int tamanho = sizeof(terminais) / sizeof(terminais[0]);
-    int numIteracoes = 100;
+    int tamanhoTerminais;
+    int* terminais = geraTerminaisAleatorios(ordem, tamanhoTerminais);
+
+    cout << "Terminais gerados: ";
+    for (int i = 0; i < tamanhoTerminais; ++i)
+        cout << terminais[i] << " ";
+
+    cout << endl;
+
     float alpha = 0.3;
 
     cout << "Guloso Normal" << endl;
-    steinerTree(terminais, tamanho, false);
+    steinerTree(terminais, tamanhoTerminais, false);
 
     cout << endl;
 
     cout << "Guloso Randomizado" << endl;
-    steinerTree(terminais, tamanho, true, 0.3);
+    steinerTree(terminais, tamanhoTerminais, true, 0.3);
 
     cout << "Guloso Randomizado Reativo" << endl;
-    steinerTree(terminais, tamanho, true, 0.3, true);
+    steinerTree(terminais, tamanhoTerminais, true, 0.3, true);
 }
 
 void Grafo::imprimeLista()
@@ -371,7 +400,7 @@ void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alp
     int *melhorArestasOrigem = new int[ordem * 2];
     int *melhorArestasDestino = new int[ordem * 2];
 
-    int numIteracoes = 100;
+    int numIteracoes = 5;
 
     for (int iter = 0; iter < (reativo ? numIteracoes : 1); iter++)
     {
