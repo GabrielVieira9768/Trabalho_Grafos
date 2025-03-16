@@ -305,7 +305,7 @@ void Grafo::carrega_grafo(const string &arquivo)
 
 int* Grafo::geraTerminaisAleatorios(int ordem, int& tamanhoTerminais) {
     std::srand(std::time(nullptr));
-    tamanhoTerminais = 3;
+    tamanhoTerminais = 50;
     
     int* terminais = new int[tamanhoTerminais];
     bool selecionados[ordem+1];

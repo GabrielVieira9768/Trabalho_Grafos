@@ -50,6 +50,7 @@
         "ctime": "cpp",
         "set": "cpp",
         "optional": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "cinttypes": "cpp"
     }
 }
