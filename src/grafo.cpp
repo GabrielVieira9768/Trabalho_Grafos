@@ -336,8 +336,6 @@ void Grafo::imprimeGrafo()
 
     int terminais[] = {8, 12, 16, 24}; // Nó terminais do problema
     int tamanho = sizeof(terminais) / sizeof(terminais[0]);
-    int numIteracoes = 100; // Número de iterações do GRASP
-    float alpha = 0.3;      // Parâmetro alpha para construção da RCL (entre 0 e 1)
 
     cout << "Guloso Normal" << endl;
     steinerTree(terminais, tamanho, false);
