@@ -1,4 +1,4 @@
-// Comando para compilar: g++ -std=c++11 -I./include -o main main.cpp ./src/*
+// Comando para compilar: g++ -o main.out main.cpp src/*.cpp -I./include/ -g -Wall -Werror
 // Comando para rodar os arquivos: ./main -p -l|-m ./entradas/nome_do_arquivo.txt
 
 #include <iostream>

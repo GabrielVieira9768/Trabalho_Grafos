@@ -7,9 +7,9 @@ using namespace std;
 
 class GrafoMatriz : public Grafo {
     private:
+        int capacidade;
         float** matrizAdj;
         float* pesosVertices;
-        int capacidade;
 
         void redimensionarMatriz(); // Função para redimensionar a matriz
 
