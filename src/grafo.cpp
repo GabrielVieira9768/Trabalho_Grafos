@@ -322,13 +322,13 @@ void Grafo::carrega_grafo(const string &arquivo)
 void Grafo::imprimeGrafo()
 {
     cout << "INFORMAÇÕES DO GRAFO: " << nomeArquivo << endl;
-    // cout << "Grau: " << get_grau() << endl;
+    cout << "Grau: " << get_grau() << endl;
     cout << "Ordem: " << ordem << endl;
     cout << "Direcionado: " << (direcionado ? "Sim" : "Não") << endl;
-    // cout << "Componentes conexas: " << n_conexo() << endl;
-    // cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
-    // cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
-    // cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
+    cout << "Componentes conexas: " << n_conexo() << endl;
+    cout << "Vertices Ponderados: " << (verticePonderado ? "Sim" : "Não") << endl;
+    cout << "Arestas Ponderadas: " << (arestaPonderada ? "Sim" : "Não") << endl;
+    cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << endl;
 
     // calculaMenorDistancia();
     // imprimeLista();
