@@ -305,7 +305,7 @@ void Grafo::carrega_grafo(const string &arquivo)
 
 int* Grafo::geraTerminaisAleatorios(int ordem, int& tamanhoTerminais) {
     std::srand(std::time(nullptr));
-    tamanhoTerminais = 100;
+    tamanhoTerminais = 50;
     
     int* terminais = new int[tamanhoTerminais];
     bool selecionados[ordem+1];
@@ -382,6 +382,9 @@ struct Aresta
 
 void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alpha, bool reativo)
 {
+
+    clock_t inicio = clock();
+
     if (tamanho == 0)
     {
         cerr << "Nenhum nó terminal foi fornecido." << endl;
@@ -777,6 +780,12 @@ void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alp
         }
         cout << endl;
     }
+
+    clock_t fim = clock();
+    double tempoDecorrido = double(fim - inicio) / CLOCKS_PER_SEC;
+    cout << fixed << setprecision(6);
+    cout << "Tempo de execução: " << tempoDecorrido << " segundos" << endl << endl;
+
 
     delete[] melhorSolucaoNos;
     delete[] melhorArestasOrigem;
