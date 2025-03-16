@@ -30,7 +30,7 @@ class Grafo {
         void DFS(int no, bool* visitado);
         void calculaMenorDistancia();
         void deleta_primeira_aresta(int id);
-        void steinerTree(int *terminais, int tamanho, bool randomizado = false, float alpha = 0.3);
+        void steinerTree(int *terminais, int tamanho, bool randomizado = false, float alpha = 0.3 , bool reativo = false);
         //void steinerTreeGRASP(int *terminais, int tamanho, int numIteracoes, float alpha);
         
         virtual void novo_no(int id, float peso);

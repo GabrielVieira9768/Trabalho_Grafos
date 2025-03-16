@@ -100,7 +100,7 @@ bool Grafo::eh_completo()
     for (int i = 1; i <= ordem; i++)
     {
         if (getGrau(i) != ordem - 1)
-        { // Verifica se cada nó tem grau igual (ordem - 1)
+        {
             return false;
         }
     }
@@ -110,8 +110,7 @@ bool Grafo::eh_completo()
 
 int Grafo::n_conexo()
 {
-    // Aloca um array para marcar os nós visitados
-    bool *visitado = new bool[ordem + 1]; // +1 porque os nós começam de 1
+    bool *visitado = new bool[ordem + 1];
     for (int i = 1; i <= ordem; i++)
     {
         visitado[i] = false;
@@ -119,18 +118,15 @@ int Grafo::n_conexo()
 
     int contador = 0;
 
-    // Percorre todos os nós do grafo
     for (int i = 1; i <= ordem; i++)
     {
         if (!visitado[i])
         {
-            // Se o nó não foi visitado, inicia uma DFS a partir dele
             DFS(i, visitado);
-            contador++; // Incrementa o contador de componentes conexos
+            contador++;
         }
     }
 
-    // Libera a memória alocada para o array de visitados
     delete[] visitado;
 
     return contador;
@@ -138,13 +134,10 @@ int Grafo::n_conexo()
 
 void Grafo::DFS(int no, bool *visitado)
 {
-    // Marca o nó como visitado
     visitado[no] = true;
 
-    // Obtém os vizinhos do nó
     int *vizinhos = getVizinhos(no);
 
-    // Se o nó tiver vizinhos, percorre cada um deles
     if (vizinhos)
     {
         for (int i = 0; i < getGrau(no); i++)
@@ -152,20 +145,17 @@ void Grafo::DFS(int no, bool *visitado)
             int vizinho = vizinhos[i];
             if (!visitado[vizinho])
             {
-                // Se o vizinho não foi visitado, realiza uma DFS a partir dele
                 DFS(vizinho, visitado);
             }
         }
 
-        // Libera a memória alocada para o array de vizinhos
         delete[] vizinhos;
     }
 }
 
 void Grafo::calculaMenorDistancia()
 {
-    // Inicializa a matriz de distâncias com um valor alto (infinito)
-    const float INF = 1e9f; // Representa infinito para comparação
+    const float INF = 1e9f;
     float **dist = new float *[ordem];
 
     for (int i = 0; i < ordem; i++)
@@ -175,11 +165,11 @@ void Grafo::calculaMenorDistancia()
         {
             if (i == j)
             {
-                dist[i][j] = 0.0f; // A distância de um nó para ele mesmo é 0
+                dist[i][j] = 0.0f;
             }
             else if (existeAresta(i + 1, j + 1))
             {
-                dist[i][j] = getPesoAresta(i + 1, j + 1); // Assumindo que retorna float
+                dist[i][j] = getPesoAresta(i + 1, j + 1);
             }
             else
             {
@@ -188,7 +178,6 @@ void Grafo::calculaMenorDistancia()
         }
     }
 
-    // Floyd-Warshall para encontrar menores distâncias
     for (int k = 0; k < ordem; k++)
     {
         for (int i = 0; i < ordem; i++)
@@ -203,7 +192,6 @@ void Grafo::calculaMenorDistancia()
         }
     }
 
-    // Pega maior menor caminho
     float cont = 0.0f;
     int inicio;
     int fim;
@@ -223,7 +211,6 @@ void Grafo::calculaMenorDistancia()
 
     cout << "Maior menor distância: (" << inicio + 1 << ", " << fim + 1 << ") - " << cont << endl;
 
-    // Libera a memória alocada
     for (int i = 0; i < ordem; i++)
     {
         delete[] dist[i];
@@ -237,12 +224,12 @@ void Grafo::deleta_primeira_aresta(int id)
     int grau = getGrau(id);
 
     if (grau == 0)
-        return; // Não há arestas para deletar
+        return;
 
-    int menor = vizinhos[0]; // Inicializa com o primeiro vizinho
+    int menor = vizinhos[0];
 
     for (int i = 1; i < grau; i++)
-    { // Começa do segundo vizinho
+    {
         if (vizinhos[i] < menor)
         {
             menor = vizinhos[i];
@@ -266,7 +253,6 @@ void Grafo::carrega_grafo(const string &arquivo)
     string linha;
     int ordem_int;
 
-    // Lê a descrição do grafo
     if (getline(file, linha))
     {
         int direcionado_int, verticePonderado_int, arestaPonderada_int;
@@ -276,7 +262,6 @@ void Grafo::carrega_grafo(const string &arquivo)
         arestaPonderada = arestaPonderada_int;
     }
 
-    // Lê os pesos dos nós se ponderado
     if (verticePonderado && getline(file, linha))
     {
         float peso;
@@ -296,7 +281,6 @@ void Grafo::carrega_grafo(const string &arquivo)
         }
     }
 
-    // Lê as arestas
     while (getline(file, linha))
     {
         if (linha.empty())
@@ -334,10 +318,10 @@ void Grafo::imprimeGrafo()
     // imprimeLista();
     // imprimeMatriz();
 
-    int terminais[] = {8, 12, 16, 24}; // Nó terminais do problema
+    int terminais[] = {8, 12, 16, 24};
     int tamanho = sizeof(terminais) / sizeof(terminais[0]);
-    int numIteracoes = 100; // Número de iterações do GRASP
-    float alpha = 0.3;      // Parâmetro alpha para construção da RCL (entre 0 e 1)
+    int numIteracoes = 100;
+    float alpha = 0.3;
 
     cout << "Guloso Normal" << endl;
     steinerTree(terminais, tamanho, false);
@@ -346,6 +330,9 @@ void Grafo::imprimeGrafo()
 
     cout << "Guloso Randomizado" << endl;
     steinerTree(terminais, tamanho, true, 0.3);
+
+    cout << "Guloso Randomizado Reativo" << endl;
+    steinerTree(terminais, tamanho, true, 0.3, true);
 }
 
 void Grafo::imprimeLista()
@@ -358,7 +345,13 @@ void Grafo::imprimeMatriz()
     cerr << "Método imprimeMatriz chamado na classe base" << endl;
 }
 
-void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alpha)
+struct Aresta
+{
+    int origem, destino;
+};
+
+
+void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alpha, bool reativo)
 {
     if (tamanho == 0)
     {
@@ -366,323 +359,397 @@ void Grafo::steinerTree(int *terminais, int tamanho, bool randomizado, float alp
         return;
     }
 
-    // Arrays para armazenar predecessores e distâncias
-    int *predecessor = new int[ordem + 1];
-    float *distancia = new float[ordem + 1];
+    const int numAlphas = 5;
+    float alphas[numAlphas] = {0.1, 0.2, 0.3, 0.4, 0.5};
+    float probabilidades[numAlphas] = {0.2, 0.2, 0.2, 0.2, 0.2};
+    int contagem[numAlphas] = {0};
+    float mediaCustos[numAlphas] = {0.0};
 
-    // Array para marcar nós que fazem parte da árvore de Steiner
-    bool *nosSteiner = new bool[ordem + 1](); // inicializa com zeros
+    float melhorCusto = maximo;
+    bool *melhorSolucaoNos = new bool[ordem + 1]();
+    int melhorNumArestas = 0;
+    int *melhorArestasOrigem = new int[ordem * 2];
+    int *melhorArestasDestino = new int[ordem * 2];
 
-    // Marcar os nós terminais como parte da árvore
-    for (int i = 0; i < tamanho; i++)
+    int numIteracoes = 100;
+
+    for (int iter = 0; iter < (reativo ? numIteracoes : 1); iter++)
     {
-        int t = terminais[i];
-        if (t >= 1 && t <= ordem)
+        float alphaAtual = alpha;
+
+        if (reativo && randomizado)
         {
-            nosSteiner[t] = true;
-        }
-        else
-        {
-            cerr << "Erro: nó terminal fora do intervalo válido." << endl;
-            delete[] predecessor;
-            delete[] distancia;
-            delete[] nosSteiner;
-            return;
-        }
-    }
-
-    // Estrutura para a implementação manual do heap/fila de prioridade
-    struct HeapNode
-    {
-        float distancia;
-        int no;
-    };
-
-    // Heap simplificado - vetor + tamanho atual
-    int maxHeapSize = ordem * ordem; // capacidade máxima estimada
-    HeapNode *heap = new HeapNode[maxHeapSize];
-    int heapSize = 0;
-
-    // Funções auxiliares para o heap
-    auto heapPush = [&](float dist, int node)
-    {
-        if (heapSize >= maxHeapSize)
-            return;
-
-        int i = heapSize++;
-        heap[i].distancia = dist;
-        heap[i].no = node;
-
-        // Mover para cima (upheap)
-        while (i > 0)
-        {
-            int parent = (i - 1) / 2;
-            if (heap[parent].distancia <= heap[i].distancia)
-                break;
-
-            // Trocar com o pai
-            HeapNode temp = heap[i];
-            heap[i] = heap[parent];
-            heap[parent] = temp;
-
-            i = parent;
-        }
-    };
-
-    auto heapPop = [&]()
-    {
-        if (heapSize <= 0)
-            return;
-
-        heap[0] = heap[--heapSize];
-
-        // Mover para baixo (downheap)
-        int i = 0;
-        while (true)
-        {
-            int smallest = i;
-            int left = 2 * i + 1;
-            int right = 2 * i + 2;
-
-            if (left < heapSize && heap[left].distancia < heap[smallest].distancia)
-                smallest = left;
-
-            if (right < heapSize && heap[right].distancia < heap[smallest].distancia)
-                smallest = right;
-
-            if (smallest == i)
-                break;
-
-            // Trocar com o menor filho
-            HeapNode temp = heap[i];
-            heap[i] = heap[smallest];
-            heap[smallest] = temp;
-
-            i = smallest;
-        }
-    };
-
-    auto heapTop = [&]() -> HeapNode
-    {
-        return heap[0];
-    };
-
-    auto heapEmpty = [&]() -> bool
-    {
-        return heapSize == 0;
-    };
-
-    // Nova função para o guloso randomizado: escolhe um elemento aleatório entre os melhores
-    auto heapRandomTop = [&]() -> HeapNode
-    {
-        if (heapSize <= 0)
-            return heap[0]; // Retorna o primeiro elemento por segurança
-
-        // Determina o limite para a lista restrita de candidatos
-        float minDist = heap[0].distancia;
-        float maxDist = minDist + alpha * (heap[heapSize - 1].distancia - minDist);
-        
-        // Contar quantos elementos estão dentro do limite
-        int candidatosCount = 0;
-        for (int i = 0; i < heapSize; i++)
-        {
-            if (heap[i].distancia <= maxDist)
-                candidatosCount++;
-            else
-                break; // Como o heap está ordenado, podemos parar assim que encontrarmos um elemento fora do limite
-        }
-        
-        if (candidatosCount <= 0)
-            candidatosCount = 1; // Garantir pelo menos um candidato
-        
-        // Escolher aleatoriamente um dos candidatos
-        int randomIndex = rand() % candidatosCount;
-        return heap[randomIndex];
-    };
-
-    // Estrutura para arestas
-    struct Aresta
-    {
-        int origem, destino;
-    };
-
-    // Array para armazenar as arestas da árvore
-    Aresta *arestas = new Aresta[ordem * 2]; // no máximo ordem-1 arestas, mas para segurança
-    int numArestas = 0;
-
-    // Função para adicionar uma aresta se ela ainda não existe
-    auto adicionarAresta = [&](int a, int b)
-    {
-        if (a > b)
-        {
-            int temp = a;
-            a = b;
-            b = temp;
-        }
-
-        // Verificar se a aresta já existe
-        for (int i = 0; i < numArestas; i++)
-        {
-            if (arestas[i].origem == a && arestas[i].destino == b)
+            float r = static_cast<float>(rand()) / RAND_MAX;
+            float soma = 0.0;
+            int escolhido = 0;
+            for (int i = 0; i < numAlphas; i++)
             {
+                soma += probabilidades[i];
+                if (r <= soma)
+                {
+                    escolhido = i;
+                    break;
+                }
+            }
+
+            alphaAtual = alphas[escolhido];
+            contagem[escolhido]++;
+        }
+
+        int *predecessor = new int[ordem + 1];
+        float *distancia = new float[ordem + 1];
+
+        bool *nosSteiner = new bool[ordem + 1]();
+
+        for (int i = 0; i < tamanho; i++)
+        {
+            int t = terminais[i];
+            if (t >= 1 && t <= ordem)
+            {
+                nosSteiner[t] = true;
+            }
+            else
+            {
+                cerr << "Erro: nó terminal fora do intervalo válido." << endl;
+                delete[] predecessor;
+                delete[] distancia;
+                delete[] nosSteiner;
                 return;
             }
         }
 
-        // Adicionar nova aresta
-        arestas[numArestas].origem = a;
-        arestas[numArestas].destino = b;
-        numArestas++;
-    };
-
-    // Executa o Dijkstra para cada nó terminal
-    for (int i = 0; i < tamanho; i++)
-    {
-        int t = terminais[i];
-
-        // Reinicializa as estruturas para cada terminal
-        for (int j = 0; j <= ordem; j++)
+        struct HeapNode
         {
-            predecessor[j] = -1;
-            distancia[j] = maximo;
-        }
+            float distancia;
+            int no;
+        };
 
-        distancia[t] = 0;
-        heapSize = 0; // Reset do heap
-        heapPush(0, t);
+        int maxHeapSize = ordem * ordem;
+        HeapNode *heap = new HeapNode[maxHeapSize];
+        int heapSize = 0;
 
-        // Algoritmo de Dijkstra, potencialmente randomizado
-        while (!heapEmpty())
+        auto heapPush = [&](float dist, int node)
         {
-            HeapNode atual;
-            
-            // Escolhe o próximo nó usando método guloso normal ou randomizado
-            if (randomizado)
-                atual = heapRandomTop();
-            else
-                atual = heapTop();
-                
-            int u = atual.no;
-            float dist_u = atual.distancia;
-            
-            // Remove o nó escolhido do heap
-            if (randomizado && atual.no != heap[0].no)
+            if (heapSize >= maxHeapSize)
+                return;
+
+            int i = heapSize++;
+            heap[i].distancia = dist;
+            heap[i].no = node;
+
+            while (i > 0)
             {
-                // Se escolhemos um nó que não está no topo, precisamos encontrá-lo e removê-lo
-                for (int j = 0; j < heapSize; j++)
+                int parent = (i - 1) / 2;
+                if (heap[parent].distancia <= heap[i].distancia)
+                    break;
+
+                HeapNode temp = heap[i];
+                heap[i] = heap[parent];
+                heap[parent] = temp;
+
+                i = parent;
+            }
+        };
+
+        auto heapPop = [&]()
+        {
+            if (heapSize <= 0)
+                return;
+
+            heap[0] = heap[--heapSize];
+
+            int i = 0;
+            while (true)
+            {
+                int smallest = i;
+                int left = 2 * i + 1;
+                int right = 2 * i + 2;
+
+                if (left < heapSize && heap[left].distancia < heap[smallest].distancia)
+                    smallest = left;
+
+                if (right < heapSize && heap[right].distancia < heap[smallest].distancia)
+                    smallest = right;
+
+                if (smallest == i)
+                    break;
+
+                // Trocar com o menor filho
+                HeapNode temp = heap[i];
+                heap[i] = heap[smallest];
+                heap[smallest] = temp;
+
+                i = smallest;
+            }
+        };
+
+        auto heapTop = [&]() -> HeapNode
+        {
+            return heap[0];
+        };
+
+        auto heapEmpty = [&]() -> bool
+        {
+            return heapSize == 0;
+        };
+
+        auto heapRandomTop = [&]() -> HeapNode
+        {
+            if (heapSize <= 0)
+                return heap[0];
+
+            float minDist = heap[0].distancia;
+            float maxDist = minDist + alphaAtual * (heap[heapSize - 1].distancia - minDist);
+
+            int candidatosCount = 0;
+            for (int i = 0; i < heapSize; i++)
+            {
+                if (heap[i].distancia <= maxDist)
+                    candidatosCount++;
+                else
+                    break;
+            }
+
+            if (candidatosCount <= 0)
+                candidatosCount = 1;
+
+            int randomIndex = rand() % candidatosCount;
+            return heap[randomIndex];
+        };
+
+        struct Aresta
+        {
+            int origem, destino;
+        };
+
+        Aresta *arestas = new Aresta[ordem * 2];
+        int numArestas = 0;
+
+        auto adicionarAresta = [&](int a, int b)
+        {
+            if (a > b)
+            {
+                int temp = a;
+                a = b;
+                b = temp;
+            }
+
+            for (int i = 0; i < numArestas; i++)
+            {
+                if (arestas[i].origem == a && arestas[i].destino == b)
                 {
-                    if (heap[j].no == atual.no)
+                    return;
+                }
+            }
+
+            arestas[numArestas].origem = a;
+            arestas[numArestas].destino = b;
+            numArestas++;
+        };
+
+        for (int i = 0; i < tamanho; i++)
+        {
+            int t = terminais[i];
+
+            for (int j = 0; j <= ordem; j++)
+            {
+                predecessor[j] = -1;
+                distancia[j] = maximo;
+            }
+
+            distancia[t] = 0;
+            heapSize = 0;
+            heapPush(0, t);
+
+            while (!heapEmpty())
+            {
+                HeapNode atual;
+
+                if (randomizado)
+                    atual = heapRandomTop();
+                else
+                    atual = heapTop();
+
+                int u = atual.no;
+                float dist_u = atual.distancia;
+
+                if (randomizado && atual.no != heap[0].no)
+                {
+                    for (int j = 0; j < heapSize; j++)
                     {
-                        // Troca com o último elemento e diminui o tamanho
-                        heap[j] = heap[heapSize - 1];
-                        heapSize--;
-                        
-                        // Reorganiza o heap se necessário
-                        while (j > 0)
+                        if (heap[j].no == atual.no)
                         {
-                            int parent = (j - 1) / 2;
-                            if (heap[parent].distancia <= heap[j].distancia)
-                                break;
+                            heap[j] = heap[heapSize - 1];
+                            heapSize--;
 
-                            HeapNode temp = heap[j];
-                            heap[j] = heap[parent];
-                            heap[parent] = temp;
+                            while (j > 0)
+                            {
+                                int parent = (j - 1) / 2;
+                                if (heap[parent].distancia <= heap[j].distancia)
+                                    break;
 
-                            j = parent;
+                                HeapNode temp = heap[j];
+                                heap[j] = heap[parent];
+                                heap[parent] = temp;
+
+                                j = parent;
+                            }
+                            break;
                         }
-                        break;
+                    }
+                }
+                else
+                {
+                    heapPop();
+                }
+
+                if (dist_u > distancia[u])
+                    continue;
+
+                int *vizinhos = getVizinhos(u);
+                int grau = getGrau(u);
+
+                if (!vizinhos)
+                    continue;
+
+                for (int j = 0; j < grau; j++)
+                {
+                    int v = vizinhos[j];
+                    if (v < 1 || v > ordem)
+                        continue;
+
+                    float peso = getPesoAresta(u, v);
+                    if (distancia[v] > dist_u + peso)
+                    {
+                        distancia[v] = dist_u + peso;
+                        predecessor[v] = u;
+                        heapPush(distancia[v], v);
+                    }
+                }
+
+                delete[] vizinhos;
+            }
+
+            for (int j = 0; j < tamanho; j++)
+            {
+                int destino = terminais[j];
+                if (i != j)
+                {
+                    int atual = destino;
+                    while (predecessor[atual] != -1)
+                    {
+                        int pai = predecessor[atual];
+
+                        adicionarAresta(atual, pai);
+
+                        nosSteiner[atual] = true;
+                        nosSteiner[pai] = true;
+
+                        atual = pai;
                     }
                 }
             }
-            else
-            {
-                // Caso normal: remove o elemento do topo
-                heapPop();
-            }
-
-            if (dist_u > distancia[u])
-                continue;
-
-            int *vizinhos = getVizinhos(u);
-            int grau = getGrau(u);
-
-            if (!vizinhos)
-                continue;
-
-            for (int j = 0; j < grau; j++)
-            {
-                int v = vizinhos[j];
-                if (v < 1 || v > ordem)
-                    continue;
-
-                float peso = getPesoAresta(u, v);
-                if (distancia[v] > dist_u + peso)
-                {
-                    distancia[v] = dist_u + peso;
-                    predecessor[v] = u;
-                    heapPush(distancia[v], v);
-                }
-            }
-
-            delete[] vizinhos;
         }
 
-        // Adicionar caminhos à árvore de Steiner
-        for (int j = 0; j < tamanho; j++)
-        {
-            int destino = terminais[j];
-            if (i != j)
-            { // Não precisamos processar o mesmo terminal
-                int atual = destino;
-                while (predecessor[atual] != -1)
-                {
-                    int pai = predecessor[atual];
-
-                    // Adicionar aresta
-                    adicionarAresta(atual, pai);
-
-                    // Marcar nós como parte da árvore
-                    nosSteiner[atual] = true;
-                    nosSteiner[pai] = true;
-
-                    atual = pai;
-                }
-            }
-        }
-    }
-
-    // Impressão dos nós da Árvore de Steiner
-    cout << "Árvore de Steiner " << (randomizado ? "randomizada" : "normal") << " encontrada com os nós: ";
-    int contNos = 0;
-    for (int i = 1; i <= ordem; i++)
-    {
-        if (nosSteiner[i])
-        {
-            cout << i << " ";
-            contNos++;
-        }
-    }
-    cout << endl;
-
-    // Impressão das arestas da Árvore de Steiner
-    cout << "E com as arestas: ";
-    if (numArestas == 0)
-    {
-        cout << "Nenhuma aresta encontrada." << endl;
-    }
-    else
-    {
+        float custo = 0.0;
         for (int i = 0; i < numArestas; i++)
         {
-            cout << "(" << arestas[i].origem << ", " << arestas[i].destino << ") ";
+            custo += getPesoAresta(arestas[i].origem, arestas[i].destino);
+        }
+
+        if (reativo && custo < melhorCusto)
+        {
+            melhorCusto = custo;
+            for (int i = 1; i <= ordem; i++)
+            {
+                melhorSolucaoNos[i] = nosSteiner[i];
+            }
+            melhorNumArestas = numArestas;
+            for (int i = 0; i < numArestas; i++)
+            {
+                melhorArestasOrigem[i] = arestas[i].origem;
+                melhorArestasDestino[i] = arestas[i].destino;
+            }
+        }
+
+        if (reativo && randomizado)
+        {
+            float somaInversa = 0.0;
+            for (int i = 0; i < numAlphas; i++)
+            {
+                if (contagem[i] > 0)
+                {
+                    somaInversa += 1.0 / mediaCustos[i];
+                }
+            }
+
+            for (int i = 0; i < numAlphas; i++)
+            {
+                if (contagem[i] > 0)
+                {
+                    probabilidades[i] = (1.0 / mediaCustos[i]) / somaInversa;
+                }
+            }
+        }
+
+        if (!reativo)
+        {
+            cout << "Árvore de Steiner " << (randomizado ? "randomizada" : "normal") << " encontrada com os nós: ";
+            int contNos = 0;
+            for (int i = 1; i <= ordem; i++)
+            {
+                if (nosSteiner[i])
+                {
+                    cout << i << " ";
+                    contNos++;
+                }
+            }
+            cout << endl;
+
+            cout << "E com as arestas: ";
+            if (numArestas == 0)
+            {
+                cout << "Nenhuma aresta encontrada." << endl;
+            }
+            else
+            {
+                for (int i = 0; i < numArestas; i++)
+                {
+                    cout << "(" << arestas[i].origem << ", " << arestas[i].destino << ") ";
+                }
+                cout << endl << endl;
+            }
+        }
+
+        delete[] predecessor;
+        delete[] distancia;
+        delete[] nosSteiner;
+        delete[] heap;
+        delete[] arestas;
+    }
+
+    if (reativo)
+    {
+        cout << "Melhor custo encontrado: " << melhorCusto << endl;
+        cout << "Melhor solução com os nós: ";
+        for (int i = 1; i <= ordem; i++)
+        {
+            if (melhorSolucaoNos[i])
+            {
+                cout << i << " ";
+            }
+        }
+        cout << endl;
+
+        cout << "E com as arestas: ";
+        for (int i = 0; i < melhorNumArestas; i++)
+        {
+            cout << "(" << melhorArestasOrigem[i] << ", " << melhorArestasDestino[i] << ") ";
         }
         cout << endl;
     }
 
-    // Libera a memória alocada
-    delete[] predecessor;
-    delete[] distancia;
-    delete[] nosSteiner;
-    delete[] heap;
-    delete[] arestas;
+    delete[] melhorSolucaoNos;
+    delete[] melhorArestasOrigem;
+    delete[] melhorArestasDestino;
 }
